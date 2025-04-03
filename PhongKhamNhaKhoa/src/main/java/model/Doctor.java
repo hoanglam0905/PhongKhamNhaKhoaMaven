@@ -4,7 +4,7 @@ import java.sql.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 
-class Doctor extends Employee {
+public class Doctor extends Employee {
     private String specialty;
     private Queue<Patient> patientQueue;
 
@@ -23,7 +23,12 @@ class Doctor extends Employee {
         this.specialty = specialty;
     }
 
-    public Queue<Patient> getPatientQueue() { // Sửa kiểu trả về
+    @Override
+	public String toString() {
+		return "Doctor [specialty=" + specialty + ", patientQueue=" + patientQueue + "]";
+	}
+
+	public Queue<Patient> getPatientQueue() { // Sửa kiểu trả về
         return patientQueue;
     }
 
