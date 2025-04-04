@@ -1,8 +1,7 @@
-DROP DATABASE IF EXISTS phongkhamnhakhoa;
-
--- Tạo cơ sở dữ liệu
 CREATE DATABASE phongkhamnhakhoa;
-USE phongkhamnhakhoa;
+use phongkhamnhakhoa;
+
+DROP DATABASE phongkhamnhakhoa;
 
 -- Tạo bảng Nhân viên
 CREATE TABLE Employee (
@@ -44,6 +43,7 @@ CREATE TABLE Drug (
     name VARCHAR(255) NOT NULL,
     description TEXT,
     price DOUBLE,
+    dosage varchar(50),
     stockQuantity INT
 );
 
@@ -61,6 +61,8 @@ CREATE TABLE Prescription (
     patient_id INT,
     diagnosis TEXT,
     treatment TEXT,
+    symptom text,-- triệu chứng
+    advice text, -- lời khuyên của bs
     FOREIGN KEY (doctor_id) REFERENCES Doctor(id) ON DELETE CASCADE,
     FOREIGN KEY (patient_id) REFERENCES Patient(id) ON DELETE CASCADE
 );
@@ -70,12 +72,15 @@ CREATE TABLE PrescriptionDetail (
     prescription_id INT,
     drug_id INT,
     quantity INT,
-    PRIMARY KEY (prescription_id, drug_id),
+    preDate datetime,-- thời gian khám
+    service_id int,-- thêm để có nhiều dịch vụ
+    PRIMARY KEY (prescription_id, drug_id,service_id),
     FOREIGN KEY (prescription_id) REFERENCES Prescription(id) ON DELETE CASCADE,
-    FOREIGN KEY (drug_id) REFERENCES Drug(id) ON DELETE CASCADE
+    FOREIGN KEY (drug_id) REFERENCES Drug(id) ON DELETE CASCADE,
+    FOREIGN KEY (service_id) REFERENCES Service(id) ON DELETE CASCADE
 );
 
--- Nhập dữ liệu nhân viên (bao gồm bác sĩ, lễ tân, nhân viên quầy thuốc)
+-- Dữ liệu mẫu cho bảng Employee
 INSERT INTO Employee (name, birthDate, address, gender, phoneNumber, idCard, username, password, salary, experienceYears, role) VALUES
 ('Nguyễn Văn A', '1980-05-12', 'Hà Nội', 1, '0912345678', '123456789012', 'bacsia', 'password', 30000000, 15, 'Bác sĩ'),
 ('Trần Thị B', '1985-08-25', 'Hồ Chí Minh', 0, '0912345679', '123456789013', 'bacsib', 'password', 32000000, 12, 'Bác sĩ'),
@@ -88,23 +93,31 @@ INSERT INTO Employee (name, birthDate, address, gender, phoneNumber, idCard, use
 ('Võ Thị H', '1992-06-18', 'Buôn Ma Thuột', 0, '0912345686', '123456789020', 'nvqt2', 'password', 15500000, 7, 'Nhân viên quầy thuốc'),
 ('Lương Minh K', '1997-01-25', 'Đồng Nai', 1, '0912345687', '123456789021', 'nvqt3', 'password', 14000000, 6, 'Nhân viên quầy thuốc');
 
--- Nhập dữ liệu bác sĩ
+-- Dữ liệu bảng Doctor
 INSERT INTO Doctor (id, specialty) VALUES
 (1, 'Răng hàm mặt'),
 (2, 'Chỉnh nha'),
 (3, 'Nha chu'),
 (4, 'Nội nha'),
 (5, 'Phẫu thuật miệng');
--- Nhập thêm thuốc
-INSERT INTO Drug (name, description, price, stockQuantity) VALUES
-('Paracetamol', 'Giảm đau, hạ sốt', 5000, 100),
-('Amoxicillin', 'Kháng sinh', 20000, 50),
-('Erythromycin', 'Kháng sinh nhóm macrolid', 18000, 90),
-('Lidocaine', 'Thuốc gây tê', 22000, 50),
-('Chlorhexidine', 'Dung dịch sát khuẩn miệng', 12000, 100),
-('Dexamethasone', 'Chống viêm, giảm sưng', 25000, 75);
 
--- Nhập thêm dịch vụ
+-- Dữ liệu bảng Patient
+INSERT INTO Patient (name, birthDate, address, gender, phoneNumber, idCard) VALUES
+('Nguyễn Văn B', '1990-05-12', 'Hà Nội', 1, '0987654321', '234567890123'),
+('Trần Thị C', '1985-08-25', 'Hồ Chí Minh', 0, '0987654322', '234567890124'),
+('Lê Văn D', '1980-01-10', 'Đà Nẵng', 1, '0987654323', '234567890125'),
+('Cao Thị C', '1982-08-25', 'Bình Dương', 0, '0987655580', '234567890126');
+
+-- Dữ liệu bảng Drug
+INSERT INTO Drug (name, description, price, dosage, stockQuantity) VALUES
+('Paracetamol', 'Giảm đau, hạ sốt', 5000, '2 viên/ngày', 100),
+('Amoxicillin', 'Kháng sinh', 20000, '1 viên/ngày', 50),
+('Erythromycin', 'Kháng sinh nhóm macrolid', 18000, '1 viên/ngày', 90),
+('Lidocaine', 'Thuốc gây tê', 22000, '1 viên/ngày', 50),
+('Chlorhexidine', 'Dung dịch sát khuẩn miệng', 12000, '2 viên/ngày', 100),
+('Dexamethasone', 'Chống viêm, giảm sưng', 25000, '1 viên/ngày', 75);
+
+-- Dữ liệu bảng Service
 INSERT INTO Service (name, price) VALUES
 ('Khám răng tổng quát', 200000),
 ('Trám răng sâu', 500000),
@@ -113,48 +126,67 @@ INSERT INTO Service (name, price) VALUES
 ('Chữa viêm tủy', 800000),
 ('Nhổ răng', 1000000);
 
--- Nhập dữ liệu bệnh nhân
-INSERT INTO Patient (name, birthDate, address, gender, phoneNumber, idCard) VALUES
-('Nguyễn Văn B', '1990-05-12', 'Hà Nội', 1, '0912345679', '123456789013'),
-('Trần Thị C', '1985-08-25', 'Hồ Chí Minh', 0, '0912345680', '123456789014'),
-('Lê Văn D', '1980-01-10', 'Đà Nẵng', 1, '0912345681', '123456789015'),
-('Cao Thị C', '1982-08-25', 'Bình Dương', 0, '0912345580', '123456729014');
+-- Dữ liệu bảng Prescription
+INSERT INTO Prescription (doctor_id, patient_id, diagnosis, treatment, symptom, advice) VALUES
+(1, 1, 'Sâu răng', 'Trám răng', 'Đau nhức khi ăn', 'Điều trị sớm'),
+(2, 1, 'Viêm nướu', 'Dùng thuốc kháng sinh', 'Chảy máu lợi', 'Vệ sinh răng miệng thường xuyên'),
+(3, 2, 'Viêm nha chu', 'Điều trị viêm', 'Đau, sưng lợi', 'Súc miệng kỹ'),
+(4, 3, 'Đau răng', 'Nhổ răng', 'Đau dữ dội', 'Thăm khám định kỳ'),
+(5, 3, 'Nhiễm trùng chân răng', 'Dùng kháng sinh và súc miệng', 'Sưng, sốt nhẹ', 'Uống thuốc đúng liều'),
+(1, 1, 'Khám răng tổng quát', 'Dịch vụ khám tổng quát', 'Không có triệu chứng', 'Bảo dưỡng định kỳ');
 
--- Nhập thêm đơn thuốc cho bệnh nhân
-INSERT INTO Prescription (doctor_id, patient_id, diagnosis, treatment) VALUES
-(1, 1, 'Sâu răng', 'Trám răng'),
-(2, 1, 'Viêm nướu', 'Dùng thuốc kháng sinh'),
-(3, 2, 'Viêm nha chu', 'Điều trị viêm'),
-(4, 3, 'Đau răng', 'Nhổ răng'),
-(5, 3, 'Nhiễm trùng chân răng', 'Dùng kháng sinh và súc miệng'),
-(1, 1, 'Khám răng tổng quát', 'Dùng dịch vụ khám răng tổng quát'),
-(2, 2, 'Chữa viêm nướu', 'Dùng thuốc kháng sinh'),
-(3, 3, 'Nhiễm trùng nướu', 'Điều trị viêm và dùng thuốc sát khuẩn');
+-- Dữ liệu bảng PrescriptionDetail
+INSERT INTO PrescriptionDetail (prescription_id, drug_id, quantity, preDate, service_id) VALUES
+(1, 1, 2, '2023-04-01 08:30:00', 2),
+(1, 2, 1, '2023-04-01 08:30:00', 2),
+(2, 3, 1, '2023-04-02 09:00:00', 1),
+(2, 4, 2, '2023-04-02 09:00:00', 1),
+(3, 2, 3, '2023-04-03 10:15:00', 1),
+(3, 5, 2, '2023-04-03 10:15:00', 1),
+(4, 1, 1, '2023-04-04 11:00:00', 6),
+(4, 4, 1, '2023-04-04 11:00:00', 6),
+(5, 4, 1, '2023-04-05 08:45:00', 1),
+(5, 2, 2, '2023-04-05 08:45:00', 1),
+(6, 5, 1, '2023-04-06 09:30:00', 1),
+(6, 1, 1, '2023-04-06 09:30:00', 1);
 
--- Nhập chi tiết đơn thuốc cho các đơn thuốc đã nhập trên
-INSERT INTO PrescriptionDetail (prescription_id, drug_id, quantity) VALUES
--- Đơn thuốc của bệnh nhân 1, bác sĩ 1
-(1, 1, 2),  -- Paracetamol (Sâu răng)
-(1, 2, 1),  -- Amoxicillin (Kháng sinh)
--- Đơn thuốc của bệnh nhân 1, bác sĩ 2
-(2, 3, 1),  -- Erythromycin (Viêm nướu)
-(2, 4, 2),  -- Lidocaine (Kháng sinh)
--- Đơn thuốc của bệnh nhân 2, bác sĩ 3
-(3, 2, 3),  -- Erythromycin (Viêm nha chu)
-(3, 5, 2),  -- Chlorhexidine (Sát khuẩn miệng)
--- Đơn thuốc của bệnh nhân 3, bác sĩ 4
-(4, 1, 1),  -- Paracetamol (Đau răng)
-(4, 4, 1),  -- Lidocaine (Thuốc gây tê)
--- Đơn thuốc của bệnh nhân 3, bác sĩ 5
-(5, 4, 1),  -- Lidocaine (Nhiễm trùng chân răng)
-(5, 2, 2),  -- Amoxicillin (Kháng sinh)
--- Đơn thuốc của bệnh nhân 1, bác sĩ 1 (khám tổng quát)
-(6, 5, 1),  -- Chlorhexidine (Dịch vụ khám)
-(6, 1, 1),  -- Paracetamol (Khám tổng quát)
--- Đơn thuốc của bệnh nhân 2, bác sĩ 2
-(7, 3, 1),  -- Erythromycin (Chữa viêm nướu)
-(7, 5, 2),  -- Chlorhexidine (Chữa viêm nướu)
--- Đơn thuốc của bệnh nhân 3, bác sĩ 3
-(8, 2, 3),  -- Erythromycin (Nhiễm trùng nướu)
-(8, 5, 2);  -- Chlorhexidine (Điều trị viêm)
+-- pdf querry1
+SELECT 
+    p.name AS 'Tên bệnh nhân',
+    p.address AS 'Địa chỉ bệnh nhân',
+    p.idCard AS 'ID Card',
+    pr.diagnosis AS 'Diagnosis',
+    e.name AS 'Tên bác sĩ khám',
+    e.birthDate AS 'Ngày sinh',
+    e.gender AS 'Gender',
+    d.name AS 'Tên thuốc',
+    pd.quantity AS 'Số lượng',
+    pr.advice AS 'Lời khuyên',
+    pr.symptom AS 'Triệu chứng'
+FROM 
+    Prescription pr
+JOIN Patient p ON pr.patient_id = p.id
+JOIN Doctor doc ON pr.doctor_id = doc.id
+JOIN Employee e ON doc.id = e.id
+JOIN PrescriptionDetail pd ON pr.id = pd.prescription_id
+JOIN Drug d ON pd.drug_id = d.id
+where p.id=1;
+-- querry2
+SELECT 
+    p.name AS 'Tên bệnh nhân',
+    p.address AS 'Địa chỉ bệnh nhân',
+    pr.id AS 'Prescription ID',
+    s.name AS 'Tên dịch vụ',
+    s.price AS 'Giá dịch vụ',
+    d.name AS 'Tên thuốc',
+    pd.quantity AS 'Số lượng',
+    d.price AS 'Giá tiền'
+FROM 
+    Prescription pr
+JOIN Patient p ON pr.patient_id = p.id
+JOIN PrescriptionDetail pd ON pr.id = pd.prescription_id
+JOIN Drug d ON pd.drug_id = d.id
+JOIN Service s ON pd.service_id = s.id
+where p.id=1;
+
 
