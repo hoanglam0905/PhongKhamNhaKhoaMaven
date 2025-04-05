@@ -4,6 +4,8 @@ import com.lowagie.text.pdf.*;
 
 import Utils.JDBCUtil;
 
+import java.awt.Desktop;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -13,12 +15,13 @@ import java.sql.*;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 public class ExportToPDF {
-    public static void prescriptionToPDF(String strIDPatient) {
+    public static void prescriptionToPDF(String strIDPatient, String datePres) {
         String query="SELECT \n" +
                 "    p.name AS 'Tên bệnh nhân',\n" +
                 "    p.address AS 'Địa chỉ bệnh nhân',\n" +
@@ -30,7 +33,8 @@ public class ExportToPDF {
                 "    d.name AS 'Tên thuốc',\n" +
                 "    pd.quantity AS 'Số lượng',\n" +
                 "    pr.advice AS 'Lời khuyên',\n" +
-                "    pr.symptom AS 'Triệu chứng',\n" +
+                "    pr.symptom AS 'Triệu chứng',\n"
+                + " pd.preDate as 'Ngày tạo đơn thuốc',"+
                 "    d.dosage AS 'Dosage'\n" +
                 "FROM \n" +
                 "    Prescription pr\n" +
@@ -39,7 +43,7 @@ public class ExportToPDF {
                 "JOIN Employee e ON doc.id = e.id\n" +
                 "JOIN PrescriptionDetail pd ON pr.id = pd.prescription_id\n" +
                 "JOIN Drug d ON pd.drug_id = d.id\n" +
-                "WHERE p.id ="+strIDPatient;
+                "WHERE p.id ="+strIDPatient +" and pd.preDate='"+datePres+"'";
 
         try {
         	String baseFont="C:/Windows/Fonts/times.ttf";
@@ -68,7 +72,9 @@ public class ExportToPDF {
             diagnosis = rs.getString("Diagnosis");
             symptom=rs.getString("Triệu chứng");
             advice = rs.getString("Lời khuyên");
-            appoiment = LocalDate.now().plusDays(7).toString();
+            Timestamp timestap=rs.getTimestamp("Ngày tạo đơn thuốc");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            appoiment = formatter.format(timestap.toLocalDateTime().toLocalDate().plusDays(7));
             nameDentist = rs.getString("Tên bác sĩ khám");
             dateBirth = rs.getDate("Ngày sinh");
             sex = rs.getBoolean("Gender") ? "Nam" : "Nữ";
@@ -78,7 +84,7 @@ public class ExportToPDF {
             rs = stmt.executeQuery(query);
 
             //tạo tên file theo định dạng DonThoc + cccd+ngay thang nam
-            String filePath = "DonThoc_"+cccd+LocalDate.now()+".pdf";
+            String filePath = "Medicine\\"+"DonThoc_"+cccd+"-"+timestap.toLocalDateTime().toLocalDate().toString()+".pdf";
             //
             Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
@@ -243,8 +249,8 @@ public class ExportToPDF {
             PdfPCell cellTmp = new PdfPCell();
             cellTmp.setBorder(Rectangle.NO_BORDER);
             tableSign.addCell(cellTmp);
-
-            LocalDate datePre = LocalDate.now();
+            
+            LocalDate datePre=timestap.toLocalDateTime().toLocalDate();
 
             Paragraph p8 = new Paragraph();
             p8.add(new Chunk("Ngày " + datePre.getDayOfMonth() + " tháng " + datePre.getMonthValue() + " năm " + datePre.getYear(), fontHeader));
@@ -267,20 +273,31 @@ public class ExportToPDF {
 
             document.close();
             System.out.println("Đã tạo file PDF: " + filePath);
+            //tự mở file
+            File pdfFile = new File(filePath);
+            
+            if (Desktop.isDesktopSupported()) {
+                Desktop desktop = Desktop.getDesktop();
+                desktop.open(pdfFile);
+            } else {
+                System.out.println("Hệ thống không hỗ trợ mở file.");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void billToPDF(String idPatient) {
-        String query="SELECT \n" +
+    
+	}
+    public static void billToPDF(String idPatient,String dateCreateBill) {
+        String query="SELECT \n"
+        		+ "p.idCard AS 'ID Card bệnh nhân'," +
                 "    p.name AS 'Tên bệnh nhân',\n" +
                 "    p.address AS 'Địa chỉ bệnh nhân',\n" +
                 "    pr.id AS 'Prescription ID',\n" +
                 "    s.name AS 'Tên dịch vụ',\n" +
                 "    s.price AS 'Giá dịch vụ',\n" +
                 "    d.name AS 'Tên thuốc',\n" +
-                "    pd.quantity AS 'Số lượng',\n" +
+                "    pd.quantity AS 'Số lượng',\n"
+                + " pd.preDate as 'Ngày tạo bill'," +
                 "    d.price AS 'Giá tiền'\n" +
                 "FROM \n" +
                 "    Prescription pr\n" +
@@ -288,7 +305,7 @@ public class ExportToPDF {
                 "JOIN PrescriptionDetail pd ON pr.id = pd.prescription_id\n" +
                 "JOIN Drug d ON pd.drug_id = d.id\n" +
                 "JOIN Service s ON pd.service_id = s.id\n" +
-                "where p.id="+idPatient;
+                "where p.id="+idPatient+ " and pd.preDate='"+dateCreateBill+"'";
         try {
             String baseFont="C:/Windows/Fonts/times.ttf";
 
@@ -297,22 +314,23 @@ public class ExportToPDF {
             ResultSet rs = stmt.executeQuery(query);
 
             //lưu thông tin của người bệnh
-            String name="";
+            String name="",idCard="";
             String address="";
             String billID="";
-            LocalDateTime billDate=null;
+            LocalDate billDate=null;
 
             //duyệt 1 lần để lấy tên của người bênh
             rs.next();
             name=rs.getString("Tên bệnh nhân");
             address=rs.getString("Địa chỉ bệnh nhân");
             billID=rs.getString("Prescription ID");
-//            Timestamp billDateT=rs.getTimestamp("BILL_CURRENT_TIME");
-            billDate=LocalDateTime.now();
+            idCard=rs.getString("ID Card bệnh nhân");
+            Timestamp billDateT=rs.getTimestamp("Ngày tạo bill");
+            billDate=billDateT.toLocalDateTime().toLocalDate();
             rs.close();
 
 
-            String filePath = "Bill_"+billID+LocalDate.now()+".pdf";
+            String filePath = "Bill\\"+"Bill_"+idCard+"-"+billDate.toString()+".pdf";
 
             Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
@@ -633,6 +651,15 @@ public class ExportToPDF {
 
             document.close();
             System.out.println("Đã tạo file "+filePath);
+            
+            File pdfFile = new File(filePath);
+            
+            if (Desktop.isDesktopSupported()) {
+                Desktop desktop = Desktop.getDesktop();
+                desktop.open(pdfFile);
+            } else {
+                System.out.println("Hệ thống không hỗ trợ mở file.");
+            }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
@@ -644,218 +671,15 @@ public class ExportToPDF {
 			e.printStackTrace();
 		}
     }
-    public static void prescriptionAllToPDF() {
-        String filePath = "list_don_thuoc.pdf";
-        try {
-            Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream(filePath));
-            document.open();
-            //Các font sẽ sử dụng
-            BaseFont bsT = BaseFont.createFont("C:/Windows/Fonts/times.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-            Font fontHeader = new Font(bsT, 12);
-            Font fontBoldPrescription = new Font(bsT, 14, Font.BOLD);
-            Font fontT12Bold = new Font(bsT, 12, Font.BOLD);
-            Font fontT12I = new Font(bsT, 12, Font.ITALIC);
-
-            int sizeListMedicine = 5;
-            for (int j = sizeListMedicine; j > 0; j--) {
-                // Tạo bảng
-                PdfPTable table = new PdfPTable(2);
-                table.setWidthPercentage(100);
-                table.setHorizontalAlignment(Element.ALIGN_CENTER);
-                table.setSpacingAfter(10f); // Thêm khoảng cách sau bảng
-
-                // Ô 1
-                Phrase phrase1 = new Phrase("Sở Y Tế TP.HCM\nPhòng Khám Nha Khoa UTC2", fontHeader);
-                PdfPCell cell1 = new PdfPCell(phrase1);
-                cell1.setBorder(Rectangle.NO_BORDER);
-                cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cell1.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                table.addCell(cell1);
-
-                // Ô 2
-                Phrase phrase2 = new Phrase("Số 450, Lê Văn Việt, Quận 9\nHotline: 090012109", fontHeader);
-                PdfPCell cell2 = new PdfPCell(phrase2);
-                cell2.setBorder(Rectangle.NO_BORDER);
-                cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cell2.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                table.addCell(cell2);
-
-                document.add(table);
-
-                // Tiêu đề "ĐƠN THUỐC"
-                Paragraph paragraph = new Paragraph("ĐƠN THUỐC", fontBoldPrescription);
-                paragraph.setAlignment(Element.ALIGN_CENTER);
-                paragraph.setSpacingBefore(10f); // Thêm khoảng cách trước đoạn văn nhưng k có tác dụng:)
-                document.add(paragraph);
-
-                //  Thông tin của người bệnh
-                String name = "Ngô Minh Khôi";
-                int age = 20;
-                String gender = "Nam";
-                String address = "TP.HCM";
-                String ID = "082205026341";
-                //tạo bảng thông tin người nhận
-
-                PdfPTable tableInfo = new PdfPTable(3);
-                tableInfo.setWidthPercentage(80);
-                tableInfo.setWidths(new float[]{4, 2, 2});
-                tableInfo.setHorizontalAlignment(Element.ALIGN_CENTER);
-                //ô1
-                PdfPCell cellTableIf1 = new PdfPCell(new Phrase("\nHọ tên: " + name + "\nĐịa chỉ: " + address + "\nCCCD: " + ID, fontHeader));
-                cellTableIf1.setBorder(Rectangle.NO_BORDER);
-                cellTableIf1.setHorizontalAlignment(Element.ALIGN_LEFT);
-                cellTableIf1.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                tableInfo.addCell(cellTableIf1);
-                //ô2
-                PdfPCell cellTableIf2 = new PdfPCell(new Phrase("Tuổi: " + age, fontHeader));
-                cellTableIf2.setBorder(Rectangle.NO_BORDER);
-                cellTableIf2.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cellTableIf2.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                tableInfo.addCell(cellTableIf2);
-                //ô3
-                PdfPCell cellTableIf3 = new PdfPCell(new Phrase("Giới tính: " + gender, fontHeader));
-                cellTableIf3.setBorder(Rectangle.NO_BORDER);
-                cellTableIf3.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cellTableIf3.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                tableInfo.addCell(cellTableIf3);
-
-                document.add(tableInfo);
-
-                //Tạo các biến triệu chứng và chuẩn đoán
-                String trieuChung = "Đau buốt, vôi răng bám nhiều";
-                String chuanDoan = "Mòn men răng";
-
-                //tạo bảng triệu chứng và chẩn đoán
-                PdfPTable tableDiagnose = new PdfPTable(1);
-                tableDiagnose.setWidthPercentage(80);
-                tableDiagnose.setHorizontalAlignment(Element.ALIGN_CENTER);
-
-                //tạo dòng chứa triệu chứng và chẩn đoán
-                Paragraph p = new Paragraph();
-                p.add(new Chunk("Triệu chứng: ", fontT12Bold));
-                p.add(new Chunk(trieuChung, fontHeader));
-                PdfPCell cellPDFP1 = new PdfPCell(p);
-                cellPDFP1.setBorder(Rectangle.NO_BORDER);
-                tableDiagnose.addCell(cellPDFP1);
-
-                Paragraph p1 = new Paragraph();
-                p1.add(new Chunk("Chẩn đoán: ", fontT12Bold));
-                p1.add(new Chunk(chuanDoan, fontHeader));
-                PdfPCell cellPDFP2 = new PdfPCell(p1);
-                cellPDFP2.setBorder(Rectangle.NO_BORDER);
-                tableDiagnose.addCell(cellPDFP2);
-
-                document.add(tableDiagnose);
-
-                //Tạo bảng đơn thuốc
-                PdfPTable tableMeDicine = new PdfPTable(2);
-                tableMeDicine.setWidthPercentage(80);
-                tableMeDicine.setWidths(new float[]{7, 3});
-                tableMeDicine.setHorizontalAlignment(Element.ALIGN_CENTER);
-
-                Paragraph p2 = new Paragraph();
-                p2.add(Chunk.NEWLINE);
-                p2.add(new Chunk("Tên thuốc - hoạt chất", fontT12Bold));
-                PdfPCell cellPDFP3 = new PdfPCell(p2);
-                cellPDFP3.setBorder(Rectangle.NO_BORDER);
-                tableMeDicine.addCell(cellPDFP3);
-
-                Paragraph p3 = new Paragraph();
-                p3.add(Chunk.NEWLINE);
-                p3.add(new Chunk("Số lượng", fontT12Bold));
-                PdfPCell cellPDFP4 = new PdfPCell(p3);
-                cellPDFP4.setHorizontalAlignment(Element.ALIGN_RIGHT);
-                cellPDFP4.setBorder(Rectangle.NO_BORDER);
-                tableMeDicine.addCell(cellPDFP4);
-
-                int numMedical = 4;
-                for (int i = 0; i < numMedical; i++) {
-                    Paragraph p4 = new Paragraph();
-                    p4.add(new Chunk((i + 1) + "/ Tên thuốc cần truyền vào", fontT12Bold));
-                    p4.add(Chunk.NEWLINE);
-                    p4.add(new Chunk("2 viên/ngày", fontT12I));
-                    PdfPCell cellPDFP5 = new PdfPCell(p4);
-                    cellPDFP5.setBorder(Rectangle.NO_BORDER);
-                    tableMeDicine.addCell(cellPDFP5);
-
-                    Paragraph p5 = new Paragraph();
-                    p5.add(new Chunk("x12", fontHeader));
-                    PdfPCell cellPDFP6 = new PdfPCell(p5);
-                    cellPDFP6.setBorder(Rectangle.NO_BORDER);
-                    cellPDFP6.setHorizontalAlignment(Element.ALIGN_RIGHT);
-                    tableMeDicine.addCell(cellPDFP6);
-                }
-                document.add(tableMeDicine);
-
-                //tạo biến lời khuyên và dặn dò khám
-                String advice = "Mình là siu nhân gao";
-                String appoiment = "01/04/2025";
-
-                //tạo bảng lời dặn và hẹn khám
-                PdfPTable tableAdvice = new PdfPTable(1);
-                tableInfo.setWidthPercentage(80);
-                tableInfo.setHorizontalAlignment(Element.ALIGN_CENTER);
-
-                Paragraph p6 = new Paragraph();
-                p6.add(Chunk.NEWLINE);
-                p6.add(new Chunk("Lời dặn: " + advice, fontHeader));
-                PdfPCell cellPDFP7 = new PdfPCell(p6);
-                cellPDFP7.setBorder(Rectangle.NO_BORDER);
-                cellPDFP7.setHorizontalAlignment(Element.ALIGN_LEFT);
-                tableAdvice.addCell(cellPDFP7);
-
-                Paragraph p7 = new Paragraph();
-                p7.add(new Chunk("Hẹn tái khám: " + appoiment, fontHeader));
-                PdfPCell cellPDFP8 = new PdfPCell(p7);
-                cellPDFP8.setBorder(Rectangle.NO_BORDER);
-                cellPDFP8.setHorizontalAlignment(Element.ALIGN_LEFT);
-                tableAdvice.addCell(cellPDFP8);
-
-                document.add(tableAdvice);
-
-                PdfPTable tableSign = new PdfPTable(2);
-                tableSign.setWidthPercentage(80);
-                tableSign.setHorizontalAlignment(Element.ALIGN_CENTER);
-
-                PdfPCell cellTmp = new PdfPCell();
-                cellTmp.setBorder(Rectangle.NO_BORDER);
-                tableSign.addCell(cellTmp);
-
-                Paragraph p8 = new Paragraph();
-                p8.add(new Chunk("Ngày 30 tháng 4 năm 2025", fontHeader));
-                p8.add(Chunk.NEWLINE);
-                p8.add(new Chunk("Bác sĩ khám bệnh", fontT12Bold));
-                p8.add(Chunk.NEWLINE);
-                p8.add(new Chunk("(Ký, ghi rõ họ tên)", fontT12I));
-                p8.add(Chunk.NEWLINE);
-                p8.add(Chunk.NEWLINE);
-                p8.add(new Chunk("[Đã ký]", fontHeader));
-                p8.add(Chunk.NEWLINE);
-                p8.add(Chunk.NEWLINE);
-                p8.add(new Chunk("BS. Đàm Hoàng Lam", fontT12Bold));
-                PdfPCell cellPDFP9 = new PdfPCell(p8);
-                cellPDFP9.setBorder(Rectangle.NO_BORDER);
-                cellPDFP9.setHorizontalAlignment(Element.ALIGN_CENTER);
-                tableSign.addCell(cellPDFP9);
-
-                document.add(tableSign);
-                document.newPage();
-            }
-            document.close();
-            System.out.println("Đã tạo file PDF: " + filePath);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
     public static void main(String[] args) {
     	//đây là test
     	
         //strIDPatient sẽ là nơi truyền vào id của người bệnh
     	//lí do chọn String là để tránh trường hợp id quá dài
         String strIDPatient=1+"";
+        String datePres="2023-04-01 08:30:00";
 
-        ExportToPDF.billToPDF(strIDPatient);
-        ExportToPDF.prescriptionToPDF(strIDPatient);
+        ExportToPDF.billToPDF(strIDPatient,datePres);
+        ExportToPDF.prescriptionToPDF(strIDPatient,datePres);
     }
 }
