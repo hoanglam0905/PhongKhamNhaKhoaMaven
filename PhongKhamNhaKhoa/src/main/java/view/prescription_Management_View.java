@@ -21,6 +21,7 @@ import javax.swing.table.TableColumnModel;
 
 public class prescription_Management_View extends JFrame{
 	public prescription_Management_View() {
+		UI ui = new UI();
 		 JFrame frame = new JFrame("Dental Clinic");
 	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	        frame.setSize(940, 600);
@@ -144,6 +145,7 @@ public class prescription_Management_View extends JFrame{
 	        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 	        JTextField searchField = new JTextField(45);
 	        searchField.setPreferredSize(new Dimension(200, 30));
+	        ui.addPlaceholder(searchField, "Tìm kiếm");
 	        searchPanel.add(searchField);
 	        
 	        JPanel topPanel = new JPanel(new BorderLayout());
@@ -166,7 +168,7 @@ public class prescription_Management_View extends JFrame{
 	        lblPhone.setBounds(320, 15, 120, 25);
 	        lblPhone.setFont(labelFont);
 	        JTextField txtPhone = new JTextField();
-	        txtPhone.setBounds(300, 40, 190, 30);
+	        txtPhone.setBounds(300, 40, 190, 35);
 	        txtPhone.setFont(txtFont);
 
 	        JLabel lblSymptoms = new JLabel("Triệu chứng:");
@@ -200,6 +202,30 @@ public class prescription_Management_View extends JFrame{
 	        prescription_info.add(txtDiagnosis);
 	        prescription_info.add(lblTreatment);
 	        prescription_info.add(txtTreatment);
+	        
+	        Font buttonFont = new Font("Arial", Font.BOLD, 12);
+	        
+	        JButton addBill = new JButton("Thêm hóa đơn");
+	        addBill.setBounds(50, 300, 120, 30);
+	        prescription_info.add(addBill);
+	        addBill.setFont(buttonFont);
+	        addBill.setForeground(Color.white);
+	        addBill.setBackground(new Color(7, 231, 243));          
+	        addBill.setForeground(Color.WHITE);         
+	        addBill.setOpaque(true);             
+	        addBill.setFocusPainted(false);
+	        addBill.setBorderPainted(false);  
+	        
+	        JButton cancel = new JButton("Hủy");
+	        cancel.setBounds(200,300, 120, 30);
+	        prescription_info.add(cancel);
+	        cancel.setFont(buttonFont);
+	        cancel.setForeground(Color.white);
+	        cancel.setBackground(new Color(166, 160, 160));          
+	        cancel.setForeground(Color.WHITE);         
+	        cancel.setOpaque(true);             
+	        cancel.setFocusPainted(false);
+	        cancel.setBorderPainted(false);
 
 	        
 	        contentPanel.add(topPanel, BorderLayout.NORTH);
