@@ -16,34 +16,37 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 public class ExportToPDF {
-    public static void prescriptionToPDF(String strIDPatient, String datePres) {
-        String query="SELECT \n" +
-                "    p.name AS 'Tên bệnh nhân',\n" +
-                "    p.address AS 'Địa chỉ bệnh nhân',\n" +
-                "    p.idCard AS 'ID Card',\n" +
-                "    pr.diagnosis AS 'Diagnosis',\n" +
-                "    e.name AS 'Tên bác sĩ khám',\n" +
-                "    e.birthDate AS 'Ngày sinh',\n" +
-                "    e.gender AS 'Gender',\n" +
-                "    d.name AS 'Tên thuốc',\n" +
-                "    pd.quantity AS 'Số lượng',\n" +
-                "    pr.advice AS 'Lời khuyên',\n" +
-                "    pr.symptom AS 'Triệu chứng',\n"
-                + " pd.preDate as 'Ngày tạo đơn thuốc',"+
-                "    d.dosage AS 'Dosage'\n" +
-                "FROM \n" +
-                "    Prescription pr\n" +
-                "JOIN Patient p ON pr.patient_id = p.id\n" +
-                "JOIN Doctor doc ON pr.doctor_id = doc.id\n" +
-                "JOIN Employee e ON doc.id = e.id\n" +
-                "JOIN PrescriptionDetail pd ON pr.id = pd.prescription_id\n" +
-                "JOIN Drug d ON pd.drug_id = d.id\n" +
-                "WHERE p.id ="+strIDPatient +" and pd.preDate='"+datePres+"'";
+    public static void prescriptionToPDF(String idPres) {
+        String query="SELECT \r\n"
+        		+ "    p.id AS prescription_id,\r\n"
+        		+ "    pat.name AS 'Tên bệnh nhân',\r\n"
+        		+ "    doc_emp.name AS 'Tên bác sĩ khám',\r\n"
+        		+ "    d.name AS 'Tên thuốc',\r\n"
+        		+ "    pd.quantity as 'Số lượng',\r\n"
+        		+ "    pd.morningDose as 'Liều sáng',\r\n"
+        		+ "    pd.noonDose as 'Liều chiều',\r\n"
+        		+ "    pd.eveningDose as 'Liều tối',\r\n"
+        		+ "    pat.address as 'Địa chỉ bệnh nhân',\r\n"
+        		+ "    pat.idCard as 'ID Card',\r\n"
+        		+ "    p.diagnosis as 'Diagnosis',\r\n"
+        		+ "    pat.birthDate as 'Ngày sinh',\r\n"
+        		+ "    pat.gender as 'Gender',\r\n"
+        		+ "    p.advice as 'Lời khuyên',\r\n"
+        		+ "    p.symptom as 'Triệu chứng',\r\n"
+        		+ "    p.preDate as 'Ngày tạo đơn thuốc'\r\n"
+        		+ "FROM Prescription p\r\n"
+        		+ "JOIN Patient pat ON p.patient_id = pat.id\r\n"
+        		+ "JOIN Doctor doc ON p.doctor_id = doc.id\r\n"
+        		+ "JOIN Employee doc_emp ON doc.id = doc_emp.id\r\n"
+        		+ "JOIN PrescriptionDrugDetail pd ON p.id = pd.prescription_id\r\n"
+        		+ "JOIN Drug d ON pd.drug_id = d.id\r\n"
+        		+ "WHERE p.id = "+idPres;
 
         try {
         	String baseFont="C:/Windows/Fonts/times.ttf";
@@ -199,13 +202,15 @@ public class ExportToPDF {
 
             int i = 1;
             while (rs.next()) {
-                String dosage = rs.getString("Dosage");
+                String dosageS = rs.getString("Liều sáng");
+                String dosageC = rs.getString("Liều chiều");
+                String dosageT = rs.getString("Liều tối");
                 String nameMedicine = rs.getString("Tên thuốc");
                 String quantity = rs.getString("Số lượng");
                 Paragraph p4 = new Paragraph();
                 p4.add(new Chunk(i + "/ " + nameMedicine, fontT12Bold));
                 p4.add(Chunk.NEWLINE);
-                p4.add(new Chunk(dosage, fontT12I));
+                p4.add(new Chunk("Sáng: "+dosageS+" viên, Chiều: "+dosageC+" viên, Tối: "+dosageT+" viên", fontT12I));
                 PdfPCell cellPDFP5 = new PdfPCell(p4);
                 cellPDFP5.setBorder(Rectangle.NO_BORDER);
                 tableMeDicine.addCell(cellPDFP5);
@@ -263,7 +268,7 @@ public class ExportToPDF {
             p8.add(new Chunk("[Đã ký]", fontHeader));
             p8.add(Chunk.NEWLINE);
             p8.add(Chunk.NEWLINE);
-            p8.add(new Chunk(nameDentist, fontT12Bold));
+            p8.add(new Chunk("BS. "+nameDentist, fontT12Bold));
             PdfPCell cellPDFP9 = new PdfPCell(p8);
             cellPDFP9.setBorder(Rectangle.NO_BORDER);
             cellPDFP9.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -287,25 +292,25 @@ public class ExportToPDF {
         }
     
 	}
-    public static void billToPDF(String idPatient,String dateCreateBill) {
-        String query="SELECT \n"
-        		+ "p.idCard AS 'ID Card bệnh nhân'," +
-                "    p.name AS 'Tên bệnh nhân',\n" +
-                "    p.address AS 'Địa chỉ bệnh nhân',\n" +
-                "    pr.id AS 'Prescription ID',\n" +
-                "    s.name AS 'Tên dịch vụ',\n" +
-                "    s.price AS 'Giá dịch vụ',\n" +
-                "    d.name AS 'Tên thuốc',\n" +
-                "    pd.quantity AS 'Số lượng',\n"
-                + " pd.preDate as 'Ngày tạo bill'," +
-                "    d.price AS 'Giá tiền'\n" +
-                "FROM \n" +
-                "    Prescription pr\n" +
-                "JOIN Patient p ON pr.patient_id = p.id\n" +
-                "JOIN PrescriptionDetail pd ON pr.id = pd.prescription_id\n" +
-                "JOIN Drug d ON pd.drug_id = d.id\n" +
-                "JOIN Service s ON pd.service_id = s.id\n" +
-                "where p.id="+idPatient+ " and pd.preDate='"+dateCreateBill+"'";
+    public static void billToPDF(String idBill) {
+        String query="SELECT \r\n"
+        		+ "    p.id AS \"Prescription ID\",\r\n"
+        		+ "    pa.idCard AS \"ID Card bệnh nhân\",\r\n"
+        		+ "    pa.name AS \"Tên bệnh nhân\",\r\n"
+        		+ "    pa.address AS \"Địa chỉ bệnh nhân\",\r\n"
+        		+ "    s.name AS \"Tên dịch vụ\",\r\n"
+        		+ "    s.price AS \"Giá dịch vụ\",\r\n"
+        		+ "    d.name AS \"Tên thuốc\",\r\n"
+        		+ "    pdd.quantity AS \"Số lượng\",\r\n"
+        		+ "    p.preDate AS \"Ngày tạo bill\",\r\n"
+        		+ "    d.price AS \"Giá tiền thuốc\"\r\n"
+        		+ "FROM Prescription p\r\n"
+        		+ "JOIN Patient pa ON p.patient_id = pa.id\r\n"
+        		+ "LEFT JOIN PrescriptionServiceDetail psd ON p.id = psd.prescription_id\r\n"
+        		+ "LEFT JOIN Service s ON psd.service_id = s.id\r\n"
+        		+ "LEFT JOIN PrescriptionDrugDetail pdd ON p.id = pdd.prescription_id\r\n"
+        		+ "LEFT JOIN Drug d ON pdd.drug_id = d.id\r\n"
+        		+ "where p.id="+idBill;
         try {
             String baseFont="C:/Windows/Fonts/times.ttf";
 
@@ -530,49 +535,63 @@ public class ExportToPDF {
             int k=0;
             BigDecimal sumMedicine=BigDecimal.ZERO;
             rs=stmt.executeQuery(query);
+            Map<String,BigDecimal> listMedicine=new HashMap<String, BigDecimal>();
+            ArrayList<Integer> listQuantityMedicine=new ArrayList<Integer>();
             while (rs.next()){
                 String nameMedicine = rs.getString("Tên thuốc");
+                BigDecimal priceMedicine = rs.getBigDecimal("Giá tiền thuốc");
+                listMedicine.put(nameMedicine, priceMedicine);
+                
                 int quantityMedicine = rs.getInt("Số lượng");
-                BigDecimal priceMedicine = rs.getBigDecimal("Giá tiền");
-                BigDecimal totalMedicine=priceMedicine.multiply(new BigDecimal(quantityMedicine));
-
-                pTT = new Paragraph();
-                pTT.add(new Chunk((k+1)+"", fontHeader));
-                pTT.setAlignment(Element.ALIGN_CENTER);
-                cellTT = new PdfPCell(pTT);
-                cellTT.setHorizontalAlignment(Element.ALIGN_CENTER);
-                tableBillMedicine.addCell(cellTT);
-
-                Paragraph pContent = new Paragraph();
-                pContent.add(new Chunk(nameMedicine, fontHeader));
-                pContent.setAlignment(Element.ALIGN_CENTER);
-                PdfPCell cellContent = new PdfPCell(pContent);
-                cellContent.setHorizontalAlignment(Element.ALIGN_CENTER);
-                tableBillMedicine.addCell(cellContent);
-
-                Paragraph pNum = new Paragraph();
-                pNum.add(new Chunk(quantityMedicine+"", fontHeader));
-                pNum.setAlignment(Element.ALIGN_CENTER);
-                PdfPCell cellNum = new PdfPCell(pNum);
-                cellNum.setHorizontalAlignment(Element.ALIGN_CENTER);
-                tableBillMedicine.addCell(cellNum);
-
-                Paragraph pPrice = new Paragraph();
-                pPrice.add(new Chunk(""+formatter.format(priceMedicine), fontHeader));
-                pPrice.setAlignment(Element.ALIGN_CENTER);
-                PdfPCell cellprice = new PdfPCell(pPrice);
-                cellprice.setHorizontalAlignment(Element.ALIGN_CENTER);
-                tableBillMedicine.addCell(cellprice);
-
-                Paragraph pTotal = new Paragraph();
-                pTotal.add(new Chunk(formatter.format(totalMedicine)+"", fontHeader));
-                sumMedicine=sumMedicine.add(totalMedicine);
-                pTotal.setAlignment(Element.ALIGN_CENTER);
-                PdfPCell cellTotal = new PdfPCell(pTotal);
-                cellTotal.setHorizontalAlignment(Element.ALIGN_CENTER);
-                tableBillMedicine.addCell(cellTotal);
-                k++;
+                listQuantityMedicine.add(quantityMedicine);
             }
+            for (Map.Entry<String, BigDecimal> entry : listMedicine.entrySet()) {
+                String nameMedicine = entry.getKey();
+                BigDecimal priceMedicine = entry.getValue();
+
+              BigDecimal totalMedicine=priceMedicine.multiply(new BigDecimal(listQuantityMedicine.get(k)));
+                
+                
+                
+              pTT = new Paragraph();
+              pTT.add(new Chunk((k+1)+"", fontHeader));
+              pTT.setAlignment(Element.ALIGN_CENTER);
+              cellTT = new PdfPCell(pTT);
+              cellTT.setHorizontalAlignment(Element.ALIGN_CENTER);
+              tableBillMedicine.addCell(cellTT);
+
+              Paragraph pContent = new Paragraph();
+              pContent.add(new Chunk(nameMedicine, fontHeader));
+              pContent.setAlignment(Element.ALIGN_CENTER);
+              PdfPCell cellContent = new PdfPCell(pContent);
+              cellContent.setHorizontalAlignment(Element.ALIGN_CENTER);
+              tableBillMedicine.addCell(cellContent);
+
+              Paragraph pNum = new Paragraph();
+              pNum.add(new Chunk(listQuantityMedicine.get(k)+"", fontHeader));
+              pNum.setAlignment(Element.ALIGN_CENTER);
+              PdfPCell cellNum = new PdfPCell(pNum);
+              cellNum.setHorizontalAlignment(Element.ALIGN_CENTER);
+              tableBillMedicine.addCell(cellNum);
+
+              Paragraph pPrice = new Paragraph();
+              pPrice.add(new Chunk(""+formatter.format(priceMedicine), fontHeader));
+              pPrice.setAlignment(Element.ALIGN_CENTER);
+              PdfPCell cellprice = new PdfPCell(pPrice);
+              cellprice.setHorizontalAlignment(Element.ALIGN_CENTER);
+              tableBillMedicine.addCell(cellprice);
+
+              Paragraph pTotal = new Paragraph();
+              pTotal.add(new Chunk(formatter.format(totalMedicine)+"", fontHeader));
+              sumMedicine=sumMedicine.add(totalMedicine);
+              pTotal.setAlignment(Element.ALIGN_CENTER);
+              PdfPCell cellTotal = new PdfPCell(pTotal);
+              cellTotal.setHorizontalAlignment(Element.ALIGN_CENTER);
+              tableBillMedicine.addCell(cellTotal);
+              k++;
+            }
+
+            
             for (int i = 0; i < nameCollumsMedicine.length+1; i++) {
                 pTT = new Paragraph();
                 pTT.add(new Chunk(" ", fontHeader));
@@ -676,10 +695,9 @@ public class ExportToPDF {
     	
         //strIDPatient sẽ là nơi truyền vào id của người bệnh
     	//lí do chọn String là để tránh trường hợp id quá dài
-        String strIDPatient=1+"";
-        String datePres="2023-04-01 08:30:00";
+        String strIDPres=3+"";
 
-        ExportToPDF.billToPDF(strIDPatient,datePres);
-        ExportToPDF.prescriptionToPDF(strIDPatient,datePres);
+        ExportToPDF.billToPDF(strIDPres);
+        ExportToPDF.prescriptionToPDF(strIDPres);
     }
 }
