@@ -149,14 +149,8 @@ public class medicine_Management extends JFrame{
 	        // Content
 	        JPanel contentPanel = new JPanel(new BorderLayout());
 	        
-	        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-	        JTextField searchField = new JTextField(45);
-	        searchField.setPreferredSize(new Dimension(200, 30));
-	        searchPanel.add(searchField);
-	        
 	        JPanel topPanel = new JPanel(new BorderLayout());
 	        topPanel.add(header, BorderLayout.NORTH);
-	        topPanel.add(searchPanel, BorderLayout.SOUTH);
 	        
 	      
 	        

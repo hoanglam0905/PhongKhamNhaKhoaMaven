@@ -24,7 +24,7 @@ public class prescription_Management_View extends JFrame{
 		UI ui = new UI();
 		 JFrame frame = new JFrame("Dental Clinic");
 	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	        frame.setSize(940, 600);
+	        frame.setSize(1100, 700);
 	        frame.setLocationRelativeTo(null);
 	        
 	        JPanel mainPanel = new JPanel(new BorderLayout());
@@ -90,14 +90,14 @@ public class prescription_Management_View extends JFrame{
 	        
 	        // Header
 	        JPanel header = new JPanel(null);
-	        header.setBackground(new Color(30,144,255));
+	        header.setBackground(new Color(65, 210, 210));
 	        header.setPreferredSize(new Dimension(frame.getWidth(), 70));
 	        
 	        JButton docName = new JButton("Phương");
 	        docName.setBorder(null);
 	        docName.setFocusPainted(false);
 	        docName.setBackground(header.getBackground());
-	        docName.setBounds(610, 30, 60,20);
+	        docName.setBounds(750, 30, 60,20);
 	        docName.setFont(new Font("Arial", Font.BOLD, 13));
 	        docName.setHorizontalAlignment(SwingConstants.LEFT);
 	        docName.setForeground(Color.WHITE);
@@ -105,14 +105,14 @@ public class prescription_Management_View extends JFrame{
 	        ImageIcon doctorIcon = new ImageIcon(new ImageIcon("C:\\Users\\User\\OneDrive\\Pictures\\tham_khao_pknk\\ui\\src\\img\\doctor.png").getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
 	        JLabel imageDoctor = new JLabel(doctorIcon);
 	        imageDoctor.setForeground(Color.WHITE);
-	        imageDoctor.setBounds(560, 20, doctorIcon.getIconWidth(), doctorIcon.getIconHeight());
+	        imageDoctor.setBounds(700, 20, doctorIcon.getIconWidth(), doctorIcon.getIconHeight());
 	        header.add(imageDoctor);
 	        
 	        JButton theme = new JButton("Chủ Đề");
 	        theme.setBorder(null);
 	        theme.setFocusPainted(false);
 	        theme.setBackground(header.getBackground());
-	        theme.setBounds(450, 30, 60,20);
+	        theme.setBounds(590, 30, 60,20);
 	        theme.setFont(new Font("Arial", Font.BOLD, 13));
 	        theme.setHorizontalAlignment(SwingConstants.LEFT);
 	        theme.setForeground(Color.WHITE);
@@ -120,14 +120,14 @@ public class prescription_Management_View extends JFrame{
 	        ImageIcon themeIcon = new ImageIcon(new ImageIcon("C:\\Users\\User\\OneDrive\\Pictures\\tham_khao_pknk\\ui\\src\\img\\theme.png").getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
 	        JLabel imageTheme = new JLabel(themeIcon);
 	        imageTheme.setForeground(Color.WHITE);
-	        imageTheme.setBounds(400, 20, themeIcon.getIconWidth(), themeIcon.getIconHeight());
+	        imageTheme.setBounds(540, 20, themeIcon.getIconWidth(), themeIcon.getIconHeight());
 	        header.add(imageTheme);
 	        
 	        JButton language = new JButton("Ngôn ngữ");
 	        language.setBorder(null);
 	        language.setFocusPainted(false);
 	        language.setBackground(header.getBackground());
-	        language.setBounds(290, 30, 70,20);
+	        language.setBounds(430, 30, 70,20);
 	        language.setFont(new Font("Arial", Font.BOLD, 13));
 	        language.setHorizontalAlignment(SwingConstants.LEFT);
 	        language.setForeground(Color.WHITE);
@@ -135,22 +135,15 @@ public class prescription_Management_View extends JFrame{
 	        ImageIcon lge = new ImageIcon(new ImageIcon("C:\\Users\\User\\OneDrive\\Pictures\\tham_khao_pknk\\ui\\src\\img\\language.png").getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
 	        JLabel imageLge = new JLabel(lge);
 	        imageLge.setForeground(Color.WHITE);
-	        imageLge.setBounds(240, 20, lge.getIconWidth(), lge.getIconHeight());
+	        imageLge.setBounds(380, 20, lge.getIconWidth(), lge.getIconHeight());
 	        header.add(imageLge);
 	        
 	        
 	        // Content
 	        JPanel contentPanel = new JPanel(new BorderLayout());
 	        
-	        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-	        JTextField searchField = new JTextField(45);
-	        searchField.setPreferredSize(new Dimension(200, 30));
-	        ui.addPlaceholder(searchField, "Tìm kiếm");
-	        searchPanel.add(searchField);
-	        
 	        JPanel topPanel = new JPanel(new BorderLayout());
 	        topPanel.add(header, BorderLayout.NORTH);
-	        topPanel.add(searchPanel, BorderLayout.SOUTH);
 	        
 	        JPanel prescription_info = new JPanel(null);
 	        prescription_info.setBounds(10, 10, 460, 250);
