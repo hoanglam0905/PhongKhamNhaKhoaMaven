@@ -27,8 +27,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
-public class medicine_Management extends JFrame{
-	public medicine_Management() {
+public class service_View extends JFrame{
+	public service_View() {
 		 JFrame frame = new JFrame("Dental Clinic");
 	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	        frame.setSize(1100, 700);
@@ -163,9 +163,7 @@ public class medicine_Management extends JFrame{
 	        formPanel.setPreferredSize(new Dimension(600, 600));
 	        JComboBox<String> loaiDichVuBox = new JComboBox<>(new String[]{"Khám bệnh", "Chữa răng - Nội nha"});
 	        JComboBox<String> tenDichVuBox = new JComboBox<>(new String[]{"Khám - Hồ sơ", "Chữa tủy - Răng cối nhỏ"});
-	        JComboBox<String> loaiThuocBox = new JComboBox<>(new String[]{"Paracetamol", "Dexamethasone", "Amoxicillin"});
 	        JTextField soLuongDichVuField = new JTextField();
-	        JTextField soLuongThuocField = new JTextField();
 	        
 	        Font lblFont = new Font("Arial", Font.ITALIC, 15);
 
@@ -182,30 +180,16 @@ public class medicine_Management extends JFrame{
 	        lblTenDichVu.setFont(lblFont);
 	        formPanel.add(lblTenDichVu);
 	        formPanel.add(tenDichVuBox);
-	        
-	        JLabel lblLoaiThuoc = new JLabel("Loại thuốc:");
-	        lblLoaiThuoc.setBounds(10, 150, 100, 25);
-	        loaiThuocBox.setBounds(10, 180, 250, 30);
-	        lblLoaiThuoc.setFont(lblFont);
-	        formPanel.add(lblLoaiThuoc);
-	        formPanel.add(loaiThuocBox);
-	        
-	        JLabel lblSoLuongTHuoc = new JLabel("Số lượng thuốc:");
-	        lblSoLuongTHuoc.setBounds(10, 220, 150, 30);
-	        soLuongDichVuField.setBounds(10, 250, 250, 30);
-	        lblSoLuongTHuoc.setFont(lblFont);
-	        formPanel.add(lblSoLuongTHuoc);
-	        formPanel.add(soLuongThuocField);
 	
 	        JLabel lblSoLuongDichVu = new JLabel("Số lượng dịch vụ:");
-	        lblSoLuongDichVu.setBounds(10, 290, 150, 30);
-	        soLuongThuocField.setBounds(10, 320, 250, 30);
+	        lblSoLuongDichVu.setBounds(10, 150, 150, 25);
+	        soLuongDichVuField.setBounds(10, 180, 250, 30);
 	        lblSoLuongDichVu.setFont(lblFont);
 	        formPanel.add(lblSoLuongDichVu);
 	        formPanel.add(soLuongDichVuField);
 
 	        JButton btnXacNhan = new JButton("Xác nhận");
-	        btnXacNhan.setBounds(20, 370, 100, 30);
+	        btnXacNhan.setBounds(20, 220, 100, 30);
 	        btnXacNhan.setForeground(Color.white);
 	        btnXacNhan.setBackground(new Color(7, 231, 243));          
 	        btnXacNhan.setForeground(Color.WHITE);         
@@ -213,7 +197,7 @@ public class medicine_Management extends JFrame{
 	        btnXacNhan.setFocusPainted(false);
 	        btnXacNhan.setBorderPainted(false);  
 	        JButton btnHuy = new JButton("Hủy");
-	        btnHuy.setBounds(150, 370, 100, 30);
+	        btnHuy.setBounds(150, 220, 100, 30);
 	        btnHuy.setForeground(Color.white);
 	        btnHuy.setBackground(new Color(7, 231, 243));          
 	        btnHuy.setForeground(Color.WHITE);         
@@ -224,7 +208,7 @@ public class medicine_Management extends JFrame{
 	        formPanel.add(btnHuy);
 
 	        // Tạo bảng
-	        String[] columnNames = {"Tên dịch vụ", "Số lượng thuốc", "Số lượng dịch vụ", ""};
+	        String[] columnNames = {"Tên dịch vụ", "Số lượng dịch vụ", ""};
 	        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
 	        JTable table = new JTable(model);
 	        JScrollPane scrollPane = new JScrollPane(table);
@@ -234,7 +218,6 @@ public class medicine_Management extends JFrame{
 	        columnModel.getColumn(0).setPreferredWidth(140);  
 	        columnModel.getColumn(1).setPreferredWidth(140); 
 	        columnModel.getColumn(2).setPreferredWidth(120);
-	        columnModel.getColumn(3).setPreferredWidth(80);
 
 	        for (int i = 0; i < columnModel.getColumnCount(); i++) {
 	            columnModel.getColumn(i).setResizable(false);
@@ -292,27 +275,24 @@ public class medicine_Management extends JFrame{
 	            }
 	        }
 
-	        table.getColumnModel().getColumn(3).setCellRenderer(new ButtonRenderer());
-	        table.getColumnModel().getColumn(3).setCellEditor(new ButtonEditor(new JCheckBox()));
+	        table.getColumnModel().getColumn(2).setCellRenderer(new ButtonRenderer());
+	        table.getColumnModel().getColumn(2).setCellEditor(new ButtonEditor(new JCheckBox()));
 
 	        btnXacNhan.addActionListener(e -> {
 	            String tenDichVu = (String) tenDichVuBox.getSelectedItem();
-	            String loaiThuoc = (String) loaiThuocBox.getSelectedItem();
 	            String soLuongDichVu = soLuongDichVuField.getText().trim();
-	            String soLuongThuoc = soLuongThuocField.getText().trim();
 
 	            // Kiểm tra trống
-	            if (soLuongDichVu.isEmpty() || soLuongThuoc.isEmpty()) {
-	                JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ số lượng thuốc và số lượng dịch vụ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+	            if (soLuongDichVu.isEmpty()) {
+	                JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ số lượng dịch vụ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
 	                return;
 	            }
 
 	            // Nếu hợp lệ thì thêm dòng mới
-	            model.addRow(new Object[]{tenDichVu, soLuongThuoc ,soLuongDichVu, "Xóa"});
+	            model.addRow(new Object[]{tenDichVu, soLuongDichVu, "Xóa"});
 
 	            // Xóa nội dung ô nhập
 	            soLuongDichVuField.setText("");
-	            soLuongThuocField.setText("");
 	        });
 
 
@@ -327,6 +307,6 @@ public class medicine_Management extends JFrame{
 	        frame.setVisible(true);
 	    }
 	public static void main(String[] args) {
-		new medicine_Management();
+		new service_View();
 	}
 	}

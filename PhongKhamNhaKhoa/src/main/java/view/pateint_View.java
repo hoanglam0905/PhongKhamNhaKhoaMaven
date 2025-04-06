@@ -19,8 +19,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableColumnModel;
 
-public class pateint_Management_View extends JFrame{
-	public pateint_Management_View() {
+public class pateint_View extends JFrame{
+	public pateint_View() {
 		 JFrame frame = new JFrame("Dental Clinic");
 	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	        frame.setSize(1100, 700);
@@ -178,6 +178,6 @@ public class pateint_Management_View extends JFrame{
 	        frame.setVisible(true);
 	    }
 	public static void main(String[] args) {
-		new pateint_Management_View();
+		new pateint_View();
 	}
 	}

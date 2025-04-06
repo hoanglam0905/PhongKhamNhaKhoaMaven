@@ -19,8 +19,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableColumnModel;
 
-public class prescription_Management_View extends JFrame{
-	public prescription_Management_View() {
+public class prescription_View extends JFrame{
+	public prescription_View() {
 		UI ui = new UI();
 		 JFrame frame = new JFrame("Dental Clinic");
 	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -232,6 +232,6 @@ public class prescription_Management_View extends JFrame{
 	        frame.setVisible(true);
 	    }
 	public static void main(String[] args) {
-		new prescription_Management_View();
+		new prescription_View();
 	}
 	}
