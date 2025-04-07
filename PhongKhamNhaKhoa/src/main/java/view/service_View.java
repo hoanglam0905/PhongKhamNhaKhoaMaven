@@ -48,7 +48,7 @@ public class service_View extends JFrame{
 	        homeButton.setFont(new 
 	        Font("Arial", Font.BOLD, 14));
 	        homeButton.setHorizontalAlignment(SwingConstants.LEFT);
-	        ImageIcon homeIcon = new ImageIcon(new ImageIcon("C:\\Users\\User\\OneDrive\\Pictures\\tham_khao_pknk\\ui\\src\\img\\home.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+	        ImageIcon homeIcon = new ImageIcon(new ImageIcon( getClass().getResource("/img/home.png")).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
 	        JLabel imageHomeIcon = new JLabel(homeIcon);
 	        imageHomeIcon.setBounds(14, 88, homeIcon.getIconWidth(), homeIcon.getIconHeight());
 	        
@@ -60,7 +60,7 @@ public class service_View extends JFrame{
 	        setBounds(70,165,105,20);
 	        scheduleButton.setFont(new Font("Arial", Font.BOLD, 14));
 	        scheduleButton.setHorizontalAlignment(SwingConstants.LEFT);
-	        ImageIcon scheduleIcon = new ImageIcon(new ImageIcon("C:\\Users\\User\\OneDrive\\Pictures\\tham_khao_pknk\\ui\\src\\img\\schedule.png").getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH));
+	        ImageIcon scheduleIcon = new ImageIcon(new ImageIcon(getClass().getResource("/img/schedule.png")).getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH));
 	        JLabel imageSchedule = new JLabel(scheduleIcon);
 	        imageSchedule.setBounds(15, 150, scheduleIcon.getIconWidth(), scheduleIcon.getIconHeight());
 	        
@@ -71,7 +71,7 @@ public class service_View extends JFrame{
 	        salaryButton.setBounds(70,220,115,20);
 	        salaryButton.setFont(new Font("Arial", Font.BOLD, 14));
 	        salaryButton.setHorizontalAlignment(SwingConstants.LEFT);
-	        ImageIcon salary = new ImageIcon(new ImageIcon("C:\\Users\\User\\OneDrive\\Pictures\\tham_khao_pknk\\ui\\src\\img\\coin.png").getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH));
+	        ImageIcon salary = new ImageIcon(new ImageIcon(getClass().getResource("/img/coin.png")).getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH));
 	        JLabel imageSalary = new JLabel(salary);
 	        imageSalary.setBounds(15, 205, salary.getIconWidth(), salary.getIconHeight());
 	        
@@ -82,7 +82,7 @@ public class service_View extends JFrame{
 	        mngPatient.setBounds(70,275,140,20);
 	        mngPatient.setFont(new Font("Arial", Font.BOLD, 14));
 	        mngPatient.setHorizontalAlignment(SwingConstants.LEFT);
-	        ImageIcon noteBook = new ImageIcon(new ImageIcon("C:\\Users\\User\\OneDrive\\Pictures\\tham_khao_pknk\\ui\\src\\img\\noteBook.png").getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH));
+	        ImageIcon noteBook = new ImageIcon(new ImageIcon(getClass().getResource("/img/noteBook.png")).getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH));
 	        JLabel imageNoteBook = new JLabel(noteBook);
 	        imageNoteBook.setBounds(15, 260, noteBook.getIconWidth(), noteBook.getIconHeight());
 	        
@@ -109,7 +109,7 @@ public class service_View extends JFrame{
 	        docName.setHorizontalAlignment(SwingConstants.LEFT);
 	        docName.setForeground(Color.WHITE);
 	        header.add(docName);
-	        ImageIcon doctorIcon = new ImageIcon(new ImageIcon("C:\\Users\\User\\OneDrive\\Pictures\\tham_khao_pknk\\ui\\src\\img\\doctor.png").getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
+	        ImageIcon doctorIcon = new ImageIcon(new ImageIcon(getClass().getResource("/img/doctor.png")).getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
 	        JLabel imageDoctor = new JLabel(doctorIcon);
 	        imageDoctor.setForeground(Color.WHITE);
 	        imageDoctor.setBounds(700, 20, doctorIcon.getIconWidth(), doctorIcon.getIconHeight());
@@ -124,7 +124,7 @@ public class service_View extends JFrame{
 	        theme.setHorizontalAlignment(SwingConstants.LEFT);
 	        theme.setForeground(Color.WHITE);
 	        header.add(theme);
-	        ImageIcon themeIcon = new ImageIcon(new ImageIcon("C:\\Users\\User\\OneDrive\\Pictures\\tham_khao_pknk\\ui\\src\\img\\theme.png").getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
+	        ImageIcon themeIcon = new ImageIcon(new ImageIcon(getClass().getResource("/img/theme.png")).getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
 	        JLabel imageTheme = new JLabel(themeIcon);
 	        imageTheme.setForeground(Color.WHITE);
 	        imageTheme.setBounds(540, 20, themeIcon.getIconWidth(), themeIcon.getIconHeight());
@@ -139,7 +139,7 @@ public class service_View extends JFrame{
 	        language.setHorizontalAlignment(SwingConstants.LEFT);
 	        language.setForeground(Color.WHITE);
 	        header.add(language);
-	        ImageIcon lge = new ImageIcon(new ImageIcon("C:\\Users\\User\\OneDrive\\Pictures\\tham_khao_pknk\\ui\\src\\img\\language.png").getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
+	        ImageIcon lge = new ImageIcon(new ImageIcon(getClass().getResource("/img/language.png")).getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
 	        JLabel imageLge = new JLabel(lge);
 	        imageLge.setForeground(Color.WHITE);
 	        imageLge.setBounds(380, 20, lge.getIconWidth(), lge.getIconHeight());
