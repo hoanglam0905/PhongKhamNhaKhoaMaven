@@ -198,8 +198,8 @@ public class prescription_View extends JFrame{
 	        
 	        Font buttonFont = new Font("Arial", Font.BOLD, 12);
 	        
-	        JButton addBill = new JButton("Thêm hóa đơn");
-	        addBill.setBounds(50, 300, 120, 30);
+	        JButton addBill = new JButton("Thêm đơn thuốc");
+	        addBill.setBounds(50, 300, 130, 30);
 	        prescription_info.add(addBill);
 	        addBill.setFont(buttonFont);
 	        addBill.setForeground(Color.white);

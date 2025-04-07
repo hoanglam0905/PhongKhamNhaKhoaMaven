@@ -159,10 +159,13 @@ public class medicine_View extends JFrame{
 	        JPanel centerPanel = new JPanel(new BorderLayout());
 	        centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
-	        JPanel formPanel = new JPanel(null); // Sử dụng layout thủ công
+	        JPanel formPanel = new JPanel(null);
 	        formPanel.setPreferredSize(new Dimension(600, 600));
 	        JComboBox<String> loaiThuocBox = new JComboBox<>(new String[]{"Paracetamol", "Dexamethasone", "Amoxicillin"});
 	        JTextField soLuongThuocField = new JTextField();
+	        JTextField morningField = new JTextField();
+	        JTextField noonField = new JTextField();
+	        JTextField eveningField = new JTextField();
 	        
 	        Font lblFont = new Font("Arial", Font.ITALIC, 15);
 	        
@@ -174,23 +177,50 @@ public class medicine_View extends JFrame{
 	        formPanel.add(loaiThuocBox);
 	        
 	        JLabel lblSoLuongTHuoc = new JLabel("Số lượng thuốc:");
-	        lblSoLuongTHuoc.setBounds(10, 80, 150, 30);
-	        soLuongThuocField.setBounds(10, 110, 250, 30);
+	        lblSoLuongTHuoc.setBounds(10, 190, 150, 30);
+	        soLuongThuocField.setBounds(10, 230, 250, 30);
 	        lblSoLuongTHuoc.setFont(lblFont);
 	        formPanel.add(lblSoLuongTHuoc);
 	        formPanel.add(soLuongThuocField);
+	        
+	        JLabel dose = new JLabel("Liều lượng:");
+	        dose.setBounds(10, 80, 100, 30);
+	        dose.setFont(lblFont);
+	        formPanel.add(dose);
+	        
+	        JLabel morning = new JLabel("Sáng:");
+	        morning.setBounds(10, 120, 50, 30);
+	        morningField.setBounds(10, 150, 50, 30);
+	        morning.setFont(lblFont);
+	        formPanel.add(morning);
+	        formPanel.add(morningField);
+	        
+	        JLabel noon = new JLabel("Trưa:");
+	        noon.setBounds(100, 120, 50, 30);
+	        noonField.setBounds(100, 150, 50, 30);
+	        noon.setFont(lblFont);
+	        formPanel.add(noon);
+	        formPanel.add(noonField);
+	        
+	        JLabel evening = new JLabel("Chiều:");
+	        evening.setBounds(190, 120, 150, 30);
+	        eveningField.setBounds(190, 150, 50, 30);
+	        evening.setFont(lblFont);
+	        formPanel.add(evening);
+	        formPanel.add(eveningField);
 	
 
 	        JButton btnXacNhan = new JButton("Xác nhận");
-	        btnXacNhan.setBounds(20, 150, 100, 30);
+	        btnXacNhan.setBounds(20, 280, 100, 30);
 	        btnXacNhan.setForeground(Color.white);
 	        btnXacNhan.setBackground(new Color(7, 231, 243));          
 	        btnXacNhan.setForeground(Color.WHITE);         
 	        btnXacNhan.setOpaque(true);             
 	        btnXacNhan.setFocusPainted(false);
-	        btnXacNhan.setBorderPainted(false);  
+	        btnXacNhan.setBorderPainted(false); 
+	        
 	        JButton btnHuy = new JButton("Hủy");
-	        btnHuy.setBounds(150, 150, 100, 30);
+	        btnHuy.setBounds(150, 280, 100, 30);
 	        btnHuy.setForeground(Color.white);
 	        btnHuy.setBackground(new Color(7, 231, 243));          
 	        btnHuy.setForeground(Color.WHITE);         
@@ -205,24 +235,39 @@ public class medicine_View extends JFrame{
 	        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
 	        JTable table = new JTable(model);
 	        JScrollPane scrollPane = new JScrollPane(table);
+	        JPanel tableWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+	        scrollPane.setPreferredSize(new Dimension(440, 450));
+	        tableWrapper.add(scrollPane, BorderLayout.CENTER);
 	        table.getTableHeader().setReorderingAllowed(false);
+	        
+	        JButton btnThem = new JButton("Xuất đơn thuốc");
+	        btnThem.setPreferredSize(new Dimension(140, 35));
+	        btnThem.setForeground(Color.white);
+	        btnThem.setBackground(new Color(7, 231, 243));          
+	        btnThem.setForeground(Color.WHITE);         
+	        btnThem.setOpaque(true);             
+	        btnThem.setFocusPainted(false);
+	        btnThem.setBorderPainted(false);  
+	        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+	        buttonPanel.add(btnThem);
+	        tableWrapper.add(buttonPanel, BorderLayout.SOUTH);
 
 	        TableColumnModel columnModel = table.getColumnModel();
-	        columnModel.getColumn(0).setPreferredWidth(140);  
-	        columnModel.getColumn(1).setPreferredWidth(140); 
-	        columnModel.getColumn(2).setPreferredWidth(120);
+	        columnModel.getColumn(0).setPreferredWidth(160);  
+	        columnModel.getColumn(1).setPreferredWidth(50); 
+	        columnModel.getColumn(2).setPreferredWidth(50);
 
 	        for (int i = 0; i < columnModel.getColumnCount(); i++) {
 	            columnModel.getColumn(i).setResizable(false);
 	        }
 	        
 	        JPanel leftPanel = new JPanel(new BorderLayout());
-	        leftPanel.add(scrollPane, BorderLayout.CENTER);
+	        leftPanel.add(tableWrapper, BorderLayout.CENTER);
 	        leftPanel.setPreferredSize(new Dimension(450, 0));
 
 	        JPanel rightPanel = new JPanel(new BorderLayout());
 	        rightPanel.add(formPanel, BorderLayout.NORTH);
-	        rightPanel.setPreferredSize(new Dimension(450, 0));
+	        rightPanel.setPreferredSize(new Dimension(400, 0));
 
 	        centerPanel.add(leftPanel, BorderLayout.EAST );
 	        centerPanel.add(rightPanel, BorderLayout.WEST);

@@ -212,7 +212,22 @@ public class service_View extends JFrame{
 	        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
 	        JTable table = new JTable(model);
 	        JScrollPane scrollPane = new JScrollPane(table);
+	        JPanel tableWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+	        scrollPane.setPreferredSize(new Dimension(440, 450));
+	        tableWrapper.add(scrollPane, BorderLayout.CENTER);
 	        table.getTableHeader().setReorderingAllowed(false);
+	        
+	        JButton btnThem = new JButton("Thêm danh sách thuốc");
+	        btnThem.setPreferredSize(new Dimension(180, 35));
+	        btnThem.setForeground(Color.white);
+	        btnThem.setBackground(new Color(7, 231, 243));          
+	        btnThem.setForeground(Color.WHITE);         
+	        btnThem.setOpaque(true);             
+	        btnThem.setFocusPainted(false);
+	        btnThem.setBorderPainted(false);  
+	        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+	        buttonPanel.add(btnThem);
+	        tableWrapper.add(buttonPanel, BorderLayout.SOUTH);
 
 	        TableColumnModel columnModel = table.getColumnModel();
 	        columnModel.getColumn(0).setPreferredWidth(140);  
@@ -224,7 +239,7 @@ public class service_View extends JFrame{
 	        }
 	        
 	        JPanel leftPanel = new JPanel(new BorderLayout());
-	        leftPanel.add(scrollPane, BorderLayout.CENTER);
+	        leftPanel.add(tableWrapper, BorderLayout.CENTER);
 	        leftPanel.setPreferredSize(new Dimension(450, 0));
 
 	        JPanel rightPanel = new JPanel(new BorderLayout());
