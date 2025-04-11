@@ -22,5 +22,8 @@ public class PatientService {
          return new ArrayList<>();
      }
  }
+ public boolean addPatient(Patient patient) throws SQLException, IOException, ClassNotFoundException {
+     return patientRepository.addPatient(patient);
+ }
 }
 

@@ -2,6 +2,7 @@ package controller;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 import model.Patient;
@@ -18,7 +19,11 @@ public class PatientController {
      initListeners();
  }
 
- private void initListeners() {
+ public PatientController() {
+	// TODO Auto-generated constructor stub
+}
+
+private void initListeners() {
      view.getPrintButton().addActionListener(e -> {
 		try {
 			onPrintPatients();
@@ -32,6 +37,15 @@ public class PatientController {
  private void onPrintPatients() throws FileNotFoundException, ClassNotFoundException, IOException {
      List<Patient> patients = patientService.getAllPatients();
      view.updatePatientTable(patients);
+ }
+ 
+ public boolean addPatient(Patient patient) {
+     try {
+         return patientService.addPatient(patient);
+     } catch (SQLException | IOException | ClassNotFoundException e) {
+         e.printStackTrace();
+         return false;
+     }
  }
 }
 

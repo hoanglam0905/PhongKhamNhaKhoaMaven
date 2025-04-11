@@ -186,4 +186,5 @@ public class pateint_Management_View extends JFrame{
 	public static void main(String[] args) {
 		new pateint_Management_View();
 	}
+
 	}

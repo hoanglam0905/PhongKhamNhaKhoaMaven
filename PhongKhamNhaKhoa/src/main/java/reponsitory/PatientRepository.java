@@ -101,4 +101,17 @@ public class PatientRepository {
         return new Patient(id, name, birthDate, address, gender, phoneNumber, idCard);
     }
     
+ // 6. Lấy bệnh nhân mới nhất
+    public Patient getLatestPatient() throws SQLException, FileNotFoundException, ClassNotFoundException, IOException {
+        String query = "SELECT * FROM Patient ORDER BY id DESC LIMIT 1";  // Sắp xếp theo id giảm dần
+        try (PreparedStatement ps = JDBCUtil.getConnection().prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return extractPatientFromResultSet(rs);
+            }
+        }
+        return null;  // Nếu không có bệnh nhân nào
+    }
+
+    
 }

@@ -43,8 +43,8 @@ public class JDBCUtil {
 	public static void main(String[] args) throws FileNotFoundException, ClassNotFoundException, IOException {
 		JDBCUtil.getConnection();
 		DoctorRepository doctorRepository=new DoctorRepository();
-		for (Doctor doctor: doctorRepository.getDoctors()) {
-			System.out.println(doctor.toString());
-		}
+//		for (Doctor doctor: doctorRepository.getDoctors()) {
+//			System.out.println(doctor.toString());
+//		}
 	}
 }
