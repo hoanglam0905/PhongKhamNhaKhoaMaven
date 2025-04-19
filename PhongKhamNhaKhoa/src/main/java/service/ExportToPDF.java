@@ -695,7 +695,7 @@ public class ExportToPDF {
     	
         //strIDPatient sẽ là nơi truyền vào id của người bệnh
     	//lí do chọn String là để tránh trường hợp id quá dài
-        String strIDPres=1+"";
+        String strIDPres=3+"";
 
         ExportToPDF.billToPDF(strIDPres);
         ExportToPDF.prescriptionToPDF(strIDPres);
