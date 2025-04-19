@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package jar;
 
 import org.junit.jupiter.api.Test;
@@ -11,3 +12,18 @@ public class AppTest {
     assertTrue(true);
   }
 }
+=======
+package jar;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class AppTest {
+    
+  @Test
+  public void shouldAnswerWithTrue() {
+    assertTrue(true);
+  }
+}
+>>>>>>> Minh
