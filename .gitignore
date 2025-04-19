@@ -2,3 +2,18 @@
 target/
 *.log
 .idea/
+# Eclipse IDE
+*.launch
+.settings/
+.project
+.classpath
+
+# Java
+*.class
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
