@@ -2,7 +2,7 @@ package model;
 
 import java.sql.Date;
 
-class Employee extends Person {
+public class Employee extends Person {
     protected String username;
     protected String password;
     protected double salary;

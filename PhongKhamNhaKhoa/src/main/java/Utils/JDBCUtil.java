@@ -8,7 +8,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import model.Doctor;
 import model.Drug;
+import reponsitory.DoctorRepository;
 import reponsitory.DrugRepository;
 
 
@@ -40,9 +42,9 @@ public class JDBCUtil {
 	}
 	public static void main(String[] args) throws FileNotFoundException, ClassNotFoundException, IOException {
 		JDBCUtil.getConnection();
-		DrugRepository drugRepository=new DrugRepository();
-		for (Drug drug: drugRepository.getDrugs()) {
-			System.out.println(drug.toString());
-		}
+		DoctorRepository doctorRepository=new DoctorRepository();
+//		for (Doctor doctor: doctorRepository.getDoctors()) {
+//			System.out.println(doctor.toString());
+//		}
 	}
 }
