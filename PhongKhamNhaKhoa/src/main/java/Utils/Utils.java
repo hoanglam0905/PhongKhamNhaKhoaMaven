@@ -6,14 +6,13 @@ import java.util.regex.Pattern;
 
 public class Utils {
 	public static Date parseDate(String dateStr) {
-	    try {
-	        java.util.Date utilDate = new SimpleDateFormat("dd/MM/yyyy").parse(dateStr);
-	        return new Date(utilDate.getTime()); // Tạo java.sql.Date đúng cách
-	    } catch (Exception e) {
-	        System.out.println("Invalid date format. Please enter in dd/MM/yyyy.");
-	        return null;
-	    }
-	}
+        try {
+            return (Date) new SimpleDateFormat("dd/MM/yyyy").parse(dateStr);
+        } catch (Exception e) {
+            System.out.println("Invalid date format. Please enter in dd/MM/yyyy.");
+            return null;
+        }
+    }
 
     public static String formatDate(Date date) {
         return new SimpleDateFormat("dd/MM/yyyy").format(date);

@@ -1,0 +1,75 @@
+package controller.dentist;
+
+import view.listPanelMain.MainFrame;
+
+import javax.swing.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+public class DentistManagerLableController implements MouseListener {
+    private MainFrame view;
+    public DentistManagerLableController(MainFrame view) {
+        this.view = view;
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        JLabel clickedLabel = (JLabel) e.getComponent();
+        String name = clickedLabel.getName();
+
+        if (name == null) return;
+        System.out.println("Đã click: " + name);
+
+        switch (name) {
+            case "Schedule":
+                switchDentistPatient1Panel();
+                break;
+            case "Patients":
+                switchDentistPatient2Panel();
+                break;
+            case "Feature 1":
+                System.out.println("Hiện đang trống");
+                break;
+            case "Feature 2":
+                System.out.println("Hiện đang trống");
+                break;
+            case "Home":
+                switchDentistIntroducePanel();
+                break;
+            case "Login":
+                switchReceptionistLoginPanel();
+                break;
+        }
+    }
+
+    // Sửa các hàm chuyển panel
+
+    public void switchDentistIntroducePanel() {
+        view.getMainPanel().getCardLayout().show(view.getMainPanel().getCenterPanel(), "Introduce");
+    }
+
+    public void switchDentistPatient1Panel() {
+        view.getMainPanel().getCardLayout().show(view.getMainPanel().getCenterPanel(), "Patient1");
+    }
+
+    public void switchDentistPatient2Panel() {
+        view.getMainPanel().getCardLayout().show(view.getMainPanel().getCenterPanel(), "Patient2");
+    }
+    public void switchReceptionistLoginPanel(){
+        view.getLoginPanel().resetUser();
+        view.getCardLayout().show(view.getContainerPanel(), "LoginPanel");
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {}
+
+    @Override
+    public void mouseReleased(MouseEvent e) {}
+
+    @Override
+    public void mouseEntered(MouseEvent e) {}
+
+    @Override
+    public void mouseExited(MouseEvent e) {}
+}
+
