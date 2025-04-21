@@ -5,10 +5,6 @@ import java.io.IOException;
 import java.sql.Connection;
 
 import Utils.JDBCUtil;
-import controller.MainController;
-import controller.PatientController;
-import leTanView.MainFrame;
-import view.PatientView;
 
 import javax.swing.*;
 
