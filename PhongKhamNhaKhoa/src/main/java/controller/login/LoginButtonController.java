@@ -35,7 +35,8 @@ public class LoginButtonController implements ActionListener {
                     view.getReceptionistPanel().getDentistTaskbar().getLblDoctorName().setText(nameD[nameD.length - 1]);
                     break;
                 case "Nhân viên quầy thuốc":
-                    //thêm panel quầy thuốc vào tương tự
+                    view.getCardLayout().show(view.getContainerPanel(), "drugstore");
+                    view.getReceptionistPanel().getDentistTaskbar().getLblDoctorName().setText(nameD[nameD.length - 1]);
                     break;
             }
         }
