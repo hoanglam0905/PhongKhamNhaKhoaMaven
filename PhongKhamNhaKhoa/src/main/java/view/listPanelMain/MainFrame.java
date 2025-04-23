@@ -3,6 +3,7 @@ package view.listPanelMain;
 import controller.dentist.*;
 import controller.durgStore.ListBillRadioButtonController;
 import controller.login.LoginButtonController;
+import controller.receptionist.ReceptionTableController;
 import controller.receptionist.ReceptionistLableController;
 import controller.receptionist.ReceptionistSearch2Controller;
 import controller.receptionist.ReceptionistSearchController;
@@ -121,6 +122,9 @@ public class MainFrame extends JFrame {
         ActionListener allb=new ListBillRadioButtonController(this);
         this.drugStorePanel.getListBillPanel().getRbHT().addActionListener(allb);
         this.drugStorePanel.getListBillPanel().getRbChuaHT().addActionListener(allb);
+        //thêm sự kiện khi click vào sửa, thêm lịch khám và tái khám
+        MouseListener mlrep=new ReceptionTableController(this);
+        this.receptionistPanel.getShowPatientsReceptionistPanel().getPatientActionTable().addMouseListener(mlrep);
     }
 
     public DentistPanel getMainPanel() {

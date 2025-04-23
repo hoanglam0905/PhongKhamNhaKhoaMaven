@@ -33,7 +33,6 @@ public class ExportToPDF {
         		+ "    pd.noonDose as 'Liều chiều',\r\n"
         		+ "    pd.eveningDose as 'Liều tối',\r\n"
         		+ "    pat.address as 'Địa chỉ bệnh nhân',\r\n"
-        		+ "    pat.idCard as 'ID Card',\r\n"
         		+ "    p.diagnosis as 'Diagnosis',\r\n"
         		+ "    pat.birthDate as 'Ngày sinh',\r\n"
         		+ "    pat.gender as 'Gender',\r\n"
@@ -60,7 +59,7 @@ public class ExportToPDF {
             //lời dặn, hẹn tái khám
             //tên nhân viên/bs
 
-            String name = "", address = "", cccd;
+            String name = "", address = "";
             int age;
             String sex;
             String symptom = "", diagnosis = "";
@@ -69,9 +68,9 @@ public class ExportToPDF {
             Date dateBirth = null;
 
             rs.next();
+            int id = rs.getInt("prescription_id");
             name = rs.getString("Tên bệnh nhân");
             address = rs.getString("Địa chỉ bệnh nhân");
-            cccd = rs.getString("ID Card");
             diagnosis = rs.getString("Diagnosis");
             symptom=rs.getString("Triệu chứng");
             advice = rs.getString("Lời khuyên");
@@ -87,7 +86,7 @@ public class ExportToPDF {
             rs = stmt.executeQuery(query);
 
             //tạo tên file theo định dạng DonThoc + cccd+ngay thang nam
-            String filePath = "Medicine\\"+"DonThoc_"+cccd+"-"+timestap.toLocalDateTime().toLocalDate().toString()+".pdf";
+            String filePath = "Medicine\\"+"DonThoc_"+id+"-"+timestap.toLocalDateTime().toLocalDate().toString()+".pdf";
             //
             Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
@@ -137,7 +136,7 @@ public class ExportToPDF {
             tableInfo.setWidths(new float[]{4, 2, 2});
             tableInfo.setHorizontalAlignment(Element.ALIGN_CENTER);
             //ô1
-            PdfPCell cellTableIf1 = new PdfPCell(new Phrase("\nHọ tên: " + name + "\nĐịa chỉ: " + address + "\nCCCD: " + cccd, fontHeader));
+            PdfPCell cellTableIf1 = new PdfPCell(new Phrase("\nHọ tên: " + name + "\nĐịa chỉ: " + address , fontHeader));
             cellTableIf1.setBorder(Rectangle.NO_BORDER);
             cellTableIf1.setHorizontalAlignment(Element.ALIGN_LEFT);
             cellTableIf1.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -295,7 +294,6 @@ public class ExportToPDF {
     public static void billToPDF(String idBill) {
         String query="SELECT \r\n"
         		+ "    p.id AS \"Prescription ID\",\r\n"
-        		+ "    pa.idCard AS \"ID Card bệnh nhân\",\r\n"
         		+ "    pa.name AS \"Tên bệnh nhân\",\r\n"
         		+ "    pa.address AS \"Địa chỉ bệnh nhân\",\r\n"
         		+ "    s.name AS \"Tên dịch vụ\",\r\n"
@@ -319,23 +317,23 @@ public class ExportToPDF {
             ResultSet rs = stmt.executeQuery(query);
 
             //lưu thông tin của người bệnh
-            String name="",idCard="";
+            String name="";
             String address="";
             String billID="";
             LocalDate billDate=null;
 
             //duyệt 1 lần để lấy tên của người bênh
             rs.next();
+            int id=rs.getInt("Prescription ID");
             name=rs.getString("Tên bệnh nhân");
             address=rs.getString("Địa chỉ bệnh nhân");
             billID=rs.getString("Prescription ID");
-            idCard=rs.getString("ID Card bệnh nhân");
             Timestamp billDateT=rs.getTimestamp("Ngày tạo bill");
             billDate=billDateT.toLocalDateTime().toLocalDate();
             rs.close();
 
 
-            String filePath = "Bill\\"+"Bill_"+idCard+"-"+billDate.toString()+".pdf";
+            String filePath = "Bill\\"+"Bill_"+id+"-"+billDate.toString()+".pdf";
 
             Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream(filePath));

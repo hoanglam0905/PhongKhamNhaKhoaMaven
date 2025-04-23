@@ -58,6 +58,7 @@ public class ReceptionistPanel extends JPanel{
         centerPanel.add(showPatientsReceptionistPanel,"ShowPatientsReceptionist");
         centerPanel.add(followupPanel,"Followup");
         centerPanel.add(newAppointmentPanel,"NewAppointment");
+
         // sau này cần add thêm ExaminationPanel hoặc CalendarPanel thì add luôn ở đây
 
         add(centerPanel, BorderLayout.CENTER); //Chỉ add centerPanel
