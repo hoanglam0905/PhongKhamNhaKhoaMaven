@@ -51,6 +51,49 @@ public class PatientDAO {
 
         return list;
     }
+    public static List<Object[]> getAllBillPatients() {
+        List<Object[]> list = new ArrayList<>();
+
+        try (Connection conn = JDBCUtil.getConnection()) {
+            String query = "SELECT * FROM Patient";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+
+            int stt = 1;
+            while (rs.next()) {
+                String name = rs.getString("name");
+                String phone = rs.getString("phoneNumber");
+                int genderInt = rs.getInt("gender");
+                String gender = (genderInt == 1) ? "Nam" : "Nữ";
+
+                // Tính tuổi từ birthDate
+                int age = 0;
+                Date birthDate = rs.getDate("birthDate");
+                if (birthDate != null) {
+                    age = java.time.Period.between(
+                            birthDate.toLocalDate(),
+                            java.time.LocalDate.now()
+                    ).getYears();
+                }
+
+                list.add(new Object[]{
+                        stt++,
+                        name,
+                        phone,
+                        gender,
+                        age,
+                        "300000",
+                        "Chưa thanh toán",
+                        null
+                });
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
     public static List<Patient> getListPatients() {
         List<Patient> list = new ArrayList<>();
 
