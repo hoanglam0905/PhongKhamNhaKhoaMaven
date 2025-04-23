@@ -27,7 +27,6 @@ public class FollowupPanel extends JPanel {
         lblTitle.setBounds(10, 10, 200, 30);
         add(lblTitle);
 
-
         // Tên bệnh nhân
         JLabel lblName = new JLabel("Họ và tên:");
         lblName.setFont(new Font("Arial", Font.ITALIC, 16));
