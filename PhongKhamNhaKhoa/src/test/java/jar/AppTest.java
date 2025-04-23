@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 package jar;
 
 import org.junit.jupiter.api.Test;
@@ -26,4 +26,4 @@ public class AppTest {
     assertTrue(true);
   }
 }
->>>>>>> Minh
+
