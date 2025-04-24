@@ -1,9 +1,7 @@
 package view.listPanelMain;
 
 import view.dentistPanel.DentistTaskbar;
-import view.durgStore.DrugStoreMenuPanel;
-import view.durgStore.ListBillPanel;
-import view.durgStore.ListDrugPanel;
+import view.durgStore.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,6 +13,8 @@ public class DrugStorePanel extends JPanel {
     private DrugStoreMenuPanel drugStoreMenuPanel;
     private ListDrugPanel listDrugPanel;
     private ListBillPanel listBillPanel;
+    private DrugBillPanel billPanel;
+    private DrugBillConfPanel billConfPanel;
 
     public DrugStorePanel() {
         initComponents();
@@ -27,6 +27,8 @@ public class DrugStorePanel extends JPanel {
 
         listBillPanel = new ListBillPanel();
         listDrugPanel=new ListDrugPanel();
+        billPanel=new DrugBillPanel();
+        billConfPanel  =new DrugBillConfPanel();
 
         // Layout chính
         setLayout(new BorderLayout());
@@ -47,6 +49,8 @@ public class DrugStorePanel extends JPanel {
 
         centerPanel.add(listBillPanel,"Bills");
         centerPanel.add(listDrugPanel,"Drugs");
+        centerPanel.add(billPanel,"Bill");
+        centerPanel.add(billConfPanel,"BillConf");
         // sau này cần add thêm ExaminationPanel hoặc CalendarPanel thì add luôn ở đây
 
         add(centerPanel, BorderLayout.CENTER); //Chỉ add centerPanel
@@ -100,4 +104,19 @@ public class DrugStorePanel extends JPanel {
         this.listBillPanel = listBillPanel;
     }
 
+    public DrugBillConfPanel getBillConfPanel() {
+        return billConfPanel;
+    }
+
+    public void setBillConfPanel(DrugBillConfPanel billConfPanel) {
+        this.billConfPanel = billConfPanel;
+    }
+
+    public DrugBillPanel getBillPanel() {
+        return billPanel;
+    }
+
+    public void setBillPanel(DrugBillPanel billPanel) {
+        this.billPanel = billPanel;
+    }
 }
