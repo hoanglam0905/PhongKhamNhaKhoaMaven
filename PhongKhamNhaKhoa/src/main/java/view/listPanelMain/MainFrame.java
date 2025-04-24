@@ -1,7 +1,10 @@
 package view.listPanelMain;
 
 import controller.dentist.*;
+import controller.durgStore.ButtonPaymentController;
+import controller.durgStore.DrugMenuController;
 import controller.durgStore.ListBillRadioButtonController;
+import controller.durgStore.ListBillTableController;
 import controller.login.LoginButtonController;
 import controller.receptionist.ReceptionTableController;
 import controller.receptionist.ReceptionistLableController;
@@ -125,6 +128,22 @@ public class MainFrame extends JFrame {
         //thêm sự kiện khi click vào sửa, thêm lịch khám và tái khám
         MouseListener mlrep=new ReceptionTableController(this);
         this.receptionistPanel.getShowPatientsReceptionistPanel().getPatientActionTable().addMouseListener(mlrep);
+        //thêm sự kiện khi thanh toán
+        ListBillTableController lbtc=new ListBillTableController(this);
+        this.drugStorePanel.getListBillPanel().getTblPatients().addMouseListener(lbtc);
+        //set name cho label của nvqt
+        this.drugStorePanel.getDrugStoreMenuPanel().getLblHome().setName("Home");
+        this.drugStorePanel.getDrugStoreMenuPanel().getLblBill().setName("Bills");
+        this.drugStorePanel.getDrugStoreMenuPanel().getLblListDrug().setName("ListMedicine");
+
+        DrugMenuController dmct=new DrugMenuController(this);
+        this.drugStorePanel.getDrugStoreMenuPanel().getLblHome().addMouseListener(dmct);
+        this.drugStorePanel.getDrugStoreMenuPanel().getLblBill().addMouseListener(dmct);
+        this.drugStorePanel.getDrugStoreMenuPanel().getLblListDrug().addMouseListener(dmct);
+
+        ButtonPaymentController bp=new ButtonPaymentController(this);
+        this.drugStorePanel.getBillPanel().getButtonCash().addActionListener(bp);
+        this.drugStorePanel.getBillPanel().getButtonQRCode().addActionListener(bp);
     }
 
     public DentistPanel getMainPanel() {
