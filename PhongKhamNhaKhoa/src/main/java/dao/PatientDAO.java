@@ -3,6 +3,7 @@ package dao;
 import Utils.JDBCUtil;
 import model.Patient;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -177,5 +178,28 @@ public class PatientDAO {
         }
 
         return list;
+    }
+    public static int getIdPatient(String phoneNumber) {
+        try {
+            String sql = "SELECT id FROM Patient WHERE phoneNumber LIKE ?";
+            Connection conn = JDBCUtil.getConnection();
+            PreparedStatement pst = conn.prepareStatement(sql);
+
+            pst.setString(1, phoneNumber);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("id");
+            } else {
+                return -1;
+            }
+        } catch (IOException | ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void main(String[] args) {
+        PatientDAO patientDAO = new PatientDAO();
+        System.out.println(patientDAO.getIdPatient("0987654321"));
     }
 }

@@ -12,6 +12,7 @@ public class DentistExaminationPanel extends JPanel {
     private JPanel contentPanel;
     private int idPrescription;
     private String namePatient;
+    private String sdtPatient;// dùng để tìm ra bệnh nhân đó
     private String symptom;
     private String diagnosis;
     private String treatment;
@@ -286,5 +287,57 @@ public class DentistExaminationPanel extends JPanel {
 
     public void setIdPrescription(int idPrescription) {
         this.idPrescription = idPrescription;
+    }
+
+    public String getNamePatient() {
+        return namePatient;
+    }
+
+    public String getSdtPatient() {
+        return sdtPatient;
+    }
+
+    public void setSdtPatient(String sdtPatient) {
+        this.sdtPatient = sdtPatient;
+    }
+
+    public String getSymptom() {
+        return symptom;
+    }
+
+    public void setSymptom(String symptom) {
+        this.symptom = symptom;
+    }
+
+    public String getDiagnosis() {
+        return diagnosis;
+    }
+
+    public void setDiagnosis(String diagnosis) {
+        this.diagnosis = diagnosis;
+    }
+
+    public String getTreatment() {
+        return treatment;
+    }
+
+    public void setTreatment(String treatment) {
+        this.treatment = treatment;
+    }
+    public void setInfo(){
+        namePatient=tfName.getText();
+        symptom=tfSymptom.getText();
+        diagnosis=tfDiagnosis.getText();
+        treatment=tfTreatment.getText();
+    }
+    public void resetInfo(){
+        namePatient=tfName.getText();
+        symptom=tfSymptom.getText();
+        diagnosis=tfDiagnosis.getText();
+        treatment=tfTreatment.getText();
+
+        tfSymptom.setText("");
+        tfDiagnosis.setText("");
+        tfTreatment.setText("");
     }
 }

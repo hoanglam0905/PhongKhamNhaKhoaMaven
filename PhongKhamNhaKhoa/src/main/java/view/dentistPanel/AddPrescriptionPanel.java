@@ -1,5 +1,12 @@
 package view.dentistPanel;
 
+import Utils.CustomDocumentFilter;
+import dao.DrugDao;
+import dao.ServiceDao;
+import model.Drug;
+import model.DrugDose;
+import model.Service;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -10,6 +17,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -22,9 +31,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.text.AbstractDocument;
 
 public class AddPrescriptionPanel extends JPanel {
 
@@ -37,8 +49,14 @@ public class AddPrescriptionPanel extends JPanel {
     private JPanel contactInfoPanel;
     private JButton btnConfirm;
     private JButton btnAddDrugs;
-//    private String nameDrug;
-//    private int
+    private JComboBox<String> comboMedicinename;
+    private JTextField txtMorning;
+    private JTextField txtNoon;
+    private JTextField txtAfternoon;
+    private JTextField txtQuantity;
+    private List<DrugDose> listDrugDose=new ArrayList<>();
+    private JTable serviceTable;
+
     public AddPrescriptionPanel() {
         initComponents();
     }
@@ -48,7 +66,7 @@ public class AddPrescriptionPanel extends JPanel {
         setBackground(Color.WHITE);
 
         // --- Tiêu đề ---
-        lblIntroTitle = new JLabel(" Thêm đơn thuốc ");
+        lblIntroTitle = new JLabel("  Thêm đơn thuốc");
         lblIntroTitle.setFont(new Font("Arial", Font.BOLD, 18));
         lblIntroTitle.setPreferredSize(new Dimension(200, 30));
         add(lblIntroTitle, BorderLayout.PAGE_START);
@@ -67,33 +85,42 @@ public class AddPrescriptionPanel extends JPanel {
 
         //JCombo Box nhập tên thuốc
         String[] medicineList = {"Test1", "Test2", "Test3", "Test4"};
-        JComboBox<String> comboMedicinename = new JComboBox<>(medicineList);
+        comboMedicinename = new JComboBox<>(medicineList);
         comboMedicinename.setBounds(10, 50, 200, 35);
         comboMedicinename.setFont(new Font("Arial", Font.PLAIN, 14));
         comboMedicinename.setBackground(Color.WHITE);
 
-        JTextField txtQuantity = new JTextField();
+        comboMedicinename.removeAllItems();
+        List<Drug> listDrug = DrugDao.getListDrug();
+        for (Drug service : listDrug) {
+            comboMedicinename.addItem(service.getName());
+        }
+
+        txtQuantity = new JTextField();
         
         JLabel lblMorning = new JLabel("Sáng:");
-        lblMorning.setBounds(10, 170, 50, 25);
+        lblMorning.setBounds(10, 100, 50, 25);
         lblMorning.setFont(new Font("Arial", Font.ITALIC, 14));
-        JTextField txtMorning = new JTextField();
-        txtMorning.setBounds(10, 195, 40, 35);
+        txtMorning = new JTextField();
+        txtMorning.setBounds(10, 125, 40, 35);
         txtMorning.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        ((AbstractDocument) txtMorning.getDocument()).setDocumentFilter(new CustomDocumentFilter("[0-2]"));
 
         JLabel lblNoon = new JLabel("Trưa:");
-        lblNoon.setBounds(80, 170, 50, 25);
+        lblNoon.setBounds(80, 100, 50, 25);
         lblNoon.setFont(new Font("Arial", Font.ITALIC, 14));
-        JTextField txtNoon = new JTextField();
-        txtNoon.setBounds(80, 195, 40, 35);
+        txtNoon = new JTextField();
+        txtNoon.setBounds(80, 125, 40, 35);
         txtNoon.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        ((AbstractDocument) txtNoon.getDocument()).setDocumentFilter(new CustomDocumentFilter("[0-2]"));
 
         JLabel lblAfternoon = new JLabel("Chiều:");
-        lblAfternoon.setBounds(150, 170, 50, 25);
+        lblAfternoon.setBounds(150, 100, 50, 25);
         lblAfternoon.setFont(new Font("Arial", Font.ITALIC, 14));
-        JTextField txtAfternoon = new JTextField();
-        txtAfternoon.setBounds(150, 195, 40, 35);
+        txtAfternoon = new JTextField();
+        txtAfternoon.setBounds(150, 125, 40, 35);
         txtAfternoon.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        ((AbstractDocument) txtAfternoon.getDocument()).setDocumentFilter(new CustomDocumentFilter("[0-2]"));
 
         formPanel.add(lblMorning);
         formPanel.add(txtMorning);
@@ -102,19 +129,36 @@ public class AddPrescriptionPanel extends JPanel {
         formPanel.add(lblAfternoon);
         formPanel.add(txtAfternoon);
 
-
-
-
-        JLabel lblQuantity = new JLabel("Liều lượng:");
-        lblQuantity.setBounds(10, 100, 100, 25);
+        JLabel lblQuantity = new JLabel("Số lượng:");
+        lblQuantity.setBounds(10, 170, 100, 25);
         lblQuantity.setFont(new Font("Arial", Font.ITALIC, 16));
-        txtQuantity.setBounds(10, 125, 200, 35);
+        txtQuantity.setBounds(10, 195, 200, 35);
         txtQuantity.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        txtQuantity.setEditable(false);
 
         btnConfirm = new JButton("Xác nhận");
         btnConfirm.setBounds(10, 245, 100, 30);
-        btnConfirm.setBackground(new Color(0, 123, 255));  // Màu xanh dương
-        btnConfirm.setForeground(Color.WHITE);             // Màu chữ trắng
+        btnConfirm.setBackground(new Color(0, 123, 255));
+        btnConfirm.setForeground(Color.WHITE);
+
+        // Gắn listener
+        txtMorning.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) { calculateQuantity(); }
+            public void removeUpdate(DocumentEvent e) { calculateQuantity(); }
+            public void changedUpdate(DocumentEvent e) { calculateQuantity(); }
+        });
+
+        txtNoon.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) { calculateQuantity(); }
+            public void removeUpdate(DocumentEvent e) { calculateQuantity(); }
+            public void changedUpdate(DocumentEvent e) { calculateQuantity(); }
+        });
+
+        txtAfternoon.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) { calculateQuantity(); }
+            public void removeUpdate(DocumentEvent e) { calculateQuantity(); }
+            public void changedUpdate(DocumentEvent e) { calculateQuantity(); }
+        });
 
         formPanel.add(lblMedicinename);
         formPanel.add(comboMedicinename);
@@ -126,17 +170,17 @@ public class AddPrescriptionPanel extends JPanel {
         DefaultTableModel tableModel = new DefaultTableModel(
                 new Object[]{"STT", "Tên thuốc", "Số lượng", "Xóa"}, 0
         );
-        JTable serviceTable = new JTable(tableModel) {
+        serviceTable = new JTable(tableModel) {
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
 
         serviceTable.setRowHeight(20);
-        serviceTable.setBackground(Color.WHITE);              // Nền bảng
-        serviceTable.setForeground(Color.BLACK);              // Màu chữ
-        serviceTable.setSelectionBackground(new Color(200, 230, 255)); // Nền khi chọn dòng
-        serviceTable.setGridColor(Color.LIGHT_GRAY);          // Màu viền ô
+        serviceTable.setBackground(Color.WHITE);
+        serviceTable.setForeground(Color.BLACK);
+        serviceTable.setSelectionBackground(new Color(200, 230, 255));
+        serviceTable.setGridColor(Color.LIGHT_GRAY);
 
         // Xóa viền ngoài của bảng
         serviceTable.setBorder(null);
@@ -175,7 +219,7 @@ public class AddPrescriptionPanel extends JPanel {
         bottomPanel.add(tableScroll, BorderLayout.CENTER);
 
         // --- Nút thêm danh sách thuốc ---
-        btnAddDrugs = new JButton("Thêm");
+        btnAddDrugs = new JButton("Xuất đơn thuốc");
         btnAddDrugs.setBackground(Color.GREEN);
         btnAddDrugs.setForeground(Color.WHITE);
         btnAddDrugs.setFocusPainted(false);
@@ -222,31 +266,45 @@ public class AddPrescriptionPanel extends JPanel {
             }
         });
 
-
-
-        // --- Xử lý nút xác nhận ---
         btnConfirm.addActionListener(e -> {
-        	String serviceName = comboMedicinename.getSelectedItem().toString();
+            String medicineName = comboMedicinename.getSelectedItem().toString().trim();
             String quantityStr = txtQuantity.getText().trim();
 
-            // Kiểm tra nếu người dùng chưa nhập đầy đủ thông tin
-            if (serviceName.isEmpty() || quantityStr.isEmpty()) {
+            if (medicineName.isEmpty() || quantityStr.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin.");
                 return;
             }
 
-            int stt = tableModel.getRowCount() + 1;
+            DefaultTableModel model = (DefaultTableModel) serviceTable.getModel();
+            boolean exists = false;
+            for (int i = 0; i < model.getRowCount(); i++) {
+                String existingMedicineName = model.getValueAt(i, 1).toString();
+                if (existingMedicineName.equalsIgnoreCase(medicineName)) {
+                    exists = true;
+                    break;
+                }
+            }
 
-            // Thêm dòng vào bảng
-            tableModel.addRow(new Object[]{stt, serviceName, quantityStr, "x"});
+            if (exists) {
+                JOptionPane.showMessageDialog(this, "Thuốc này đã được thêm vào!");
+                return;
+            }
 
-            // Xóa các trường nhập sau khi thêm
-            comboMedicinename.setSelectedIndex(0);
-            txtQuantity.setText("");
+            int stt = model.getRowCount() + 1;
+            model.addRow(new Object[]{stt, medicineName, quantityStr, "x"});
+
+            // ---- Thêm vào listDrug ----
+            int quantity = Integer.parseInt(quantityStr);
+            int morning = txtMorning.getText().isEmpty() ? 0 : Integer.parseInt(txtMorning.getText());
+            int noon = txtNoon.getText().isEmpty() ? 0 : Integer.parseInt(txtNoon.getText());
+            int afternoon = txtAfternoon.getText().isEmpty() ? 0 : Integer.parseInt(txtAfternoon.getText());
+
+            DrugDose drugDose = new DrugDose(medicineName, morning, noon, afternoon);
+            listDrugDose.add(drugDose);
+
         });
 
     }
-
 
     private void setLabelIcon(JLabel label, String iconPath, int width, int height) {
         try {
@@ -289,5 +347,84 @@ public class AddPrescriptionPanel extends JPanel {
 
     public void setBtnAddDrugs(JButton btnAddDrugs) {
         this.btnAddDrugs = btnAddDrugs;
+    }
+
+    public JComboBox<String> getComboMedicinename() {
+        return comboMedicinename;
+    }
+
+    public void setComboMedicinename(JComboBox<String> comboMedicinename) {
+        this.comboMedicinename = comboMedicinename;
+    }
+
+    public JTextField getTxtMorning() {
+        return txtMorning;
+    }
+
+    public void setTxtMorning(JTextField txtMorning) {
+        this.txtMorning = txtMorning;
+    }
+
+    public JTextField getTxtNoon() {
+        return txtNoon;
+    }
+
+    public void setTxtNoon(JTextField txtNoon) {
+        this.txtNoon = txtNoon;
+    }
+
+    public JTextField getTxtAfternoon() {
+        return txtAfternoon;
+    }
+
+    public void setTxtAfternoon(JTextField txtAfternoon) {
+        this.txtAfternoon = txtAfternoon;
+    }
+
+    public JTextField getTxtQuantity() {
+        return txtQuantity;
+    }
+
+    public void setTxtQuantity(JTextField txtQuantity) {
+        this.txtQuantity = txtQuantity;
+    }
+
+    // Hàm tính liều lượng
+    private void calculateQuantity() {
+        int morning = txtMorning.getText().isEmpty() ? 0 : Integer.parseInt(txtMorning.getText());
+        int noon = txtNoon.getText().isEmpty() ? 0 : Integer.parseInt(txtNoon.getText());
+        int afternoon = txtAfternoon.getText().isEmpty() ? 0 : Integer.parseInt(txtAfternoon.getText());
+
+        int quantity = (morning + noon + afternoon) * 7;
+        txtQuantity.setText(String.valueOf(quantity));
+    }
+    public void showText(){
+        for (DrugDose list:listDrugDose){
+            System.out.println(list);
+        }
+    }
+
+    public List<DrugDose> getListDrugDose() {
+        return listDrugDose;
+    }
+
+    public void setListDrugDose(List<DrugDose> listDrugDose) {
+        this.listDrugDose = listDrugDose;
+    }
+    public void resetInfor(){
+        txtMorning.setText("");
+        txtNoon.setText("");
+        txtAfternoon.setText("");
+        txtQuantity.setText("");
+
+        ((DefaultTableModel) serviceTable.getModel()).setRowCount(0);
+    }
+
+    public JTable getServiceTable() {
+        return serviceTable;
+    }
+
+    public void setServiceTable(JTable serviceTable) {
+        this.serviceTable = serviceTable;
     }
 }
