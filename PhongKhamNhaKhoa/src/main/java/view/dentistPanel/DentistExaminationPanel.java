@@ -10,7 +10,11 @@ public class DentistExaminationPanel extends JPanel {
     private JRadioButton rbFromPrescription;
     private JButton btnCancel, btnAddService;
     private JPanel contentPanel;
-
+    private int idPrescription;
+    private String namePatient;
+    private String symptom;
+    private String diagnosis;
+    private String treatment;
     public DentistExaminationPanel() {
         initComponents();
     }
@@ -274,5 +278,13 @@ public class DentistExaminationPanel extends JPanel {
     }
     public void setAgePatient(String age){
         tfAge.setText(age);
+    }
+
+    public int getIdPrescription() {
+        return idPrescription;
+    }
+
+    public void setIdPrescription(int idPrescription) {
+        this.idPrescription = idPrescription;
     }
 }

@@ -22,7 +22,8 @@ public class AddPrescriptionPanel extends JPanel {
     private JPanel contactInfoPanel;
     private JButton btnConfirm;
     private JButton btnAddDrugs;
-
+//    private String nameDrug;
+//    private int
     public AddPrescriptionPanel() {
         initComponents();
     }
@@ -32,7 +33,7 @@ public class AddPrescriptionPanel extends JPanel {
         setBackground(Color.WHITE);
 
         // --- Tiêu đề ---
-        lblIntroTitle = new JLabel("  Dịch vụ sử dụng");
+        lblIntroTitle = new JLabel(" Thêm đơn thuốc ");
         lblIntroTitle.setFont(new Font("Arial", Font.BOLD, 18));
         lblIntroTitle.setPreferredSize(new Dimension(200, 30));
         add(lblIntroTitle, BorderLayout.PAGE_START);
@@ -134,7 +135,7 @@ public class AddPrescriptionPanel extends JPanel {
         // Header
         JTableHeader header = serviceTable.getTableHeader();
         header.setBackground(new Color(0, 102, 204));
-        header.setForeground(Color.DARK_GRAY);
+        header.setForeground(Color.white);
         header.setFont(new Font("Arial", Font.BOLD, 13));
         header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
         DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) header.getDefaultRenderer();
@@ -165,7 +166,7 @@ public class AddPrescriptionPanel extends JPanel {
         bottomPanel.add(tableScroll, BorderLayout.CENTER);
 
         // --- Nút thêm danh sách thuốc ---
-        btnAddDrugs = new JButton("Thêm danh sách thuốc");
+        btnAddDrugs = new JButton("Thêm");
         btnAddDrugs.setBackground(Color.GREEN);
         btnAddDrugs.setForeground(Color.WHITE);
         btnAddDrugs.setFocusPainted(false);
