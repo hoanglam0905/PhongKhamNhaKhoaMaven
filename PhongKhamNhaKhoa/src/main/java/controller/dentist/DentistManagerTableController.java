@@ -23,6 +23,8 @@ public class DentistManagerTableController extends MouseAdapter{
 
             // Gọi hàm chuyển panel trong view
             switchDentistExaminationPanel(table.getValueAt(row, 1).toString(),table.getValueAt(row, 2).toString(),table.getValueAt(row, 3).toString(),table.getValueAt(row, 4).toString(),table.getValueAt(row, 5).toString());
+            view.getMainPanel().getDentistExaminationPanel().setSdtPatient(table.getValueAt(row, 2).toString());
+//            System.out.println("Đang lấy số điện thoại: "+view.getMainPanel().getDentistExaminationPanel().getSdtPatient());
         }
     }
 

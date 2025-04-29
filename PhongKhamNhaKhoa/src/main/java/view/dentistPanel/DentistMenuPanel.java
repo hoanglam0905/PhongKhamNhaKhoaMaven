@@ -58,10 +58,20 @@ public class DentistMenuPanel extends JPanel {
 
         //Các menu label
         lblSchedule = createMenuLabel("Xem lịch khám", 1, gbc,"/img/calendar.png");
-//        lblSchedule.setOpaque(true);
+        lblSchedule.setOpaque(true);
+        lblSchedule.setBackground(Color.WHITE);
+
         lblPatients = createMenuLabel("Xem bệnh nhân", 2, gbc,"/img/icontooth.png");
+        lblPatients.setOpaque(true);
+        lblPatients.setBackground(Color.WHITE);
+
         lblFeature1 = createMenuLabel("Tính năng khác", 3, gbc,"/img/see.png");
+        lblFeature1.setOpaque(true);
+        lblFeature1.setBackground(Color.WHITE);
+
         lblFeature2 = createMenuLabel("Tính năng khác", 4, gbc,"/img/see.png");
+        lblFeature2.setOpaque(true);
+        lblFeature2.setBackground(Color.WHITE);
 
         // Thêm 1 thành phần đẩy nội dung lên trên (tránh dồn xuống giữa)
         gbc.gridy = 5;
