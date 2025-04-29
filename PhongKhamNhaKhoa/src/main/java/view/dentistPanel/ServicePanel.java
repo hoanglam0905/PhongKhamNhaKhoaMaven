@@ -19,7 +19,8 @@ public class ServicePanel extends JPanel {
     private JLabel lblEmail;
     private JPanel contactInfoPanel;
     private JButton btnAddDrugs;
-
+    private String nameService;
+    private int quantity;
     public ServicePanel() {
         initComponents();
     }
@@ -89,7 +90,7 @@ public class ServicePanel extends JPanel {
         // Header
         JTableHeader header = serviceTable.getTableHeader();
         header.setBackground(new Color(0, 102, 204));
-        header.setForeground(Color.DARK_GRAY);
+        header.setForeground(Color.white);
         header.setFont(new Font("Arial", Font.BOLD, 13));
         header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
         DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) header.getDefaultRenderer();
@@ -120,7 +121,7 @@ public class ServicePanel extends JPanel {
         bottomPanel.add(tableScroll, BorderLayout.CENTER);
 
         // --- Nút thêm danh sách thuốc ---
-        btnAddDrugs = new JButton("Thêm");
+        btnAddDrugs = new JButton("Thêm danh sách thuốc");
         btnAddDrugs.setBackground(Color.GREEN);
         btnAddDrugs.setForeground(Color.WHITE);
         btnAddDrugs.setFocusPainted(false);

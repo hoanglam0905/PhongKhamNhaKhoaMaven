@@ -2,6 +2,7 @@ package controller.login;
 
 import view.listPanelMain.MainFrame;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -15,7 +16,12 @@ public class LoginButtonController implements ActionListener {
         String cmd=e.getActionCommand();
         if (cmd.equals("Đăng nhập")){
             if (view.getLoginPanel().getEmployee()==null){
-                System.out.println("dang null");
+                JOptionPane.showMessageDialog(
+                        view,
+                        "Tên đăng nhập hoặc mật khẩu không đúng!",
+                        "Đăng nhập thất bại",
+                        JOptionPane.ERROR_MESSAGE
+                );
             }else {
                 view.getLoginPanel().getEmployee().showInfo();
                 swicthPanel();

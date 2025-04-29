@@ -16,9 +16,9 @@ public class DentistManagerButtonController implements ActionListener {
         String command = e.getActionCommand();
         System.out.println(command);
         if (command.equals("Thêm dịch vụ")) {
-            switchDentistAddPrescriptionPanelPanel();
-        } else if (command.equals("Thêm danh sách thuốc")) {
             switchDentistServicePanel();
+        } else if (command.equals("Thêm danh sách thuốc")) {
+            switchDentistAddPrescriptionPanelPanel();
         } else if (command.equals("Thêm")){
             System.out.println("Làm gì đó đi...");
             switchDentistPatient1Panel();

@@ -10,8 +10,6 @@ import controller.receptionist.ReceptionTableController;
 import controller.receptionist.ReceptionistLableController;
 import controller.receptionist.ReceptionistSearch2Controller;
 import controller.receptionist.ReceptionistSearchController;
-import view.durgStore.ListBillPanel;
-import view.durgStore.ListDrugPanel;
 import view.login.LoginPanel;
 
 import javax.swing.*;
@@ -37,7 +35,6 @@ public class MainFrame extends JFrame {
         mainPanel = new DentistPanel();
         receptionistPanel = new ReceptionistPanel();
         drugStorePanel =new DrugStorePanel();
-
 
         cardLayout = new CardLayout();
         containerPanel = new JPanel(cardLayout);
