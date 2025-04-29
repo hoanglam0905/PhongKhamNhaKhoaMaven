@@ -46,9 +46,13 @@ public class ServicePanel extends JPanel {
         JLabel lblServiceName = new JLabel("Tên dịch vụ:");
         lblServiceName.setBounds(10, 25, 100, 25);
         lblServiceName.setFont(new Font("Arial", Font.ITALIC, 16));
-        JTextField txtServiceName = new JTextField();
-        txtServiceName.setBounds(10, 50, 200, 35);
-        txtServiceName.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+        String[] serviceList = {"Test1", "Test2", "Test3", "Test4"};
+        JComboBox<String> cboServiceName = new JComboBox<>(serviceList);
+        cboServiceName.setBounds(10, 50, 200, 35);
+        cboServiceName.setFont(new Font("Arial", Font.PLAIN, 14));
+        cboServiceName.setBackground(Color.WHITE);
+
 
         JLabel lblQuantity = new JLabel("Số lượng:");
         lblQuantity.setBounds(10, 120, 100, 25);
@@ -63,7 +67,7 @@ public class ServicePanel extends JPanel {
         btnConfirm.setForeground(Color.WHITE);             // Màu chữ trắng
 
         formPanel.add(lblServiceName);
-        formPanel.add(txtServiceName);
+        formPanel.add(cboServiceName);
         formPanel.add(lblQuantity);
         formPanel.add(txtQuantity);
         formPanel.add(btnConfirm);
@@ -172,7 +176,7 @@ public class ServicePanel extends JPanel {
 
         // --- Xử lý nút xác nhận ---
         btnConfirm.addActionListener(e -> {
-            String serviceName = txtServiceName.getText().trim();
+        	String serviceName = cboServiceName.getSelectedItem().toString().trim();
             String quantityStr = txtQuantity.getText().trim();
 
             if (serviceName.isEmpty() || quantityStr.isEmpty()) {
@@ -186,7 +190,7 @@ public class ServicePanel extends JPanel {
 
                 tableModel.addRow(new Object[]{stt, serviceName, quantity, "x"});
 
-                txtServiceName.setText("");
+                cboServiceName.setSelectedIndex(0);
                 txtQuantity.setText("");
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Số lượng phải là số nguyên.");
