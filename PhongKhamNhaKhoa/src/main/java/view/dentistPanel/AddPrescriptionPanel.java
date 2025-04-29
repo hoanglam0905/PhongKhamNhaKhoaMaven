@@ -1,15 +1,30 @@
 package view.dentistPanel;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 public class AddPrescriptionPanel extends JPanel {
 
@@ -48,66 +63,60 @@ public class AddPrescriptionPanel extends JPanel {
         JLabel lblMedicinename = new JLabel("Tên thuốc:");
         lblMedicinename.setBounds(10, 25, 100, 25);
         lblMedicinename.setFont(new Font("Arial", Font.ITALIC, 16));
-        JTextField txtMedicinename = new JTextField();
-        txtMedicinename.setBounds(10, 50, 200, 35);
-        txtMedicinename.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+        //JCombo Box nhập tên thuốc
+        String[] medicineList = {"Test1", "Test2", "Test3", "Test4"};
+        JComboBox<String> comboMedicinename = new JComboBox<>(medicineList);
+        comboMedicinename.setBounds(10, 50, 200, 35);
+        comboMedicinename.setFont(new Font("Arial", Font.PLAIN, 14));
+        comboMedicinename.setBackground(Color.WHITE);
+
         JTextField txtQuantity = new JTextField();
         
-     // Tạo các checkbox
-        JCheckBox chkMorning = new JCheckBox("Sáng");
-        chkMorning.setBounds(10, 180, 80, 25);
-        chkMorning.setFont(new Font("Arial", Font.ITALIC, 14));
+        JLabel lblMorning = new JLabel("Sáng:");
+        lblMorning.setBounds(10, 170, 50, 25);
+        lblMorning.setFont(new Font("Arial", Font.ITALIC, 14));
+        JTextField txtMorning = new JTextField();
+        txtMorning.setBounds(10, 195, 40, 35);
+        txtMorning.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-        JCheckBox chkNoon = new JCheckBox("Trưa");
-        chkNoon.setBounds(90, 180, 80, 25);
-        chkNoon.setFont(new Font("Arial", Font.ITALIC, 14));
+        JLabel lblNoon = new JLabel("Trưa:");
+        lblNoon.setBounds(80, 170, 50, 25);
+        lblNoon.setFont(new Font("Arial", Font.ITALIC, 14));
+        JTextField txtNoon = new JTextField();
+        txtNoon.setBounds(80, 195, 40, 35);
+        txtNoon.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-        JCheckBox chkAfternoon = new JCheckBox("Chiều");
-        chkAfternoon.setBounds(170, 180, 80, 25);
-        chkAfternoon.setFont(new Font("Arial", Font.ITALIC, 14));
+        JLabel lblAfternoon = new JLabel("Chiều:");
+        lblAfternoon.setBounds(150, 170, 50, 25);
+        lblAfternoon.setFont(new Font("Arial", Font.ITALIC, 14));
+        JTextField txtAfternoon = new JTextField();
+        txtAfternoon.setBounds(150, 195, 40, 35);
+        txtAfternoon.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-        // Thêm các checkbox vào formPanel
-        formPanel.add(chkMorning);
-        formPanel.add(chkNoon);
-        formPanel.add(chkAfternoon);
+        formPanel.add(lblMorning);
+        formPanel.add(txtMorning);
+        formPanel.add(lblNoon);
+        formPanel.add(txtNoon);
+        formPanel.add(lblAfternoon);
+        formPanel.add(txtAfternoon);
 
-        // Lắng nghe sự kiện khi người dùng chọn checkbox
-        ActionListener updateQuantityListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String quantity = "";
-                if (chkMorning.isSelected()) {
-                    quantity += "Sáng ";
-                }
-                if (chkNoon.isSelected()) {
-                    quantity += "Trưa ";
-                }
-                if (chkAfternoon.isSelected()) {
-                    quantity += "Chiều ";
-                }
-                txtQuantity.setText(quantity.trim());
-            }
-        };
 
-        // Gắn sự kiện cho các checkbox
-        chkMorning.addActionListener(updateQuantityListener);
-        chkNoon.addActionListener(updateQuantityListener);
-        chkAfternoon.addActionListener(updateQuantityListener);
 
 
         JLabel lblQuantity = new JLabel("Liều lượng:");
-        lblQuantity.setBounds(10, 120, 100, 25);
+        lblQuantity.setBounds(10, 100, 100, 25);
         lblQuantity.setFont(new Font("Arial", Font.ITALIC, 16));
-        txtQuantity.setBounds(10, 145, 200, 35);
+        txtQuantity.setBounds(10, 125, 200, 35);
         txtQuantity.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
         btnConfirm = new JButton("Xác nhận");
-        btnConfirm.setBounds(10, 215, 100, 30);
+        btnConfirm.setBounds(10, 245, 100, 30);
         btnConfirm.setBackground(new Color(0, 123, 255));  // Màu xanh dương
         btnConfirm.setForeground(Color.WHITE);             // Màu chữ trắng
 
         formPanel.add(lblMedicinename);
-        formPanel.add(txtMedicinename);
+        formPanel.add(comboMedicinename);
         formPanel.add(lblQuantity);
         formPanel.add(txtQuantity);
         formPanel.add(btnConfirm);
@@ -216,7 +225,7 @@ public class AddPrescriptionPanel extends JPanel {
 
         // --- Xử lý nút xác nhận ---
         btnConfirm.addActionListener(e -> {
-            String serviceName = txtMedicinename.getText().trim();
+        	String serviceName = comboMedicinename.getSelectedItem().toString();
             String quantityStr = txtQuantity.getText().trim();
 
             // Kiểm tra nếu người dùng chưa nhập đầy đủ thông tin
@@ -231,7 +240,7 @@ public class AddPrescriptionPanel extends JPanel {
             tableModel.addRow(new Object[]{stt, serviceName, quantityStr, "x"});
 
             // Xóa các trường nhập sau khi thêm
-            txtMedicinename.setText("");
+            comboMedicinename.setSelectedIndex(0);
             txtQuantity.setText("");
         });
 
