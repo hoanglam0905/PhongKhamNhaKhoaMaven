@@ -31,16 +31,16 @@ public class ServiceDao {
             throw new RuntimeException(e);
         }
     }
-    public static void addPrescriptionServiceDetail(int prescription_id, int service_id) {
+    public static void addPrescriptionServiceDetail(int prescription_id, int service_id, int quantity) {
         try {
             Connection con = JDBCUtil.getConnection();
 
-            // Ghi rõ tên cột cần insert
-            String sql = "INSERT INTO PrescriptionServiceDetail (prescription_id, service_id) VALUES (?, ?)";
+            String sql = "INSERT INTO PrescriptionServiceDetail (prescription_id, service_id, quantity) VALUES (?, ?, ?)";
 
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, prescription_id);
             pst.setInt(2, service_id);
+            pst.setInt(3, quantity);
 
             int rowsInserted = pst.executeUpdate();
             if (rowsInserted > 0) {
@@ -53,6 +53,7 @@ public class ServiceDao {
             throw new RuntimeException(e);
         }
     }
+
     public static List<Object[]> getListServiceFromPre(String id_pre) {
         List<Object[]> list = new ArrayList<>();
         try {

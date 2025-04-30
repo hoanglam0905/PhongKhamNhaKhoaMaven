@@ -10,6 +10,9 @@ public class Service {
         this.name = name;
         this.price = price;
     }
+    public Service(String name) {
+        this.name = name;
+    }
 
     public int getId() {
         return id;
