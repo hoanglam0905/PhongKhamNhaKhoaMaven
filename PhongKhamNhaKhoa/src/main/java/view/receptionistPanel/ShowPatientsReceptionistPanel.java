@@ -27,12 +27,12 @@ public class ShowPatientsReceptionistPanel extends JPanel {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
-     // Tạo panel chứa cả tiêu đề và ô tìm kiếm
+        // Tạo panel chứa cả tiêu đề và ô tìm kiếm
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(Color.WHITE);
 
         // Tiêu đề bên trái
-        JLabel lblTitle = new JLabel("Danh Sách Bệnh Nhân");
+        JLabel lblTitle = new JLabel("Danh Sách Bệnh Nhân Nè");
         lblTitle.setFont(new Font("Arial", Font.BOLD, 18));
         lblTitle.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 0)); // padding trái
         topPanel.add(lblTitle, BorderLayout.WEST);
@@ -48,9 +48,8 @@ public class ShowPatientsReceptionistPanel extends JPanel {
 
         topPanel.add(searchPanel, BorderLayout.EAST);
 
-        // Thêm topPanel vào phía trên của frame/panel chính
+        // Thêm topPanel vào phía trên của panel chính
         add(topPanel, BorderLayout.NORTH);
-
 
         // --- Panel chứa hai bảng ---
         JPanel tablePanel = new JPanel(new BorderLayout());
@@ -91,7 +90,6 @@ public class ShowPatientsReceptionistPanel extends JPanel {
             }
         });
 
-
         // Căn giữa các cột bảng 1
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
@@ -99,12 +97,12 @@ public class ShowPatientsReceptionistPanel extends JPanel {
             patientInfoTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
 
-        // Điều chỉnh độ rộng cột bảng 1 (rộng hơn)
-        patientInfoTable.getColumnModel().getColumn(0).setPreferredWidth(80);  // Mã BN
-        patientInfoTable.getColumnModel().getColumn(1).setPreferredWidth(200); // Tên Bệnh Nhân
-        patientInfoTable.getColumnModel().getColumn(2).setPreferredWidth(150); // SĐT
-        patientInfoTable.getColumnModel().getColumn(3).setPreferredWidth(100); // Giới tính
-        patientInfoTable.getColumnModel().getColumn(4).setPreferredWidth(80);  // Tuổi
+        // Điều chỉnh độ rộng cột bảng 1
+        patientInfoTable.getColumnModel().getColumn(0).setPreferredWidth(100);  // Mã BN
+        patientInfoTable.getColumnModel().getColumn(1).setPreferredWidth(300);  // Tên Bệnh Nhân
+        patientInfoTable.getColumnModel().getColumn(2).setPreferredWidth(200);  // SĐT
+        patientInfoTable.getColumnModel().getColumn(3).setPreferredWidth(120);  // Giới tính
+        patientInfoTable.getColumnModel().getColumn(4).setPreferredWidth(100);  // Tuổi
 
         infoHeader.setReorderingAllowed(false);
         infoHeader.setResizingAllowed(false);
@@ -145,22 +143,21 @@ public class ShowPatientsReceptionistPanel extends JPanel {
             }
         });
 
-
         // Căn giữa các cột bảng 2
         for (int i = 0; i < patientActionTable.getColumnCount(); i++) {
             patientActionTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
 
-        // Điều chỉnh độ rộng cột bảng 2 (nhỏ hơn)
-        patientActionTable.getColumnModel().getColumn(0).setPreferredWidth(55);  // Tái Khám
-        patientActionTable.getColumnModel().getColumn(1).setPreferredWidth(75);  // Lịch hẹn mới
-        patientActionTable.getColumnModel().getColumn(2).setPreferredWidth(35);  // Sửa
+        // Điều chỉnh độ rộng cột bảng 2
+        patientActionTable.getColumnModel().getColumn(0).setPreferredWidth(100);  // Tái Khám
+        patientActionTable.getColumnModel().getColumn(1).setPreferredWidth(120);  // Lịch hẹn mới
+        patientActionTable.getColumnModel().getColumn(2).setPreferredWidth(80);   // Sửa
 
         actionHeader.setReorderingAllowed(false);
         actionHeader.setResizingAllowed(false);
 
         // Thêm dữ liệu mẫu
-        PatientDAO dao=new PatientDAO();
+        PatientDAO dao = new PatientDAO();
         List<Object[]> list = dao.getAllPatients();
         for (Object[] row : list) {
             infoTableModel.addRow(row);
@@ -201,20 +198,17 @@ public class ShowPatientsReceptionistPanel extends JPanel {
         actionTableScroll.getViewport().setBackground(Color.WHITE);
 
         // Điều chỉnh kích thước bảng
-        infoTableScroll.setPreferredSize(new Dimension(380, 400)); // Bảng bên trái rộng hơn
-        actionTableScroll.setPreferredSize(new Dimension(300, 400)); // Bảng bên phải nhỏ hơn
-
+        infoTableScroll.setPreferredSize(new Dimension(820, 600)); // Tăng kích thước bảng thông tin
+        actionTableScroll.setPreferredSize(new Dimension(500, 600)); // Tăng kích thước bảng hành động
 
         // Sắp xếp hai bảng cạnh nhau
         JPanel combinedTablePanel = new JPanel(new BorderLayout());
-        JPanel nth = new JPanel(new BorderLayout());
-        nth.setBackground(Color.WHITE);
-        combinedTablePanel.add(infoTableScroll, BorderLayout.WEST);
-        combinedTablePanel.add(actionTableScroll, BorderLayout.EAST);
-        combinedTablePanel.add(nth, BorderLayout.CENTER);
+        combinedTablePanel.setBackground(Color.WHITE);
+        combinedTablePanel.add(infoTableScroll, BorderLayout.CENTER); // Đặt bảng thông tin ở giữa
+        combinedTablePanel.add(actionTableScroll, BorderLayout.EAST); // Đặt bảng hành động ở bên phải
 
         tablePanel.add(combinedTablePanel, BorderLayout.CENTER);
-        add(tablePanel, BorderLayout.SOUTH);
+        add(tablePanel, BorderLayout.CENTER); // Đặt tablePanel ở giữa panel chính
     }
 
     // Class để render nút trong bảng

@@ -30,69 +30,69 @@ public class AddPatientPanel extends JPanel {
 
         // Tên bệnh nhân
         JLabel lblName = new JLabel("Họ và tên:");
-        lblName.setFont(new Font("Arial", Font.ITALIC, 16));
-        lblName.setBounds(50, 50, 100, 20);
+        lblName.setFont(new Font("Arial", Font.ITALIC, 18));
+        lblName.setBounds(210, 140, 100, 20);
         txtName = new JTextField();
-        txtName.setBounds(50, 80, 250, 30);
+        txtName.setBounds(200, 170, 270, 40);
         txtName.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         add(lblName);
         add(txtName);
 
         // Số điện thoại
         JLabel lblPhone = new JLabel("Số điện thoại:");
-        lblPhone.setFont(new Font("Arial", Font.ITALIC, 16));
-        lblPhone.setBounds(400, 50 , 100, 20);
+        lblPhone.setFont(new Font("Arial", Font.ITALIC, 18));
+        lblPhone.setBounds(560, 140 , 100, 20);
         txtPhone = new JTextField();
-        txtPhone.setBounds(400, 80 , 200, 30);
+        txtPhone.setBounds(550, 170 , 250, 40);
         txtPhone.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         add(lblPhone);
         add(txtPhone);
 
         // Tuổi
         JLabel lblAge = new JLabel("Tuổi:");
-        lblAge.setFont(new Font("Arial", Font.ITALIC, 16));
-        lblAge.setBounds(50, 130, 100, 20);
+        lblAge.setFont(new Font("Arial", Font.ITALIC, 18));
+        lblAge.setBounds(210, 230, 100, 20);
         txtAge = new JTextField();
-        txtAge.setBounds(50, 160 , 250, 30);
+        txtAge.setBounds(200, 260 , 270, 40);
         txtAge.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         add(lblAge);
         add(txtAge);
 
         // Giới tính
         JLabel lblGender = new JLabel("Giới tính:");
-        lblGender.setFont(new Font("Arial", Font.ITALIC, 16));
-        lblGender.setBounds(400, 130 , 100, 20);
+        lblGender.setFont(new Font("Arial", Font.ITALIC, 18));
+        lblGender.setBounds(560, 230 , 100, 20);
         txtGender = new JTextField();
-        txtGender.setBounds(400, 160, 200, 30);
+        txtGender.setBounds(550, 260, 250, 40);
         txtGender.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         add(lblGender);
         add(txtGender);
 
         // Chẩn đoán
         JLabel lblAdress = new JLabel("Địa chỉ:");
-        lblAdress.setFont(new Font("Arial", Font.ITALIC, 16));
-        lblAdress.setBounds(50, 210 , 100, 20);
+        lblAdress.setFont(new Font("Arial", Font.ITALIC, 18));
+        lblAdress.setBounds(210, 320 , 100, 20);
         txtAdress = new JTextField();
-        txtAdress.setBounds(50, 240, 550, 30);
+        txtAdress.setBounds(200, 350, 600, 40);
         txtAdress.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         add(lblAdress);
         add(txtAdress);
         
         JLabel lblDoctor = new JLabel("Bác sĩ:");
-        lblDoctor.setFont(new Font("Arial", Font.ITALIC, 16));
-        lblDoctor.setBounds(50, 290 , 100, 20);
+        lblDoctor.setFont(new Font("Arial", Font.ITALIC, 18));
+        lblDoctor.setBounds(210, 410 , 100, 20);
         txtDoctor = new JTextField();
-        txtDoctor.setBounds(50, 320, 550, 30);
+        txtDoctor.setBounds(200, 440, 600, 40);
         txtDoctor.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         add(lblDoctor);
         add(txtDoctor);
 
         // Nút "Thêm Bệnh Nhân và Lịch Hẹn"
         btnAddPatient = new JButton("Thêm Bệnh Nhân và Lịch Hẹn");
-        btnAddPatient.setFont(new Font("Arial", Font.BOLD, 14));
+        btnAddPatient.setFont(new Font("Arial", Font.BOLD, 16));
         btnAddPatient.setBackground(new Color(0, 123, 255)); // Màu xanh dương
         btnAddPatient.setForeground(Color.WHITE);
-        btnAddPatient.setBounds(355, 370, 250, 40);
+        btnAddPatient.setBounds(500, 500, 300, 45);
         btnAddPatient.setFocusPainted(false);
         add(btnAddPatient);
 
