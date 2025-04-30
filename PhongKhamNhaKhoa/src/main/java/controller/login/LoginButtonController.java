@@ -1,5 +1,6 @@
 package controller.login;
 
+import dao.DentistDao;
 import view.listPanelMain.MainFrame;
 
 import javax.swing.*;
@@ -25,6 +26,7 @@ public class LoginButtonController implements ActionListener {
             }else {
                 view.getLoginPanel().getEmployee().showInfo();
                 swicthPanel();
+                view.getMainPanel().getDentistListPatient().setId_doctor(DentistDao.getIdDentistLogin(view.getLoginPanel().getAcc(),view.getLoginPanel().getPass())+"");
             }
         }
     }
@@ -34,6 +36,7 @@ public class LoginButtonController implements ActionListener {
             switch (view.getLoginPanel().getEmployee().getRole()) {
                 case "Bác sĩ":
                     view.getCardLayout().show(view.getContainerPanel(), "DentistPanel");
+                    switchDentistIntroducePanel();
                     view.getMainPanel().getDentistTaskbar().getLblDoctorName().setText(nameD[nameD.length - 1]);
                     break;
                 case "Lễ tân":
@@ -46,5 +49,8 @@ public class LoginButtonController implements ActionListener {
                     break;
             }
         }
+    }
+    public void switchDentistIntroducePanel() {
+        view.getMainPanel().getCardLayout().show(view.getMainPanel().getCenterPanel(), "Introduce");
     }
 }

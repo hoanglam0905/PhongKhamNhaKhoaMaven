@@ -18,15 +18,29 @@ public class DentistManagerTableController extends MouseAdapter{
         // Kiểm tra double-click
         if (e.getClickCount() == 2 && table.getSelectedRow() != -1) {
             int row = table.getSelectedRow();
+            String status = table.getValueAt(row, 5).toString(); // Cột 5 là Trạng thái
+
+            if ("Đã khám".equalsIgnoreCase(status)) {
+                JOptionPane.showMessageDialog(null, "Bệnh nhân này đã được khám!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
+            // Tiếp tục nếu là "Chưa khám"
             String tenBN = table.getValueAt(row, 1).toString();
             System.out.println("Đã double-click bệnh nhân: " + tenBN);
 
-            // Gọi hàm chuyển panel trong view
-            switchDentistExaminationPanel(table.getValueAt(row, 1).toString(),table.getValueAt(row, 2).toString(),table.getValueAt(row, 3).toString(),table.getValueAt(row, 4).toString(),table.getValueAt(row, 5).toString());
+            // Gọi panel khám
+            switchDentistExaminationPanel(
+                    table.getValueAt(row, 1).toString(),  // Tên
+                    table.getValueAt(row, 2).toString(),  // SĐT
+                    table.getValueAt(row, 3).toString(),  // Giới tính
+                    table.getValueAt(row, 4).toString(),  // Tuổi
+                    table.getValueAt(row, 5).toString()   // Trạng thái
+            );
             view.getMainPanel().getDentistExaminationPanel().setSdtPatient(table.getValueAt(row, 2).toString());
-//            System.out.println("Đang lấy số điện thoại: "+view.getMainPanel().getDentistExaminationPanel().getSdtPatient());
         }
     }
+
 
     public MainFrame getView() {
         return view;

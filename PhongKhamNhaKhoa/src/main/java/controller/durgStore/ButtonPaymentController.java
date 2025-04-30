@@ -1,9 +1,13 @@
 package controller.durgStore;
 
+import dao.BillDao;
+import service.ExportToPDF;
 import view.listPanelMain.MainFrame;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import Utils.PaymentQRComponent;
 
 public class ButtonPaymentController implements ActionListener {
     private MainFrame view;
@@ -16,25 +20,45 @@ public class ButtonPaymentController implements ActionListener {
         if (actionCommand.equals("Tiền mặt")) {
             switchPaySus();
         } else if (actionCommand.equals("Quét mã")) {
-            String content = "Thanh toán hóa đơn #";
+            String idStr = view.getDrugStorePanel().getBillPanel().getIdBill().getText();
+            int id = Integer.parseInt(idStr);
+            String content = "Thanh toán hóa đơn #" + id;
 
-            var qrPanel = view.getDrugStorePanel().getPaymentQRComponent();
+            PaymentQRComponent qrPanel = view.getDrugStorePanel().getPaymentQRComponent();
             qrPanel.setAmountAndContent(2000, content);
 
-            // Gán callback khi thanh toán thành công  chuyển sang BillConf
             qrPanel.setOnPaymentSuccess(() -> {
+                // 1. Cập nhật DB
+                BillDao.updatePaymentStatusToPaid(id);
+
+                // 2. Cập nhật giao diện
+                view.getDrugStorePanel().getBillConfPanel().getStatus().setText("Đã thanh toán");
+
+                // 3. Xuất PDF
+                ExportToPDF.billToPDF(id+"");
+
+                // 4. Chuyển panel
                 view.getDrugStorePanel().getCardLayout().show(
                         view.getDrugStorePanel().getCenterPanel(), "BillConf"
                 );
             });
 
-            // Hiển thị panel QR
             view.getDrugStorePanel().getCardLayout().show(
                     view.getDrugStorePanel().getCenterPanel(), "QR"
             );
         }
     }
-    public void switchPaySus(){
-        view.getDrugStorePanel().getCardLayout().show(view.getDrugStorePanel().getCenterPanel(),"BillConf");
+    public void switchPaySus() {
+        String idStr = view.getDrugStorePanel().getBillPanel().getIdBill().getText();
+        int id = Integer.parseInt(idStr);
+
+        BillDao.updatePaymentStatusToPaid(id);
+
+        view.getDrugStorePanel().getBillConfPanel().getStatus().setText("Đã thanh toán");
+
+        ExportToPDF.billToPDF(id+"");
+
+        view.getDrugStorePanel().getCardLayout().show(view.getDrugStorePanel().getCenterPanel(), "BillConf");
     }
+
 }

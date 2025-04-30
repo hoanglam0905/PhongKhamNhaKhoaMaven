@@ -25,6 +25,26 @@ public class DentistDao {
             throw new RuntimeException(e);
         }
     }
+    public static String getNameDenFormBill(String idBill){
+        try {
+            Connection con = JDBCUtil.getConnection();
+            Statement st= con.createStatement();
+            ResultSet rs = st.executeQuery("SELECT e.name AS TenBacSi\n" +
+                    "FROM Prescription pr\n" +
+                    "JOIN Doctor d ON pr.doctor_id = d.id\n" +
+                    "JOIN Employee e ON d.id = e.id\n" +
+                    "WHERE pr.id =" + idBill);
+            rs.next();
+            return rs.getString("TenBacSi");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
     public static void main(String[] args) {
         System.out.println(DentistDao.getIdDentistLogin("bacsia","password"));
     }

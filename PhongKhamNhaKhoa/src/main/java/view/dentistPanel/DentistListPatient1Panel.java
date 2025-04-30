@@ -1,5 +1,6 @@
 package view.dentistPanel;
 
+import dao.DentistDao;
 import dao.PatientDAO;
 
 import javax.swing.*;
@@ -18,6 +19,15 @@ public class DentistListPatient1Panel extends JPanel {
     private JTable tblPatients;
     private JScrollPane scrollPane;
     Object[][] data;
+    private String id_doctor;
+
+    public String getId_doctor() {
+        return id_doctor;
+    }
+
+    public void setId_doctor(String id_doctor) {
+        this.id_doctor = id_doctor;
+    }
 
     public DentistListPatient1Panel() {
         initComponents();
@@ -68,13 +78,11 @@ public class DentistListPatient1Panel extends JPanel {
         headerLayout.setHorizontalGroup(hGroup);
         headerLayout.setVerticalGroup(vGroup);
 
-
         add(headerPanel, BorderLayout.PAGE_START);
 
         String[] columnNames = {"STT", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Trạng thái", "Khám"};
 
-        PatientDAO dao = new PatientDAO();
-        List<Object[]> list = dao.getAllPatients();
+        List<Object[]> list = PatientDAO.getAllPatients();
 
         // Tạo icon "see"
         ImageIcon seeIcon;
@@ -252,4 +260,46 @@ public class DentistListPatient1Panel extends JPanel {
     public void setData(Object[][] data) {
         this.data = data;
     }
+    public void reloadTableData(String acc, String pass) {
+        int dentistId = DentistDao.getIdDentistLogin(acc, pass);
+        List<Object[]> list = PatientDAO.getPatientOfDentist(String.valueOf(dentistId));
+
+        // Gán lại icon xem
+        ImageIcon seeIcon;
+        try {
+            seeIcon = new ImageIcon(getClass().getResource("/img/see.png"));
+            Image scaled = seeIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+            seeIcon = new ImageIcon(scaled);
+        } catch (Exception e) {
+            System.err.println("Không tìm thấy ảnh see.png");
+            seeIcon = null;
+        }
+
+        for (Object[] row : list) {
+            if (row.length >= 7) {
+                row[6] = seeIcon;
+            }
+        }
+
+        data = list.toArray(new Object[0][]);
+        DefaultTableModel model = (DefaultTableModel) tblPatients.getModel();
+        model.setDataVector(data, new String[]{
+                "STT", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Trạng thái", "Khám"
+        });
+
+        // Căn giữa toàn bộ nội dung bảng
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        for (int i = 0; i < tblPatients.getColumnCount(); i++) {
+            tblPatients.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+
+        //Căn giữa tiêu đề cột
+        JTableHeader header = tblPatients.getTableHeader();
+        DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) header.getDefaultRenderer();
+        headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+    }
+
+
 }
