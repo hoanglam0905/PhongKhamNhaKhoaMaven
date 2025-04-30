@@ -1,5 +1,6 @@
 package view.listPanelMain;
 
+import Utils.PaymentQRComponent;
 import view.dentistPanel.DentistTaskbar;
 import view.durgStore.*;
 
@@ -15,6 +16,7 @@ public class DrugStorePanel extends JPanel {
     private ListBillPanel listBillPanel;
     private DrugBillPanel billPanel;
     private DrugBillConfPanel billConfPanel;
+    private PaymentQRComponent paymentQRComponent;
 
     public DrugStorePanel() {
         initComponents();
@@ -29,7 +31,14 @@ public class DrugStorePanel extends JPanel {
         listDrugPanel=new ListDrugPanel();
         billPanel=new DrugBillPanel();
         billConfPanel  =new DrugBillConfPanel();
+        try {
+            paymentQRComponent=new PaymentQRComponent(2000, "Thanh toán hóa đơn", () -> {
+                JOptionPane.showMessageDialog(this, "Cảm ơn bạn đã thanh toán!");
 
+            });
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         // Layout chính
         setLayout(new BorderLayout());
 
@@ -51,6 +60,7 @@ public class DrugStorePanel extends JPanel {
         centerPanel.add(listDrugPanel,"Drugs");
         centerPanel.add(billPanel,"Bill");
         centerPanel.add(billConfPanel,"BillConf");
+        centerPanel.add(paymentQRComponent,"QR");
         // sau này cần add thêm ExaminationPanel hoặc CalendarPanel thì add luôn ở đây
 
         add(centerPanel, BorderLayout.CENTER); //Chỉ add centerPanel
@@ -118,5 +128,13 @@ public class DrugStorePanel extends JPanel {
 
     public void setBillPanel(DrugBillPanel billPanel) {
         this.billPanel = billPanel;
+    }
+
+    public PaymentQRComponent getPaymentQRComponent() {
+        return paymentQRComponent;
+    }
+
+    public void setPaymentQRComponent(PaymentQRComponent paymentQRComponent) {
+        this.paymentQRComponent = paymentQRComponent;
     }
 }

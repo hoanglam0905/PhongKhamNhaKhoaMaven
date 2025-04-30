@@ -33,4 +33,33 @@ public class DrugDao {
             throw new RuntimeException(e);
         }
     }
+    public static List<Object[]> getListAllDrug() {
+        List<Object[]> list = new ArrayList<>();
+
+        try (Connection conn = JDBCUtil.getConnection()) {
+            String query = "SELECT * FROM Drug";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String name = rs.getString("name");
+                String price = rs.getString("price");
+                int stock = rs.getInt("stockQuantity");
+
+                list.add(new Object[]{
+                        id,
+                        name,
+                        stock,
+                        "Vỉ",
+                        price
+                });
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
 }

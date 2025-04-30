@@ -16,7 +16,22 @@ public class ButtonPaymentController implements ActionListener {
         if (actionCommand.equals("Tiền mặt")) {
             switchPaySus();
         } else if (actionCommand.equals("Quét mã")) {
-            System.out.println("Tính năng đang được thêm!");
+            String content = "Thanh toán hóa đơn #";
+
+            var qrPanel = view.getDrugStorePanel().getPaymentQRComponent();
+            qrPanel.setAmountAndContent(2000, content);
+
+            // Gán callback khi thanh toán thành công  chuyển sang BillConf
+            qrPanel.setOnPaymentSuccess(() -> {
+                view.getDrugStorePanel().getCardLayout().show(
+                        view.getDrugStorePanel().getCenterPanel(), "BillConf"
+                );
+            });
+
+            // Hiển thị panel QR
+            view.getDrugStorePanel().getCardLayout().show(
+                    view.getDrugStorePanel().getCenterPanel(), "QR"
+            );
         }
     }
     public void switchPaySus(){
