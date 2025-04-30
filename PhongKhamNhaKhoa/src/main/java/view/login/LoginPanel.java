@@ -21,7 +21,7 @@ public class LoginPanel extends JPanel {
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(800, 400));
 
-        // Panel trái: Form đăng nhập
+        // Form đăng nhập
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(null);
         leftPanel.setPreferredSize(new Dimension(400, 400));
@@ -71,7 +71,23 @@ public class LoginPanel extends JPanel {
         Image scaledEye = eyeIconRaw.getImage().getScaledInstance(23, 23, Image.SCALE_SMOOTH);
         JLabel eyeIcon = new JLabel(new ImageIcon(scaledEye));
         eyeIcon.setBounds(300, 185, 23, 23);
+        eyeIcon.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Đổi chuột thành bàn tay
         leftPanel.add(eyeIcon);
+
+        // Xử lý click để hiện/ẩn mật khẩu
+        eyeIcon.addMouseListener(new java.awt.event.MouseAdapter() {
+            private boolean showingPassword = false; // trạng thái ẩn/hiện
+
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                showingPassword = !showingPassword;
+                if (showingPassword) {
+                    passwordField.setEchoChar((char) 0); // Hiện mật khẩu
+                } else {
+                    passwordField.setEchoChar('•');
+                }
+            }
+        });
 
         // Nút Đăng nhập
         loginButton = new JButton("Đăng nhập");

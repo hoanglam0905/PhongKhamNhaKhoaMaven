@@ -1,90 +1,91 @@
-package view.dentistPanel;
+package view.durgStore;
+//package view.durgStore;
 
-import dao.DentistDao;
 import dao.PatientDAO;
-
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.ArrayList;
 
-public class DentistListPatient1Panel extends JPanel {
+public class ListBillPanel extends JPanel {
 
     private JPanel headerPanel;
-    private JLabel lblTitle, lblSearch;
-    private JTextField tfSearch;
+    private JLabel lblTitle;
+    private JRadioButton rbHT, rbChuaHT;
+    private ButtonGroup groupStatus;
     private JTable tblPatients;
     private JScrollPane scrollPane;
-    Object[][] data;
-    private String id_doctor;
+    private Object[][] data;
+    private DefaultTableModel model;
+    private String sdt;
 
-    public String getId_doctor() {
-        return id_doctor;
-    }
 
-    public void setId_doctor(String id_doctor) {
-        this.id_doctor = id_doctor;
-    }
-
-    public DentistListPatient1Panel() {
+    public ListBillPanel() {
         initComponents();
     }
 
     private void initComponents() {
         setLayout(new BorderLayout());
         this.setBackground(Color.WHITE);
-        //Header Panel
+
         headerPanel = new JPanel();
         headerPanel.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
-        //Dòng này không quan trọng do nó sẽ được "kéo" dựa trên JFrame
         headerPanel.setPreferredSize(new Dimension(641, 40));
+        headerPanel.setBackground(Color.WHITE);
 
-        lblTitle = new JLabel("Xem lịch của bác sĩ");
+        lblTitle = new JLabel("Danh sách hóa đơn hôm nay");
         lblTitle.setFont(new Font("Arial", Font.BOLD, 16));
         lblTitle.setForeground(new Color(51, 51, 255));
 
-        lblSearch = new JLabel("Tìm kiếm");
-        lblSearch.setFont(new Font("Arial", Font.PLAIN, 15));
-        lblSearch.setForeground(Color.BLACK);
-        tfSearch = new JTextField();
-        tfSearch.setPreferredSize(new Dimension(200, 25));
+        // Radio buttons
+        rbHT = new JRadioButton("HT");
+        rbChuaHT = new JRadioButton("Chưa HT");
 
+        rbHT.setBackground(Color.WHITE);
+        rbChuaHT.setBackground(Color.WHITE);
+
+        rbHT.setFont(new Font("Arial", Font.PLAIN, 13));
+        rbChuaHT.setFont(new Font("Arial", Font.PLAIN, 13));
+
+        groupStatus = new ButtonGroup();
+        groupStatus.add(rbHT);
+        groupStatus.add(rbChuaHT);
+
+        // Header Layout
         GroupLayout headerLayout = new GroupLayout(headerPanel);
         headerPanel.setLayout(headerLayout);
         headerLayout.setAutoCreateGaps(true);
         headerLayout.setAutoCreateContainerGaps(true);
 
-        headerPanel.setBackground(Color.WHITE);
-
         GroupLayout.SequentialGroup hGroup = headerLayout.createSequentialGroup();
         GroupLayout.ParallelGroup vGroup = headerLayout.createParallelGroup(GroupLayout.Alignment.CENTER);
 
-        // Horizontal Group
         hGroup.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 240, GroupLayout.PREFERRED_SIZE);
-        hGroup.addGap(50, 50, Short.MAX_VALUE);
-        hGroup.addComponent(lblSearch);
-        hGroup.addGap(10);
-        hGroup.addComponent(tfSearch, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE);
+        hGroup.addGap(30, 30, Short.MAX_VALUE);
+        hGroup.addComponent(rbHT);
+        hGroup.addComponent(rbChuaHT);
 
-        //Vertical Group
         vGroup.addComponent(lblTitle);
-        vGroup.addComponent(lblSearch);
-        vGroup.addComponent(tfSearch, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE);
+        vGroup.addComponent(rbHT);
+        vGroup.addComponent(rbChuaHT);
 
-        //Set layout
         headerLayout.setHorizontalGroup(hGroup);
         headerLayout.setVerticalGroup(vGroup);
 
         add(headerPanel, BorderLayout.PAGE_START);
 
-        String[] columnNames = {"STT", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Trạng thái", "Khám"};
+        // Table data
+        String[] columnNames = {"Mã HD", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Tổng tiền", "Trạng thái", "Xem chi tiết"};
+        PatientDAO dao = new PatientDAO();
+        List<Object[]> list = dao.getAllBillPatients();
 
-        List<Object[]> list = PatientDAO.getAllPatients();
-
-        // Tạo icon "see"
+        // Icon see
         ImageIcon seeIcon;
         try {
             seeIcon = new ImageIcon(getClass().getResource("/img/see.png"));
@@ -95,19 +96,17 @@ public class DentistListPatient1Panel extends JPanel {
             seeIcon = null;
         }
 
-        // Gán icon vào từng dòng
         for (Object[] row : list) {
-            if (row.length >= 7) {
-                row[6] = seeIcon; // gán icon khám
+            if (row.length >= 8) {
+                row[7] = seeIcon;
             }
         }
 
         data = list.toArray(new Object[0][]);
 
-
-        DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+        model = new DefaultTableModel(data, columnNames) {
             final boolean[] canEdit = new boolean[]{
-                    false, false, false, false, false, false, false
+                    false, false, false, false, false, false, false, false
             };
 
             @Override
@@ -117,7 +116,7 @@ public class DentistListPatient1Panel extends JPanel {
 
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 6) return Icon.class;
+                if (columnIndex == 7) return Icon.class;
                 return String.class;
             }
         };
@@ -127,7 +126,7 @@ public class DentistListPatient1Panel extends JPanel {
         tblPatients.setFillsViewportHeight(true);
         tblPatients.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
-        // Tô màu cho tiêu đề cột
+        // Table Header
         JTableHeader tableHeader = tblPatients.getTableHeader();
         tableHeader.setDefaultRenderer(new DefaultTableCellRenderer() {
             @Override
@@ -148,7 +147,7 @@ public class DentistListPatient1Panel extends JPanel {
         scrollPane = new JScrollPane(tblPatients);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Renderer trắng cho ô dữ liệu
+        // Table cell renderer
         DefaultTableCellRenderer whiteCenterRenderer = new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value,
@@ -157,7 +156,6 @@ public class DentistListPatient1Panel extends JPanel {
                 JLabel lbl = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 lbl.setHorizontalAlignment(SwingConstants.CENTER);
                 lbl.setOpaque(true);
-
                 if (isSelected) {
                     lbl.setBackground(table.getSelectionBackground());
                     lbl.setForeground(table.getSelectionForeground());
@@ -165,12 +163,10 @@ public class DentistListPatient1Panel extends JPanel {
                     lbl.setBackground(Color.WHITE);
                     lbl.setForeground(Color.BLACK);
                 }
-
                 lbl.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
                 return lbl;
             }
         };
-
 
         DefaultTableCellRenderer iconRenderer = new DefaultTableCellRenderer() {
             @Override
@@ -188,21 +184,21 @@ public class DentistListPatient1Panel extends JPanel {
         };
 
         for (int i = 0; i < tblPatients.getColumnCount(); i++) {
-            if (i == 6) {
+            if (i == 7) {
                 tblPatients.getColumnModel().getColumn(i).setCellRenderer(iconRenderer);
             } else {
                 tblPatients.getColumnModel().getColumn(i).setCellRenderer(whiteCenterRenderer);
             }
         }
 
-        // Kích thước từng cột
         tblPatients.getColumnModel().getColumn(0).setPreferredWidth(40);   // STT
         tblPatients.getColumnModel().getColumn(1).setPreferredWidth(150);  // Tên
         tblPatients.getColumnModel().getColumn(2).setPreferredWidth(120);  // SĐT
         tblPatients.getColumnModel().getColumn(3).setPreferredWidth(60);   // Giới tính
         tblPatients.getColumnModel().getColumn(4).setPreferredWidth(50);   // Tuổi
-        tblPatients.getColumnModel().getColumn(5).setPreferredWidth(100);  // Trạng thái
-        tblPatients.getColumnModel().getColumn(6).setPreferredWidth(60);   // Khám
+        tblPatients.getColumnModel().getColumn(5).setPreferredWidth(100);  // Tổng tiền
+        tblPatients.getColumnModel().getColumn(6).setPreferredWidth(100);  // Trạng thái
+        tblPatients.getColumnModel().getColumn(7).setPreferredWidth(60);   // Xem chi tiết
     }
 
     public JPanel getHeaderPanel() {
@@ -221,20 +217,28 @@ public class DentistListPatient1Panel extends JPanel {
         this.lblTitle = lblTitle;
     }
 
-    public JLabel getLblSearch() {
-        return lblSearch;
+    public JRadioButton getRbHT() {
+        return rbHT;
     }
 
-    public void setLblSearch(JLabel lblSearch) {
-        this.lblSearch = lblSearch;
+    public void setRbHT(JRadioButton rbHT) {
+        this.rbHT = rbHT;
     }
 
-    public JTextField getTfSearch() {
-        return tfSearch;
+    public JRadioButton getRbChuaHT() {
+        return rbChuaHT;
     }
 
-    public void setTfSearch(JTextField tfSearch) {
-        this.tfSearch = tfSearch;
+    public void setRbChuaHT(JRadioButton rbChuaHT) {
+        this.rbChuaHT = rbChuaHT;
+    }
+
+    public ButtonGroup getGroupStatus() {
+        return groupStatus;
+    }
+
+    public void setGroupStatus(ButtonGroup groupStatus) {
+        this.groupStatus = groupStatus;
     }
 
     public JTable getTblPatients() {
@@ -260,11 +264,19 @@ public class DentistListPatient1Panel extends JPanel {
     public void setData(Object[][] data) {
         this.data = data;
     }
-    public void reloadTableData(String acc, String pass) {
-        int dentistId = DentistDao.getIdDentistLogin(acc, pass);
-        List<Object[]> list = PatientDAO.getPatientOfDentist(String.valueOf(dentistId));
 
-        // Gán lại icon xem
+    public DefaultTableModel getModel() {
+        return model;
+    }
+
+    public void setModel(DefaultTableModel model) {
+        this.model = model;
+    }
+    public void reloadTableData() {
+        PatientDAO dao = new PatientDAO();
+        List<Object[]> list = dao.getAllBillPatients();
+
+        // Icon xem chi tiết
         ImageIcon seeIcon;
         try {
             seeIcon = new ImageIcon(getClass().getResource("/img/see.png"));
@@ -276,30 +288,18 @@ public class DentistListPatient1Panel extends JPanel {
         }
 
         for (Object[] row : list) {
-            if (row.length >= 7) {
-                row[6] = seeIcon;
+            if (row.length >= 8) {
+                row[7] = seeIcon;
             }
         }
 
         data = list.toArray(new Object[0][]);
-        DefaultTableModel model = (DefaultTableModel) tblPatients.getModel();
         model.setDataVector(data, new String[]{
-                "STT", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Trạng thái", "Khám"
+                "Mã HD", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Tổng tiền", "Trạng thái", "Xem chi tiết"
         });
 
-        // Căn giữa toàn bộ nội dung bảng
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-
-        for (int i = 0; i < tblPatients.getColumnCount(); i++) {
-            tblPatients.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-        }
-
-        //Căn giữa tiêu đề cột
-        JTableHeader header = tblPatients.getTableHeader();
-        DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) header.getDefaultRenderer();
-        headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        // Cập nhật lại renderer (nếu cần)
+        tblPatients.setModel(model);
     }
-
 
 }

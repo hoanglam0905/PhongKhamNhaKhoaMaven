@@ -12,14 +12,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.*;
+import java.sql.Date;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
+import java.util.List;
 
 public class ExportToPDF {
     public static void prescriptionToPDF(String idPres) {
@@ -33,7 +32,6 @@ public class ExportToPDF {
         		+ "    pd.noonDose as 'Liều chiều',\r\n"
         		+ "    pd.eveningDose as 'Liều tối',\r\n"
         		+ "    pat.address as 'Địa chỉ bệnh nhân',\r\n"
-        		+ "    pat.idCard as 'ID Card',\r\n"
         		+ "    p.diagnosis as 'Diagnosis',\r\n"
         		+ "    pat.birthDate as 'Ngày sinh',\r\n"
         		+ "    pat.gender as 'Gender',\r\n"
@@ -60,7 +58,7 @@ public class ExportToPDF {
             //lời dặn, hẹn tái khám
             //tên nhân viên/bs
 
-            String name = "", address = "", cccd;
+            String name = "", address = "";
             int age;
             String sex;
             String symptom = "", diagnosis = "";
@@ -69,9 +67,9 @@ public class ExportToPDF {
             Date dateBirth = null;
 
             rs.next();
+            int id = rs.getInt("prescription_id");
             name = rs.getString("Tên bệnh nhân");
             address = rs.getString("Địa chỉ bệnh nhân");
-            cccd = rs.getString("ID Card");
             diagnosis = rs.getString("Diagnosis");
             symptom=rs.getString("Triệu chứng");
             advice = rs.getString("Lời khuyên");
@@ -87,7 +85,7 @@ public class ExportToPDF {
             rs = stmt.executeQuery(query);
 
             //tạo tên file theo định dạng DonThoc + cccd+ngay thang nam
-            String filePath = "Medicine\\"+"DonThoc_"+cccd+"-"+timestap.toLocalDateTime().toLocalDate().toString()+".pdf";
+            String filePath = "Medicine\\"+"DonThoc_"+id+"-"+timestap.toLocalDateTime().toLocalDate().toString()+".pdf";
             //
             Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
@@ -137,7 +135,7 @@ public class ExportToPDF {
             tableInfo.setWidths(new float[]{4, 2, 2});
             tableInfo.setHorizontalAlignment(Element.ALIGN_CENTER);
             //ô1
-            PdfPCell cellTableIf1 = new PdfPCell(new Phrase("\nHọ tên: " + name + "\nĐịa chỉ: " + address + "\nCCCD: " + cccd, fontHeader));
+            PdfPCell cellTableIf1 = new PdfPCell(new Phrase("\nHọ tên: " + name + "\nĐịa chỉ: " + address , fontHeader));
             cellTableIf1.setBorder(Rectangle.NO_BORDER);
             cellTableIf1.setHorizontalAlignment(Element.ALIGN_LEFT);
             cellTableIf1.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -293,24 +291,24 @@ public class ExportToPDF {
     
 	}
     public static void billToPDF(String idBill) {
-        String query="SELECT \r\n"
-        		+ "    p.id AS \"Prescription ID\",\r\n"
-        		+ "    pa.idCard AS \"ID Card bệnh nhân\",\r\n"
-        		+ "    pa.name AS \"Tên bệnh nhân\",\r\n"
-        		+ "    pa.address AS \"Địa chỉ bệnh nhân\",\r\n"
-        		+ "    s.name AS \"Tên dịch vụ\",\r\n"
-        		+ "    s.price AS \"Giá dịch vụ\",\r\n"
-        		+ "    d.name AS \"Tên thuốc\",\r\n"
-        		+ "    pdd.quantity AS \"Số lượng\",\r\n"
-        		+ "    p.preDate AS \"Ngày tạo bill\",\r\n"
-        		+ "    d.price AS \"Giá tiền thuốc\"\r\n"
-        		+ "FROM Prescription p\r\n"
-        		+ "JOIN Patient pa ON p.patient_id = pa.id\r\n"
-        		+ "LEFT JOIN PrescriptionServiceDetail psd ON p.id = psd.prescription_id\r\n"
-        		+ "LEFT JOIN Service s ON psd.service_id = s.id\r\n"
-        		+ "LEFT JOIN PrescriptionDrugDetail pdd ON p.id = pdd.prescription_id\r\n"
-        		+ "LEFT JOIN Drug d ON pdd.drug_id = d.id\r\n"
-        		+ "where p.id="+idBill;
+        String query="SELECT \n" +
+                "    p.id AS 'Prescription ID',\n" +
+                "    pa.name AS 'Tên bệnh nhân',\n" +
+                "    pa.address AS 'Địa chỉ bệnh nhân',\n" +
+                "    s.name AS 'Tên dịch vụ',\n" +
+                "    s.price AS 'Giá dịch vụ',\n" +
+                "    psd.quantity AS 'Số lượng dịch vụ',\n" +
+                "    d.name AS 'Tên thuốc',\n" +
+                "    pdd.quantity AS 'Số lượng',\n" +
+                "    p.preDate AS 'Ngày tạo bill',\n" +
+                "    d.price AS 'Giá tiền thuốc'\n" +
+                "FROM Prescription p\n" +
+                "JOIN Patient pa ON p.patient_id = pa.id\n" +
+                "LEFT JOIN PrescriptionServiceDetail psd ON p.id = psd.prescription_id\n" +
+                "LEFT JOIN Service s ON psd.service_id = s.id\n" +
+                "LEFT JOIN PrescriptionDrugDetail pdd ON p.id = pdd.prescription_id\n" +
+                "LEFT JOIN Drug d ON pdd.drug_id = d.id\n" +
+                "WHERE p.id ="+idBill;
         try {
             String baseFont="C:/Windows/Fonts/times.ttf";
 
@@ -319,23 +317,23 @@ public class ExportToPDF {
             ResultSet rs = stmt.executeQuery(query);
 
             //lưu thông tin của người bệnh
-            String name="",idCard="";
+            String name="";
             String address="";
             String billID="";
             LocalDate billDate=null;
 
             //duyệt 1 lần để lấy tên của người bênh
             rs.next();
+            int id=rs.getInt("Prescription ID");
             name=rs.getString("Tên bệnh nhân");
             address=rs.getString("Địa chỉ bệnh nhân");
             billID=rs.getString("Prescription ID");
-            idCard=rs.getString("ID Card bệnh nhân");
             Timestamp billDateT=rs.getTimestamp("Ngày tạo bill");
             billDate=billDateT.toLocalDateTime().toLocalDate();
             rs.close();
 
 
-            String filePath = "Bill\\"+"Bill_"+idCard+"-"+billDate.toString()+".pdf";
+            String filePath = "Bill\\"+"Bill_"+id+"-"+billDate.toString()+".pdf";
 
             Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream(filePath));
@@ -428,59 +426,59 @@ public class ExportToPDF {
                 tableBill.addCell(cellTT);
             }
             rs=stmt.executeQuery(query);
-            int j=0;
-            //lấy tên và số lượng dịch vụ
-            Map<String,BigDecimal> listService=new HashMap<>();
-            while(rs.next()) {
-                listService.put(rs.getString("Tên dịch vụ"),new BigDecimal(rs.getString("Giá dịch vụ")));
+            // Lấy tên, số lượng và giá dịch vụ
+            Map<String, BigDecimal> listService = new LinkedHashMap<>();
+            List<Integer> listQuantityService = new ArrayList<>();
+
+            rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                String nameService = rs.getString("Tên dịch vụ");
+                if (nameService != null) {
+                    BigDecimal priceService = rs.getBigDecimal("Giá dịch vụ");
+                    int quantityService = rs.getInt("Số lượng dịch vụ");
+
+                    listService.put(nameService, priceService);
+                    listQuantityService.add(quantityService);
+                }
             }
-            BigDecimal sumTotal=new BigDecimal(0);
 
-            for (String key : listService.keySet()) {
-                //lấy tên,giá, bla bla
-                String nameService = key;
-                int quantity = 1;
-                String price = formatter.format(listService.get(key));
-                String total = price ;
-                BigDecimal total2 = listService.get(key); ;
+            BigDecimal sumTotal = BigDecimal.ZERO;
+            int j = 0;
+            for (Map.Entry<String, BigDecimal> entry : listService.entrySet()) {
+                String nameService = entry.getKey();
+                BigDecimal priceService = entry.getValue();
+                int quantity = listQuantityService.get(j);
+                BigDecimal totalService = priceService.multiply(BigDecimal.valueOf(quantity));
 
-                Paragraph pTT = new Paragraph();
-                pTT.add(new Chunk((j+1)+"", fontHeader));
-                pTT.setAlignment(Element.ALIGN_CENTER);
+                Paragraph pTT = new Paragraph(new Chunk((j + 1) + "", fontHeader));
                 PdfPCell cellTT = new PdfPCell(pTT);
                 cellTT.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tableBill.addCell(cellTT);
 
-                Paragraph pContent = new Paragraph();
-                pContent.add(new Chunk(nameService, fontHeader));
-                pContent.setAlignment(Element.ALIGN_CENTER);
+                Paragraph pContent = new Paragraph(new Chunk(nameService, fontHeader));
                 PdfPCell cellContent = new PdfPCell(pContent);
                 cellContent.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tableBill.addCell(cellContent);
 
-                Paragraph pNum = new Paragraph();
-                pNum.add(new Chunk(quantity+"", fontHeader));
-                pNum.setAlignment(Element.ALIGN_CENTER);
+                Paragraph pNum = new Paragraph(new Chunk(quantity + "", fontHeader));
                 PdfPCell cellNum = new PdfPCell(pNum);
                 cellNum.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tableBill.addCell(cellNum);
 
-                Paragraph pPrice = new Paragraph();
-                pPrice.add(new Chunk(""+price, fontHeader));
-                pPrice.setAlignment(Element.ALIGN_CENTER);
-                PdfPCell cellprice = new PdfPCell(pPrice);
-                cellprice.setHorizontalAlignment(Element.ALIGN_CENTER);
-                tableBill.addCell(cellprice);
+                Paragraph pPrice = new Paragraph(new Chunk(formatter.format(priceService), fontHeader));
+                PdfPCell cellPrice = new PdfPCell(pPrice);
+                cellPrice.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tableBill.addCell(cellPrice);
 
-                Paragraph pTotal = new Paragraph();
-                pTotal.add(new Chunk(total+"", fontHeader));
-                pTotal.setAlignment(Element.ALIGN_CENTER);
+                Paragraph pTotal = new Paragraph(new Chunk(formatter.format(totalService), fontHeader));
                 PdfPCell cellTotal = new PdfPCell(pTotal);
                 cellTotal.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tableBill.addCell(cellTotal);
-                sumTotal=sumTotal.add(total2);
+
+                sumTotal = sumTotal.add(totalService);
                 j++;
             }
+
 
             for (int i = 0; i < nameCollums.length+1; i++) {
                 Paragraph pTT = new Paragraph();
@@ -695,7 +693,7 @@ public class ExportToPDF {
     	
         //strIDPatient sẽ là nơi truyền vào id của người bệnh
     	//lí do chọn String là để tránh trường hợp id quá dài
-        String strIDPres=3+"";
+        String strIDPres=1+"";
 
         ExportToPDF.billToPDF(strIDPres);
         ExportToPDF.prescriptionToPDF(strIDPres);

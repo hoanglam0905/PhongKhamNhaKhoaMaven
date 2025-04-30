@@ -1,7 +1,13 @@
 package view.listPanelMain;
 
+import Utils.PaymentQRComponent;
 import controller.dentist.*;
+import controller.durgStore.ButtonPaymentController;
+import controller.durgStore.DrugMenuController;
+import controller.durgStore.ListBillRadioButtonController;
+import controller.durgStore.ListBillTableController;
 import controller.login.LoginButtonController;
+import controller.receptionist.ReceptionTableController;
 import controller.receptionist.ReceptionistLableController;
 import controller.receptionist.ReceptionistSearch2Controller;
 import controller.receptionist.ReceptionistSearchController;
@@ -13,11 +19,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 
 public class MainFrame extends JFrame {
-    JPanel containerPanel; // Panel chính dùng CardLayout
-    CardLayout cardLayout; // CardLayout điều khiển các panel
-    LoginPanel loginPanel;
-    DentistPanel mainPanel;
-    ReceptionistPanel receptionistPanel;
+
+    private JPanel containerPanel; // Panel chính dùng CardLayout
+    private CardLayout cardLayout; // CardLayout điều khiển các panel
+    private LoginPanel loginPanel;
+    private DentistPanel mainPanel;
+    private ReceptionistPanel receptionistPanel;nvqt1
+    private DrugStorePanel drugStorePanel;
+
 
     public MainFrame() {
         initComponents();
@@ -28,6 +37,7 @@ public class MainFrame extends JFrame {
         loginPanel = new LoginPanel();
         mainPanel = new DentistPanel();
         receptionistPanel = new ReceptionistPanel();
+        drugStorePanel =new DrugStorePanel();
 
         cardLayout = new CardLayout();
         containerPanel = new JPanel(cardLayout);
@@ -36,7 +46,7 @@ public class MainFrame extends JFrame {
         containerPanel.add(loginPanel, "LoginPanel");
         containerPanel.add(mainPanel, "DentistPanel");
         containerPanel.add(receptionistPanel, "ReceptionistPanel");
-
+        containerPanel.add(drugStorePanel,"drugstore");
         // Set layout chính cho MainFrame
         setLayout(new BorderLayout());
         add(containerPanel, BorderLayout.CENTER);
@@ -83,7 +93,7 @@ public class MainFrame extends JFrame {
 
         // Add xử lý khi tìm kiếm
         this.mainPanel.getDentistListPatient().getTfSearch().getDocument().addDocumentListener(
-                new DentistPatientSearchController(this.mainPanel.getDentistListPatient())
+                new DentistPatientSearch1Controller(this.mainPanel.getDentistListPatient())
         );
         this.mainPanel.getDentistListPatient2().getTfSearch().getDocument().addDocumentListener(
                 new DentistPatient2SearchController(this.mainPanel.getDentistListPatient2())
@@ -121,6 +131,29 @@ public class MainFrame extends JFrame {
         // Add xử lý cho nút đăng nhập
         ActionListener all = new LoginButtonController(this);
         this.loginPanel.getLoginButton().addActionListener(all);
+
+        ActionListener allb=new ListBillRadioButtonController(this);
+        this.drugStorePanel.getListBillPanel().getRbHT().addActionListener(allb);
+        this.drugStorePanel.getListBillPanel().getRbChuaHT().addActionListener(allb);
+        //thêm sự kiện khi click vào sửa, thêm lịch khám và tái khám
+        MouseListener mlrep=new ReceptionTableController(this);
+        this.receptionistPanel.getShowPatientsReceptionistPanel().getPatientActionTable().addMouseListener(mlrep);
+        //thêm sự kiện khi thanh toán
+        ListBillTableController lbtc=new ListBillTableController(this);
+        this.drugStorePanel.getListBillPanel().getTblPatients().addMouseListener(lbtc);
+        //set name cho label của nvqt
+        this.drugStorePanel.getDrugStoreMenuPanel().getLblHome().setName("Home");
+        this.drugStorePanel.getDrugStoreMenuPanel().getLblBill().setName("Bills");
+        this.drugStorePanel.getDrugStoreMenuPanel().getLblListDrug().setName("ListMedicine");
+
+        DrugMenuController dmct=new DrugMenuController(this);
+        this.drugStorePanel.getDrugStoreMenuPanel().getLblHome().addMouseListener(dmct);
+        this.drugStorePanel.getDrugStoreMenuPanel().getLblBill().addMouseListener(dmct);
+        this.drugStorePanel.getDrugStoreMenuPanel().getLblListDrug().addMouseListener(dmct);
+
+        ButtonPaymentController bp=new ButtonPaymentController(this);
+        this.drugStorePanel.getBillPanel().getButtonCash().addActionListener(bp);
+        this.drugStorePanel.getBillPanel().getButtonQRCode().addActionListener(bp);
     }
 
     // Getters và Setters
@@ -162,6 +195,15 @@ public class MainFrame extends JFrame {
 
     public void setCardLayout(CardLayout cardLayout) {
         this.cardLayout = cardLayout;
+    }
+
+
+    public DrugStorePanel getDrugStorePanel() {
+        return drugStorePanel;
+    }
+
+    public void setDrugStorePanel(DrugStorePanel drugStorePanel) {
+        this.drugStorePanel = drugStorePanel;
     }
 
     public static void main(String[] args) {

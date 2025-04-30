@@ -1,6 +1,6 @@
-package view.dentistPanel;
+package view.durgStore;
 
-import dao.DentistDao;
+import dao.DrugDao;
 import dao.PatientDAO;
 
 import javax.swing.*;
@@ -11,25 +11,16 @@ import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.util.List;
 
-public class DentistListPatient1Panel extends JPanel {
+public class ListDrugPanel extends JPanel {
 
     private JPanel headerPanel;
     private JLabel lblTitle, lblSearch;
     private JTextField tfSearch;
-    private JTable tblPatients;
+    private JTable tblDrugs;
     private JScrollPane scrollPane;
     Object[][] data;
-    private String id_doctor;
 
-    public String getId_doctor() {
-        return id_doctor;
-    }
-
-    public void setId_doctor(String id_doctor) {
-        this.id_doctor = id_doctor;
-    }
-
-    public DentistListPatient1Panel() {
+    public ListDrugPanel() {
         initComponents();
     }
 
@@ -42,7 +33,7 @@ public class DentistListPatient1Panel extends JPanel {
         //Dòng này không quan trọng do nó sẽ được "kéo" dựa trên JFrame
         headerPanel.setPreferredSize(new Dimension(641, 40));
 
-        lblTitle = new JLabel("Xem lịch của bác sĩ");
+        lblTitle = new JLabel("Danh sách thuốc");
         lblTitle.setFont(new Font("Arial", Font.BOLD, 16));
         lblTitle.setForeground(new Color(51, 51, 255));
 
@@ -78,36 +69,18 @@ public class DentistListPatient1Panel extends JPanel {
         headerLayout.setHorizontalGroup(hGroup);
         headerLayout.setVerticalGroup(vGroup);
 
+
         add(headerPanel, BorderLayout.PAGE_START);
 
-        String[] columnNames = {"STT", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Trạng thái", "Khám"};
+        String[] columnNames = {"Mã thuốc", "Tên thuốc", "Số lượng còn", "Đơn vị tính", "Đơn giá"};
 
-        List<Object[]> list = PatientDAO.getAllPatients();
-
-        // Tạo icon "see"
-        ImageIcon seeIcon;
-        try {
-            seeIcon = new ImageIcon(getClass().getResource("/img/see.png"));
-            Image scaled = seeIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-            seeIcon = new ImageIcon(scaled);
-        } catch (Exception e) {
-            System.err.println("Không tìm thấy ảnh see.png");
-            seeIcon = null;
-        }
-
-        // Gán icon vào từng dòng
-        for (Object[] row : list) {
-            if (row.length >= 7) {
-                row[6] = seeIcon; // gán icon khám
-            }
-        }
+        List<Object[]> list = DrugDao.getListAllDrug();
 
         data = list.toArray(new Object[0][]);
 
-
         DefaultTableModel model = new DefaultTableModel(data, columnNames) {
             final boolean[] canEdit = new boolean[]{
-                    false, false, false, false, false, false, false
+                    false, false, false, false, false
             };
 
             @Override
@@ -117,18 +90,17 @@ public class DentistListPatient1Panel extends JPanel {
 
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 6) return Icon.class;
                 return String.class;
             }
         };
 
-        tblPatients = new JTable(model);
-        tblPatients.setRowHeight(28);
-        tblPatients.setFillsViewportHeight(true);
-        tblPatients.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        tblDrugs = new JTable(model);
+        tblDrugs.setRowHeight(28);
+        tblDrugs.setFillsViewportHeight(true);
+        tblDrugs.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
         // Tô màu cho tiêu đề cột
-        JTableHeader tableHeader = tblPatients.getTableHeader();
+        JTableHeader tableHeader = tblDrugs.getTableHeader();
         tableHeader.setDefaultRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value,
@@ -145,7 +117,7 @@ public class DentistListPatient1Panel extends JPanel {
             }
         });
 
-        scrollPane = new JScrollPane(tblPatients);
+        scrollPane = new JScrollPane(tblDrugs);
         add(scrollPane, BorderLayout.CENTER);
 
         // Renderer trắng cho ô dữ liệu
@@ -187,22 +159,16 @@ public class DentistListPatient1Panel extends JPanel {
             }
         };
 
-        for (int i = 0; i < tblPatients.getColumnCount(); i++) {
-            if (i == 6) {
-                tblPatients.getColumnModel().getColumn(i).setCellRenderer(iconRenderer);
-            } else {
-                tblPatients.getColumnModel().getColumn(i).setCellRenderer(whiteCenterRenderer);
-            }
+        for (int i = 0; i < tblDrugs.getColumnCount(); i++) {
+            tblDrugs.getColumnModel().getColumn(i).setCellRenderer(whiteCenterRenderer);
         }
 
         // Kích thước từng cột
-        tblPatients.getColumnModel().getColumn(0).setPreferredWidth(40);   // STT
-        tblPatients.getColumnModel().getColumn(1).setPreferredWidth(150);  // Tên
-        tblPatients.getColumnModel().getColumn(2).setPreferredWidth(120);  // SĐT
-        tblPatients.getColumnModel().getColumn(3).setPreferredWidth(60);   // Giới tính
-        tblPatients.getColumnModel().getColumn(4).setPreferredWidth(50);   // Tuổi
-        tblPatients.getColumnModel().getColumn(5).setPreferredWidth(100);  // Trạng thái
-        tblPatients.getColumnModel().getColumn(6).setPreferredWidth(60);   // Khám
+        tblDrugs.getColumnModel().getColumn(0).setPreferredWidth(40);   // Mã thuốc
+        tblDrugs.getColumnModel().getColumn(1).setPreferredWidth(150);  // Tên
+        tblDrugs.getColumnModel().getColumn(2).setPreferredWidth(120);  // sl
+        tblDrugs.getColumnModel().getColumn(3).setPreferredWidth(60);   // dv tính
+        tblDrugs.getColumnModel().getColumn(4).setPreferredWidth(50);   // giá
     }
 
     public JPanel getHeaderPanel() {
@@ -237,12 +203,12 @@ public class DentistListPatient1Panel extends JPanel {
         this.tfSearch = tfSearch;
     }
 
-    public JTable getTblPatients() {
-        return tblPatients;
+    public JTable getTblDrugs() {
+        return tblDrugs;
     }
 
-    public void setTblPatients(JTable tblPatients) {
-        this.tblPatients = tblPatients;
+    public void setTblDrugs(JTable tblDrugs) {
+        this.tblDrugs = tblDrugs;
     }
 
     public JScrollPane getScrollPane() {
@@ -260,46 +226,6 @@ public class DentistListPatient1Panel extends JPanel {
     public void setData(Object[][] data) {
         this.data = data;
     }
-    public void reloadTableData(String acc, String pass) {
-        int dentistId = DentistDao.getIdDentistLogin(acc, pass);
-        List<Object[]> list = PatientDAO.getPatientOfDentist(String.valueOf(dentistId));
-
-        // Gán lại icon xem
-        ImageIcon seeIcon;
-        try {
-            seeIcon = new ImageIcon(getClass().getResource("/img/see.png"));
-            Image scaled = seeIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-            seeIcon = new ImageIcon(scaled);
-        } catch (Exception e) {
-            System.err.println("Không tìm thấy ảnh see.png");
-            seeIcon = null;
-        }
-
-        for (Object[] row : list) {
-            if (row.length >= 7) {
-                row[6] = seeIcon;
-            }
-        }
-
-        data = list.toArray(new Object[0][]);
-        DefaultTableModel model = (DefaultTableModel) tblPatients.getModel();
-        model.setDataVector(data, new String[]{
-                "STT", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Trạng thái", "Khám"
-        });
-
-        // Căn giữa toàn bộ nội dung bảng
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-
-        for (int i = 0; i < tblPatients.getColumnCount(); i++) {
-            tblPatients.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-        }
-
-        //Căn giữa tiêu đề cột
-        JTableHeader header = tblPatients.getTableHeader();
-        DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) header.getDefaultRenderer();
-        headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-    }
-
-
 }
+
+

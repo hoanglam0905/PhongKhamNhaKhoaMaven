@@ -1,13 +1,21 @@
 package view.dentistPanel;
 
+import Utils.CustomDocumentFilter;
+import dao.ServiceDao;
+import model.Service;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.text.AbstractDocument;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ServicePanel extends JPanel {
 
@@ -19,6 +27,10 @@ public class ServicePanel extends JPanel {
     private JLabel lblEmail;
     private JPanel contactInfoPanel;
     private JButton btnAddDrugs;
+    private JComboBox<String> cboServiceName;
+    JTextField txtQuantity;
+    private Map<Service,Integer> listSevice=new HashMap<Service,Integer>();
+    private DefaultTableModel tableModel;
 
     public ServicePanel() {
         initComponents();
@@ -47,23 +59,29 @@ public class ServicePanel extends JPanel {
         lblServiceName.setFont(new Font("Arial", Font.ITALIC, 16));
 
         String[] serviceList = {"Test1", "Test2", "Test3", "Test4"};
-        JComboBox<String> cboServiceName = new JComboBox<>(serviceList);
+        cboServiceName = new JComboBox<>(serviceList);
         cboServiceName.setBounds(10, 50, 200, 35);
         cboServiceName.setFont(new Font("Arial", Font.PLAIN, 14));
         cboServiceName.setBackground(Color.WHITE);
 
+        cboServiceName.removeAllItems();
+        List<Service> serviceListnew = ServiceDao.getListService();
+        for (Service service : serviceListnew) {
+            cboServiceName.addItem(service.getName());
+        }
 
         JLabel lblQuantity = new JLabel("Số lượng:");
         lblQuantity.setBounds(10, 120, 100, 25);
         lblQuantity.setFont(new Font("Arial", Font.ITALIC, 16));
-        JTextField txtQuantity = new JTextField();
+        txtQuantity = new JTextField();
         txtQuantity.setBounds(10, 145, 200, 35);
         txtQuantity.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        ((AbstractDocument) txtQuantity.getDocument()).setDocumentFilter(new CustomDocumentFilter("\\d+"));
 
         JButton btnConfirm = new JButton("Xác nhận");
         btnConfirm.setBounds(10, 215, 100, 30);
-        btnConfirm.setBackground(new Color(0, 123, 255));  // Màu xanh dương
-        btnConfirm.setForeground(Color.WHITE);             // Màu chữ trắng
+        btnConfirm.setBackground(new Color(0, 123, 255));
+        btnConfirm.setForeground(Color.WHITE);
 
         formPanel.add(lblServiceName);
         formPanel.add(cboServiceName);
@@ -72,7 +90,7 @@ public class ServicePanel extends JPanel {
         formPanel.add(btnConfirm);
 
         // --- Bảng bên phải ---
-        DefaultTableModel tableModel = new DefaultTableModel(
+        tableModel = new DefaultTableModel(
                 new Object[]{"STT", "Tên dịch vụ", "Số lượng", "Xóa"}, 0
         );
         JTable serviceTable = new JTable(tableModel) {
@@ -93,7 +111,7 @@ public class ServicePanel extends JPanel {
         // Header
         JTableHeader header = serviceTable.getTableHeader();
         header.setBackground(new Color(0, 102, 204));
-        header.setForeground(Color.DARK_GRAY);
+        header.setForeground(Color.white);
         header.setFont(new Font("Arial", Font.BOLD, 13));
         header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
         DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) header.getDefaultRenderer();
@@ -102,7 +120,7 @@ public class ServicePanel extends JPanel {
         JScrollPane tableScroll = new JScrollPane(serviceTable);
         tableScroll.setPreferredSize(new Dimension(500, 100)); // <= Giới hạn chiều cao
         tableScroll.getViewport().setBackground(Color.WHITE);  // Nền vùng cuộn
-     // Tạo renderer căn giữa
+        // Tạo renderer căn giữa
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 
@@ -124,7 +142,7 @@ public class ServicePanel extends JPanel {
         bottomPanel.add(tableScroll, BorderLayout.CENTER);
 
         // --- Nút thêm danh sách thuốc ---
-        btnAddDrugs = new JButton("Thêm");
+        btnAddDrugs = new JButton("Thêm danh sách thuốc");
         btnAddDrugs.setBackground(Color.GREEN);
         btnAddDrugs.setForeground(Color.WHITE);
         btnAddDrugs.setFocusPainted(false);
@@ -171,11 +189,9 @@ public class ServicePanel extends JPanel {
             }
         });
 
-
-
         // --- Xử lý nút xác nhận ---
         btnConfirm.addActionListener(e -> {
-        	String serviceName = cboServiceName.getSelectedItem().toString().trim();
+            String serviceName = cboServiceName.getSelectedItem().toString().trim();
             String quantityStr = txtQuantity.getText().trim();
 
             if (serviceName.isEmpty() || quantityStr.isEmpty()) {
@@ -185,9 +201,26 @@ public class ServicePanel extends JPanel {
 
             try {
                 int quantity = Integer.parseInt(quantityStr);
-                int stt = tableModel.getRowCount() + 1;
 
-                tableModel.addRow(new Object[]{stt, serviceName, quantity, "x"});
+                // --- Kiểm tra dịch vụ đã tồn tại trong table chưa ---
+                DefaultTableModel model = (DefaultTableModel) serviceTable.getModel();
+                boolean exists = false;
+                for (int i = 0; i < model.getRowCount(); i++) {
+                    String existingServiceName = model.getValueAt(i, 1).toString();
+                    if (existingServiceName.equalsIgnoreCase(serviceName)) {
+                        exists = true;
+                        break;
+                    }
+                }
+
+                if (exists) {
+                    JOptionPane.showMessageDialog(this, "Dịch vụ này đã được thêm vào!");
+                    return;
+                }
+
+                // Nếu chưa có, mới thêm
+                int stt = model.getRowCount() + 1;
+                model.addRow(new Object[]{stt, serviceName, quantity, "x"});
 
                 cboServiceName.setSelectedIndex(0);
                 txtQuantity.setText("");
@@ -195,8 +228,8 @@ public class ServicePanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "Số lượng phải là số nguyên.");
             }
         });
-    }
 
+    }
 
     private void setLabelIcon(JLabel label, String iconPath, int width, int height) {
         try {
@@ -232,4 +265,59 @@ public class ServicePanel extends JPanel {
     public void setBtnAddDrugs(JButton btnAddDrugs) {
         this.btnAddDrugs = btnAddDrugs;
     }
+
+    public JComboBox<String> getCboServiceName() {
+        return cboServiceName;
+    }
+
+    public void setCboServiceName(JComboBox<String> cboServiceName) {
+        this.cboServiceName = cboServiceName;
+    }
+
+    public JTextField getTxtQuantity() {
+        return txtQuantity;
+    }
+
+    public void setTxtQuantity(JTextField txtQuantity) {
+        this.txtQuantity = txtQuantity;
+    }
+
+    public DefaultTableModel getTableModel() {
+        return tableModel;
+    }
+
+    public void setTableModel(DefaultTableModel tableModel) {
+        this.tableModel = tableModel;
+    }
+
+    public Map<Service, Integer> getListSevice() {
+        return listSevice;
+    }
+    public void setListSevice(Map<Service, Integer> listSevice) {
+        this.listSevice = listSevice;
+    }
+    public Map<Service, Integer> readServiceTableData() {
+        listSevice.clear();
+        // Duyệt toàn bộ dòng trong tableModel
+        for (int i = 0; i < tableModel.getRowCount(); i++) {
+            Service serviceName = new Service(tableModel.getValueAt(i, 1).toString());
+            int quantity = Integer.parseInt(tableModel.getValueAt(i, 2).toString());
+
+            listSevice.put(serviceName, quantity);
+        }
+        return listSevice;
+    }
+    public void showText(){
+        for (Map.Entry<Service, Integer> entry : listSevice.entrySet()) {
+            Service key = entry.getKey();
+            Integer value = entry.getValue();
+            System.out.println("Tên dich vu: " + key.getName() + ", Số lượng: " + value);
+        }
+    }
+    public void resetInfor(){
+        txtQuantity.setText("");
+        tableModel.setRowCount(0);
+        listSevice.clear();
+    }
+
 }

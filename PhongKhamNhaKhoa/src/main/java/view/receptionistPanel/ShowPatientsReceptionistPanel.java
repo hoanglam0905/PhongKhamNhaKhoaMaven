@@ -169,26 +169,6 @@ public class ShowPatientsReceptionistPanel extends JPanel {
         patientActionTable.getColumnModel().getColumn(1).setCellRenderer(new ButtonRenderer("Lịch hẹn mới", new Color(0, 153, 51)));
         patientActionTable.getColumnModel().getColumn(2).setCellRenderer(new ButtonRenderer("✎", new Color(0, 153, 51)));
 
-        // Xử lý sự kiện click vào bảng hành động
-        patientActionTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int row = patientActionTable.rowAtPoint(e.getPoint());
-                int col = patientActionTable.columnAtPoint(e.getPoint());
-
-                if (row >= 0) {
-                    String patientName = (String) infoTableModel.getValueAt(row, 1);
-                    if (col == 0) {
-                        JOptionPane.showMessageDialog(null, "Lên lịch tái khám cho bệnh nhân: " + patientName);
-                    } else if (col == 1) {
-                        JOptionPane.showMessageDialog(null, "Tạo lịch hẹn mới cho bệnh nhân: " + patientName);
-                    } else if (col == 2) {
-                        JOptionPane.showMessageDialog(null, "Sửa thông tin bệnh nhân: " + patientName);
-                    }
-                }
-            }
-        });
-
         // Đặt hai bảng trong các JScrollPane
         JScrollPane infoTableScroll = new JScrollPane(patientInfoTable);
         infoTableScroll.setBorder(null); // Xóa viền tổng
