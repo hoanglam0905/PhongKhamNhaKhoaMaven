@@ -62,4 +62,34 @@ public class DrugDao {
 
         return list;
     }
+    public static List<Object[]> getListDrugFromPre(String id_pre) {
+        List<Object[]> list = new ArrayList<>();
+        try {
+            Connection con = JDBCUtil.getConnection();
+            String sql = "SELECT d.name AS TenThuoc, pd.quantity AS SoLuong, d.price AS DonGia, (d.price * pd.quantity) AS ThanhTien " +
+                    "FROM PrescriptionDrugDetail pd " +
+                    "JOIN Drug d ON pd.drug_id = d.id " +
+                    "WHERE pd.prescription_id = ?";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, Integer.parseInt(id_pre));
+            ResultSet rs = pst.executeQuery();
+
+            int stt = 1;
+            while (rs.next()) {
+                String name = rs.getString("TenThuoc");
+                int quantity = rs.getInt("SoLuong");
+                double price = rs.getDouble("DonGia");
+                double total = rs.getDouble("ThanhTien");
+
+                list.add(new Object[]{stt++, name, quantity, price, total});
+            }
+            rs.close();
+            pst.close();
+            con.close();
+        } catch (IOException | ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 }

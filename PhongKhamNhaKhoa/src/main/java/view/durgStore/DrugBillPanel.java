@@ -1,6 +1,10 @@
 package view.durgStore;
 
+import dao.DrugDao;
+import dao.ServiceDao;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import java.awt.*;
@@ -244,4 +248,23 @@ public class DrugBillPanel extends JPanel {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
+    public void loadPrescriptionData(String idPre) {
+        java.util.List<Object[]> drugs = DrugDao.getListDrugFromPre(idPre);
+        java.util.List<Object[]> services = ServiceDao.getListServiceFromPre(idPre);
+
+        String[] columns = {"STT", "Tên", "Số lượng", "Đơn giá", "Thành tiền"};
+
+        DefaultTableModel modelDrug = new DefaultTableModel(columns, 0);
+        for (Object[] row : drugs) {
+            modelDrug.addRow(row);
+        }
+        tableMedicine.setModel(modelDrug);
+
+        DefaultTableModel modelService = new DefaultTableModel(columns, 0);
+        for (Object[] row : services) {
+            modelService.addRow(row);
+        }
+        tableService.setModel(modelService);
+    }
+
 }

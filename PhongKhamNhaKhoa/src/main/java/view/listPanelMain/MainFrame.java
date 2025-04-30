@@ -84,7 +84,7 @@ public class MainFrame extends JFrame {
 //        this.mainPanel.getDentistListPatient2().getTblPatients().addMouseListener(ma);
         //add xử lí khi tìm kiếm
         this.mainPanel.getDentistListPatient().getTfSearch().getDocument().addDocumentListener(
-                new DentistPatientSearchController(this.mainPanel.getDentistListPatient())
+                new DentistPatientSearch1Controller(this.mainPanel.getDentistListPatient())
         );
         this.mainPanel.getDentistListPatient2().getTfSearch().getDocument().addDocumentListener(
                 new DentistPatient2SearchController(this.mainPanel.getDentistListPatient2())

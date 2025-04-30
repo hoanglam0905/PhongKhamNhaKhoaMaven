@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 public class PaymentQRComponent extends JPanel {
     private int amount;
@@ -61,8 +62,9 @@ public class PaymentQRComponent extends JPanel {
         String account = "0971811857";
         String accountName = "NGO MINH KHOI";
 
-        String encodedContent = URLEncoder.encode(content, StandardCharsets.UTF_8);
-        String encodedName = URLEncoder.encode(accountName, StandardCharsets.UTF_8);
+        String encodedContent = URLEncoder.encode(content, "UTF-8");
+        String encodedName = URLEncoder.encode(accountName, "UTF-8");
+
 
         String qrUrl = String.format(
                 "https://img.vietqr.io/image/%s-%s-compact.png?amount=%d&addInfo=%s&accountName=%s",
@@ -88,25 +90,35 @@ public class PaymentQRComponent extends JPanel {
                 return;
             }
 
+            // ✅ Đọc body an toàn trong Java 8
             InputStream is = exchange.getRequestBody();
-            String body = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+            Scanner scanner = new Scanner(is, "UTF-8").useDelimiter("\\A");
+            String body = scanner.hasNext() ? scanner.next() : "";
+            scanner.close();
+            is.close();
 
             System.out.println("Nhận webhook:");
             System.out.println(body);
 
+            // ✅ Gọi callback trong EDT
             SwingUtilities.invokeLater(() -> {
                 if (onPaymentSuccess != null) {
                     onPaymentSuccess.run();
                 }
             });
 
+            // ✅ Gửi phản hồi JSON
             String response = "{\"message\": \"Webhook OK\"}";
+            byte[] respBytes = response.getBytes("UTF-8");
+
             exchange.getResponseHeaders().add("Content-Type", "application/json");
-            exchange.sendResponseHeaders(200, response.length());
+            exchange.sendResponseHeaders(200, respBytes.length);
+
             OutputStream os = exchange.getResponseBody();
-            os.write(response.getBytes());
+            os.write(respBytes);
             os.close();
         }
+
     }
 
     public static void main(String[] args) {

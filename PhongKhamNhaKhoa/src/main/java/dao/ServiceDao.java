@@ -53,5 +53,34 @@ public class ServiceDao {
             throw new RuntimeException(e);
         }
     }
+    public static List<Object[]> getListServiceFromPre(String id_pre) {
+        List<Object[]> list = new ArrayList<>();
+        try {
+            Connection con = JDBCUtil.getConnection();
+            String sql = "SELECT s.name AS TenDichVu, s.price AS DonGia " +
+                    "FROM PrescriptionServiceDetail psd " +
+                    "JOIN Service s ON psd.service_id = s.id " +
+                    "WHERE psd.prescription_id = ?";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, Integer.parseInt(id_pre));
+            ResultSet rs = pst.executeQuery();
 
+            int stt = 1;
+            while (rs.next()) {
+                String name = rs.getString("TenDichVu");
+                int quantity = 1;
+                double price = rs.getDouble("DonGia");
+                double total = price;
+
+                list.add(new Object[]{stt++, name, quantity, price, total});
+            }
+
+            rs.close();
+            pst.close();
+            con.close();
+        } catch (IOException | ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

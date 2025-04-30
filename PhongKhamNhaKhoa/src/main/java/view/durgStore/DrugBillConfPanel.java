@@ -1,6 +1,10 @@
 package view.durgStore;
 
+import dao.DrugDao;
+import dao.ServiceDao;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import java.awt.*;
@@ -151,6 +155,78 @@ public class DrugBillConfPanel extends JPanel {
         add(panelCenter, BorderLayout.CENTER);
     }
 
+    public JLabel getIdBill() {
+        return idBill;
+    }
+
+    public void setIdBill(JLabel idBill) {
+        this.idBill = idBill;
+    }
+
+    public JLabel getNamePat() {
+        return namePat;
+    }
+
+    public void setNamePat(JLabel namePat) {
+        this.namePat = namePat;
+    }
+
+    public JLabel getNameDen() {
+        return nameDen;
+    }
+
+    public void setNameDen(JLabel nameDen) {
+        this.nameDen = nameDen;
+    }
+
+    public JLabel getPrice() {
+        return price;
+    }
+
+    public void setPrice(JLabel price) {
+        this.price = price;
+    }
+
+    public JLabel getStatus() {
+        return status;
+    }
+
+    public void setStatus(JLabel status) {
+        this.status = status;
+    }
+
+    public JTable getTableService() {
+        return tableService;
+    }
+
+    public void setTableService(JTable tableService) {
+        this.tableService = tableService;
+    }
+
+    public JTable getTableMedicine() {
+        return tableMedicine;
+    }
+
+    public void setTableMedicine(JTable tableMedicine) {
+        this.tableMedicine = tableMedicine;
+    }
+
+    public JButton getButtonQRCode() {
+        return buttonQRCode;
+    }
+
+    public void setButtonQRCode(JButton buttonQRCode) {
+        this.buttonQRCode = buttonQRCode;
+    }
+
+    public JButton getButtonCash() {
+        return buttonCash;
+    }
+
+    public void setButtonCash(JButton buttonCash) {
+        this.buttonCash = buttonCash;
+    }
+
     public static void main(String[] args) {
         JFrame frame = new JFrame("Chi tiết hóa đơn bệnh nhân");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -158,5 +234,23 @@ public class DrugBillConfPanel extends JPanel {
         frame.setSize(840, 520);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+    public void loadPrescriptionData(String idPre) {
+        java.util.List<Object[]> drugs = DrugDao.getListDrugFromPre(idPre);
+        java.util.List<Object[]> services = ServiceDao.getListServiceFromPre(idPre);
+
+        String[] columns = {"STT", "Tên", "Số lượng", "Đơn giá", "Thành tiền"};
+
+        DefaultTableModel modelDrug = new DefaultTableModel(columns, 0);
+        for (Object[] row : drugs) {
+            modelDrug.addRow(row);
+        }
+        tableMedicine.setModel(modelDrug);
+
+        DefaultTableModel modelService = new DefaultTableModel(columns, 0);
+        for (Object[] row : services) {
+            modelService.addRow(row);
+        }
+        tableService.setModel(modelService);
     }
 }

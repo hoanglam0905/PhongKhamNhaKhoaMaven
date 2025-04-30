@@ -22,7 +22,15 @@ public class DentistManagerLableController implements MouseListener {
 
         switch (name) {
             case "Schedule":
-                switchDentistPatient1Panel();
+                // Lấy acc/pass từ LoginPanel
+                String acc = view.getLoginPanel().getAcc();
+                String pass = view.getLoginPanel().getPass();
+
+                // Load lại bảng bệnh nhân cho đúng bác sĩ
+                view.getMainPanel().getDentistListPatient().reloadTableData(acc, pass);
+
+                // Chuyển panel
+                view.getMainPanel().getCardLayout().show(view.getMainPanel().getCenterPanel(), "Patient1");
                 break;
             case "Patients":
                 switchDentistPatient2Panel();

@@ -23,6 +23,8 @@ public class ListBillPanel extends JPanel {
     private JScrollPane scrollPane;
     private Object[][] data;
     private DefaultTableModel model;
+    private String sdt;
+
 
     public ListBillPanel() {
         initComponents();
@@ -79,7 +81,7 @@ public class ListBillPanel extends JPanel {
         add(headerPanel, BorderLayout.PAGE_START);
 
         // Table data
-        String[] columnNames = {"STT", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Tổng tiền", "Trạng thái", "Xem chi tiết"};
+        String[] columnNames = {"Mã HD", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Tổng tiền", "Trạng thái", "Xem chi tiết"};
         PatientDAO dao = new PatientDAO();
         List<Object[]> list = dao.getAllBillPatients();
 
@@ -270,4 +272,34 @@ public class ListBillPanel extends JPanel {
     public void setModel(DefaultTableModel model) {
         this.model = model;
     }
+    public void reloadTableData() {
+        PatientDAO dao = new PatientDAO();
+        List<Object[]> list = dao.getAllBillPatients();
+
+        // Icon xem chi tiết
+        ImageIcon seeIcon;
+        try {
+            seeIcon = new ImageIcon(getClass().getResource("/img/see.png"));
+            Image scaled = seeIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+            seeIcon = new ImageIcon(scaled);
+        } catch (Exception e) {
+            System.err.println("Không tìm thấy ảnh see.png");
+            seeIcon = null;
+        }
+
+        for (Object[] row : list) {
+            if (row.length >= 8) {
+                row[7] = seeIcon;
+            }
+        }
+
+        data = list.toArray(new Object[0][]);
+        model.setDataVector(data, new String[]{
+                "Mã HD", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Tổng tiền", "Trạng thái", "Xem chi tiết"
+        });
+
+        // Cập nhật lại renderer (nếu cần)
+        tblPatients.setModel(model);
+    }
+
 }

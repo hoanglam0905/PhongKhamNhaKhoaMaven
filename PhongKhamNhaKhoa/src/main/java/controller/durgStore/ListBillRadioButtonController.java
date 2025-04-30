@@ -18,7 +18,7 @@ public class ListBillRadioButtonController implements ActionListener {
     public void filterTable() {
         String status = "";
         if (view.getDrugStorePanel().getListBillPanel().getRbHT().isSelected()) {
-            status = "Đã hoàn thành";
+            status = "Đã thanh toán";
         } else if (view.getDrugStorePanel().getListBillPanel().getRbChuaHT().isSelected()) {
             status = "Chưa thanh toán";
         }

@@ -1,10 +1,7 @@
 package controller.dentist;
 
 import Utils.JDBCUtil;
-import dao.DentistDao;
-import dao.PatientDAO;
-import dao.PrescriptionDAO;
-import dao.ServiceDao;
+import dao.*;
 import model.DrugDose;
 import service.ExportToPDF;
 import view.listPanelMain.MainFrame;
@@ -39,6 +36,9 @@ public class DentistManagerButtonController implements ActionListener {
             switchDentistAddPrescriptionPanelPanel();
         } else if (command.equals("Xuất đơn thuốc")){
             switchDentistPatient1Panel();
+            int id_patient=PatientDAO.getIdPatient(view.getMainPanel().getDentistExaminationPanel().getSdtPatient());
+            int id_doctor= DentistDao.getIdDentistLogin(view.getLoginPanel().getAcc(),view.getLoginPanel().getPass());
+            ExamDao.updateExam(id_doctor+"",id_patient+"");
             ExportToPDF.prescriptionToPDF(id_pre+"");
         } else if (command.equals("Hủy")) {
             switchDentistPatient1Panel();
