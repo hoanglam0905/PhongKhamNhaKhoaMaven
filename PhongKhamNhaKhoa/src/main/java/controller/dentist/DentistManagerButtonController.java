@@ -3,6 +3,7 @@ package controller.dentist;
 import Utils.JDBCUtil;
 import dao.*;
 import model.DrugDose;
+import model.Service;
 import service.ExportToPDF;
 import view.listPanelMain.MainFrame;
 
@@ -101,14 +102,18 @@ public class DentistManagerButtonController implements ActionListener {
         }
 
         //them dich vu vao csdl
-        Map<String,Integer> listSer=view.getMainPanel().getServicePanel().getListSevice();
+        Map<Service,Integer> listSer=view.getMainPanel().getServicePanel().getListSevice();
         List<Integer>listIdSer=new ArrayList<>();
+        List<Integer>quatitySer=new ArrayList<>();
+        for (Map.Entry<Service, Integer> entry : listSer.entrySet()) {
+            quatitySer.add(entry.getValue());
+        }
         try {
             con = JDBCUtil.getConnection();
             String sql = "SELECT id FROM Service WHERE name = ?";
             PreparedStatement pst = con.prepareStatement(sql);
-            for (Map.Entry<String, Integer> entry : listSer.entrySet()) {
-                pst.setString(1, entry.getKey());
+            for (Map.Entry<Service, Integer> entry : listSer.entrySet()) {
+                pst.setString(1, entry.getKey().getName());
                 try (ResultSet res = pst.executeQuery()) { // Auto-close res sau mỗi vòng
                     if (res.next()) {
                         listIdSer.add(res.getInt("id"));
@@ -121,7 +126,7 @@ public class DentistManagerButtonController implements ActionListener {
             throw new RuntimeException(e);
         }
         for (int i = 0; i < listIdSer.size(); i++) {
-            ServiceDao.addPrescriptionServiceDetail(id_pre,listIdSer.get(i));
+            ServiceDao.addPrescriptionServiceDetail(id_pre,listIdSer.get(i),listIdSer.get(i));
         }
 
         //xóa hết các text khi chèn thành công

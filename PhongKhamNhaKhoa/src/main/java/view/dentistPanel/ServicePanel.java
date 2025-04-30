@@ -29,7 +29,7 @@ public class ServicePanel extends JPanel {
     private JButton btnAddDrugs;
     private JComboBox<String> cboServiceName;
     JTextField txtQuantity;
-    private Map<String,Integer> listSevice=new HashMap<String,Integer>();
+    private Map<Service,Integer> listSevice=new HashMap<Service,Integer>();
     private DefaultTableModel tableModel;
 
     public ServicePanel() {
@@ -290,20 +290,17 @@ public class ServicePanel extends JPanel {
         this.tableModel = tableModel;
     }
 
-    public void addMap(String serviceName, int quantity) {
-        listSevice.put(serviceName,quantity);
-    }
-    public Map<String, Integer> getListSevice() {
+    public Map<Service, Integer> getListSevice() {
         return listSevice;
     }
-    public void setListSevice(Map<String, Integer> listSevice) {
+    public void setListSevice(Map<Service, Integer> listSevice) {
         this.listSevice = listSevice;
     }
-    public Map<String, Integer> readServiceTableData() {
+    public Map<Service, Integer> readServiceTableData() {
         listSevice.clear();
         // Duyệt toàn bộ dòng trong tableModel
         for (int i = 0; i < tableModel.getRowCount(); i++) {
-            String serviceName = tableModel.getValueAt(i, 1).toString();
+            Service serviceName = new Service(tableModel.getValueAt(i, 1).toString());
             int quantity = Integer.parseInt(tableModel.getValueAt(i, 2).toString());
 
             listSevice.put(serviceName, quantity);
@@ -311,10 +308,10 @@ public class ServicePanel extends JPanel {
         return listSevice;
     }
     public void showText(){
-        for (Map.Entry<String, Integer> entry : listSevice.entrySet()) {
-            String key = entry.getKey();
+        for (Map.Entry<Service, Integer> entry : listSevice.entrySet()) {
+            Service key = entry.getKey();
             Integer value = entry.getValue();
-            System.out.println("Tên dich vu: " + key + ", Số lượng: " + value);
+            System.out.println("Tên dich vu: " + key.getName() + ", Số lượng: " + value);
         }
     }
     public void resetInfor(){
