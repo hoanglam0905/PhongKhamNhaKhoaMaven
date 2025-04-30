@@ -1,5 +1,6 @@
 package view.durgStore;
 
+import dao.DrugDao;
 import dao.PatientDAO;
 
 import javax.swing.*;
@@ -72,9 +73,8 @@ public class ListDrugPanel extends JPanel {
         add(headerPanel, BorderLayout.PAGE_START);
 
         String[] columnNames = {"Mã thuốc", "Tên thuốc", "Số lượng còn", "Đơn vị tính", "Đơn giá"};
-        
-        PatientDAO dao = new PatientDAO();
-        List<Object[]> list = dao.getAllPatients();
+
+        List<Object[]> list = DrugDao.getListAllDrug();
 
         data = list.toArray(new Object[0][]);
 

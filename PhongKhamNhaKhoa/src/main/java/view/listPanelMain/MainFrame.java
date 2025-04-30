@@ -1,5 +1,6 @@
 package view.listPanelMain;
 
+import Utils.PaymentQRComponent;
 import controller.dentist.*;
 import controller.durgStore.ButtonPaymentController;
 import controller.durgStore.DrugMenuController;
