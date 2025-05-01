@@ -1,8 +1,7 @@
 package controller.receptionist;
 
-import dao.PatientDAO;
+import reponsitory.dao.PatientDAO;
 import view.receptionistPanel.ReceptionistCalendarPanel;
-import view.receptionistPanel.ShowPatientsReceptionistPanel;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;

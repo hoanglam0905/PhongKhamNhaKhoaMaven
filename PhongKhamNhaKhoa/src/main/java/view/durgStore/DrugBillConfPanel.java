@@ -1,7 +1,7 @@
 package view.durgStore;
 
-import dao.DrugDao;
-import dao.ServiceDao;
+import reponsitory.dao.DrugDao;
+import reponsitory.dao.ServiceDao;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

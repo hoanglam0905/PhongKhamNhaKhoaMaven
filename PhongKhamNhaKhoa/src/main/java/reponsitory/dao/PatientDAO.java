@@ -1,4 +1,4 @@
-package dao;
+package reponsitory.dao;
 
 import Utils.JDBCUtil;
 import model.Patient;

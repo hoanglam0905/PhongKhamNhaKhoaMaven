@@ -1,7 +1,6 @@
 package controller.dentist;
 
-import dao.PatientDAO;
-import view.dentistPanel.DentistListPatient1Panel;
+import reponsitory.dao.PatientDAO;
 import view.dentistPanel.DentistListPatient2Panel;
 
 import javax.swing.*;

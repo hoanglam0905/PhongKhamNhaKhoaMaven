@@ -1,6 +1,6 @@
 package view.receptionistPanel;
 
-import dao.PatientDAO;
+import reponsitory.dao.PatientDAO;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
