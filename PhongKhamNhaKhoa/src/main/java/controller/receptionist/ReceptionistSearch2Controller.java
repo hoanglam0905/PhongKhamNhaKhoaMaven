@@ -35,22 +35,11 @@ public class ReceptionistSearch2Controller implements DocumentListener {
         String keyword = view.getTfSearch().getText().trim();
         List<Object[]> results = PatientDAO.getPatientsChar(keyword);
 
-        // Load icon xem
-        ImageIcon seeIcon = null;
-        try {
-            seeIcon = new ImageIcon(getClass().getResource("/img/see.png"));
-            Image scaled = seeIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-            seeIcon = new ImageIcon(scaled);
-        } catch (Exception e) {
-            System.err.println("Không tìm thấy ảnh see.png");
-        }
-
         // Gán icon vào từng dòng
         for (int i = 0; i < results.size(); i++) {
             Object[] row = results.get(i);
             Object[] extended = new Object[row.length + 1];
             System.arraycopy(row, 0, extended, 0, row.length);
-            extended[row.length] = seeIcon;
             results.set(i, extended);
         }
 

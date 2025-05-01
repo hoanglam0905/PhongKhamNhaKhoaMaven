@@ -80,47 +80,22 @@ public class DentistListPatient1Panel extends JPanel {
 
         add(headerPanel, BorderLayout.PAGE_START);
 
-        String[] columnNames = {"STT", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Trạng thái", "Khám"};
+        String[] columnNames = {"STT", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Trạng thái"};
 
         List<Object[]> list = PatientDAO.getAllPatients();
-
-        // Tạo icon "see"
-        ImageIcon seeIcon;
-        try {
-            seeIcon = new ImageIcon(getClass().getResource("/img/see.png"));
-            Image scaled = seeIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-            seeIcon = new ImageIcon(scaled);
-        } catch (Exception e) {
-            System.err.println("Không tìm thấy ảnh see.png");
-            seeIcon = null;
-        }
-
-        // Gán icon vào từng dòng
-        for (Object[] row : list) {
-            if (row.length >= 7) {
-                row[6] = seeIcon; // gán icon khám
-            }
-        }
 
         data = list.toArray(new Object[0][]);
 
 
         DefaultTableModel model = new DefaultTableModel(data, columnNames) {
-            final boolean[] canEdit = new boolean[]{
-                    false, false, false, false, false, false, false
-            };
+            final boolean[] canEdit = new boolean[]{ false, false, false, false, false, false };
 
             @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit[columnIndex];
             }
-
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 6) return Icon.class;
-                return String.class;
-            }
         };
+
 
         tblPatients = new JTable(model);
         tblPatients.setRowHeight(28);
@@ -188,11 +163,7 @@ public class DentistListPatient1Panel extends JPanel {
         };
 
         for (int i = 0; i < tblPatients.getColumnCount(); i++) {
-            if (i == 6) {
-                tblPatients.getColumnModel().getColumn(i).setCellRenderer(iconRenderer);
-            } else {
-                tblPatients.getColumnModel().getColumn(i).setCellRenderer(whiteCenterRenderer);
-            }
+            tblPatients.getColumnModel().getColumn(i).setCellRenderer(whiteCenterRenderer);
         }
 
         // Kích thước từng cột
@@ -202,7 +173,6 @@ public class DentistListPatient1Panel extends JPanel {
         tblPatients.getColumnModel().getColumn(3).setPreferredWidth(60);   // Giới tính
         tblPatients.getColumnModel().getColumn(4).setPreferredWidth(50);   // Tuổi
         tblPatients.getColumnModel().getColumn(5).setPreferredWidth(100);  // Trạng thái
-        tblPatients.getColumnModel().getColumn(6).setPreferredWidth(60);   // Khám
     }
 
     public JPanel getHeaderPanel() {
@@ -264,27 +234,10 @@ public class DentistListPatient1Panel extends JPanel {
         int dentistId = DentistDao.getIdDentistLogin(acc, pass);
         List<Object[]> list = PatientDAO.getPatientOfDentist(String.valueOf(dentistId));
 
-        // Gán lại icon xem
-        ImageIcon seeIcon;
-        try {
-            seeIcon = new ImageIcon(getClass().getResource("/img/see.png"));
-            Image scaled = seeIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-            seeIcon = new ImageIcon(scaled);
-        } catch (Exception e) {
-            System.err.println("Không tìm thấy ảnh see.png");
-            seeIcon = null;
-        }
-
-        for (Object[] row : list) {
-            if (row.length >= 7) {
-                row[6] = seeIcon;
-            }
-        }
-
         data = list.toArray(new Object[0][]);
         DefaultTableModel model = (DefaultTableModel) tblPatients.getModel();
         model.setDataVector(data, new String[]{
-                "STT", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Trạng thái", "Khám"
+                "STT", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Trạng thái"
         });
 
         // Căn giữa toàn bộ nội dung bảng

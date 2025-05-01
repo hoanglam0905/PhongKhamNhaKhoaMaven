@@ -64,7 +64,7 @@ public class AddPatientPanel extends JPanel {
         JLabel lblGender = new JLabel("Giới tính:");
         lblGender.setFont(new Font("Arial", Font.ITALIC, 16));
         lblGender.setBounds(300, 105, 100, 20);
-        genderCombo = new JComboBox<>(new String[] { "Nam", "Nữ" });
+        genderCombo = new JComboBox<>(new String[] { "Nữ", "Nam" });
         genderCombo.setBounds(300, 130, 200, 28);
         add(lblGender);
         add(genderCombo);

@@ -31,6 +31,18 @@ public class DrugMenuController implements MouseListener {
             case "ListMedicine":
                 switchListMedicinePanel();
                 break;
+            case "Login":
+                int confirm = JOptionPane.showConfirmDialog(
+                        null,
+                        "Bạn có muốn đăng xuất không?",
+                        "Xác nhận đăng xuất",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if (confirm == JOptionPane.YES_OPTION) {
+                    switchDrugLoginPanel();
+                }
+                break;
         }
     }
 
@@ -61,5 +73,9 @@ public class DrugMenuController implements MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
 
+    }
+    public void switchDrugLoginPanel(){
+        view.getLoginPanel().resetUser();
+        view.getCardLayout().show(view.getContainerPanel(), "LoginPanel");
     }
 }
