@@ -45,7 +45,16 @@ public class DentistManagerLableController implements MouseListener {
                 switchDentistIntroducePanel();
                 break;
             case "Login":
-                switchReceptionistLoginPanel();
+                int confirm = JOptionPane.showConfirmDialog(
+                        null,
+                        "Bạn có muốn đăng xuất không?",
+                        "Xác nhận đăng xuất",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if (confirm == JOptionPane.YES_OPTION) {
+                    switchReceptionistLoginPanel();
+                }
                 break;
         }
     }

@@ -14,7 +14,11 @@ public class PatientDAO {
         List<Object[]> list = new ArrayList<>();
 
         try (Connection conn = JDBCUtil.getConnection()) {
-            String query = "SELECT * FROM Patient";
+            String query =
+                    "SELECT p.*, e.status AS examStatus " +
+                            "FROM Patient p " +
+                            "LEFT JOIN Examination e ON p.id = e.patient_id";
+
             PreparedStatement stmt = conn.prepareStatement(query);
             ResultSet rs = stmt.executeQuery();
 
@@ -35,13 +39,18 @@ public class PatientDAO {
                     ).getYears();
                 }
 
+                String status = rs.getString("examStatus");
+                if (status == null) {
+                    status = "Chưa khám";  // mặc định nếu chưa có cuộc khám nào
+                }
+
                 list.add(new Object[]{
                         stt++,
                         name,
                         phone,
                         gender,
                         age,
-                        "Chưa khám",
+                        status,
                         null
                 });
             }
@@ -52,6 +61,7 @@ public class PatientDAO {
 
         return list;
     }
+
     public static List<Object[]> getAllBillPatients() {
         List<Object[]> list = new ArrayList<>();
 
@@ -67,7 +77,6 @@ public class PatientDAO {
                     "        ELSE 'Khác'\n" +
                     "    END AS GioiTinh,\n" +
                     "    pr.paymentStatus AS TrangThaiThanhToan,\n" +
-                    "    -- Tổng tiền = tổng giá thuốc + tổng giá dịch vụ\n" +
                     "    IFNULL(SUM(d.price * pd.quantity), 0) + IFNULL(SUM(s.price), 0) AS TongTien,\n" +
                     "    YEAR(p.birthDate) AS NamSinh\n" +
                     "FROM \n" +
@@ -83,30 +92,34 @@ public class PatientDAO {
                     "LEFT JOIN \n" +
                     "    Service s ON psd.service_id = s.id\n" +
                     "GROUP BY \n" +
-                    "    p.id, pr.id;\n";
+                    "    p.id, pr.id;";
             PreparedStatement stmt = conn.prepareStatement(query);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                int invoiceId = rs.getInt("MaHoaDon");
-                String name = rs.getString("TenBenhNhan");
-                int age = rs.getInt("Tuoi");
-                String phone = rs.getString("SoDienThoai");
-                String genderText = rs.getString("GioiTinh");
                 String paymentStatus = rs.getString("TrangThaiThanhToan");
-                double totalAmount = rs.getDouble("TongTien");
-                int birthYear = rs.getInt("NamSinh");
+                if (paymentStatus != null &&
+                        (paymentStatus.equals("Chưa thanh toán") || paymentStatus.equals("Đã thanh toán"))) {
 
-                list.add(new Object[]{
-                        invoiceId,
-                        name,
-                        phone,
-                        genderText,
-                        age,
-                        totalAmount,
-                        paymentStatus,
-                        null
-                });
+                    int invoiceId = rs.getInt("MaHoaDon");
+                    String name = rs.getString("TenBenhNhan");
+                    int age = rs.getInt("Tuoi");
+                    String phone = rs.getString("SoDienThoai");
+                    String genderText = rs.getString("GioiTinh");
+                    double totalAmount = rs.getDouble("TongTien");
+                    int birthYear = rs.getInt("NamSinh");
+
+                    list.add(new Object[]{
+                            invoiceId,
+                            name,
+                            phone,
+                            genderText,
+                            age,
+                            totalAmount,
+                            paymentStatus,
+                            null
+                    });
+                }
             }
 
         } catch (Exception e) {
@@ -115,6 +128,7 @@ public class PatientDAO {
 
         return list;
     }
+
     public static List<Patient> getListPatients() {
         List<Patient> list = new ArrayList<>();
 
@@ -156,13 +170,16 @@ public class PatientDAO {
         List<Object[]> list = new ArrayList<>();
 
         try (Connection conn = JDBCUtil.getConnection()) {
-            String query = "select * from Patient\n" +
-                    "where phoneNumber like '" +
-                    charFind +
-                    "%' or name like '" +
-                    charFind +
-                    "%';";
+            String query =
+                    "SELECT p.*, e.status AS examStatus " +
+                            "FROM Patient p " +
+                            "LEFT JOIN Examination e ON p.id = e.patient_id " +
+                            "WHERE p.phoneNumber LIKE ? OR p.name LIKE ?";
+
             PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, charFind + "%");
+            stmt.setString(2, charFind + "%");
+
             ResultSet rs = stmt.executeQuery();
 
             int stt = 1;
@@ -182,13 +199,18 @@ public class PatientDAO {
                     ).getYears();
                 }
 
+                String status = rs.getString("examStatus");
+                if (status == null) {
+                    status = "Chưa khám";
+                }
+
                 list.add(new Object[]{
                         stt++,
                         name,
                         phone,
                         gender,
                         age,
-                        "Chưa khám",
+                        status,
                         null
                 });
             }
@@ -199,6 +221,7 @@ public class PatientDAO {
 
         return list;
     }
+
     public static List<Object[]> getPatientsCharofDentist(String charFind, String id_doctor) {
         List<Object[]> list = new ArrayList<>();
 

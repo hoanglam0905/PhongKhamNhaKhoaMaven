@@ -33,7 +33,16 @@ public class ReceptionistLableController implements MouseListener {
                 switchReceptionistIntroducePanel();
                 break;
             case "Login":
-                switchReceptionistLoginPanel();
+                int confirm = JOptionPane.showConfirmDialog(
+                        null,
+                        "Bạn có muốn đăng xuất không?",
+                        "Xác nhận đăng xuất",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if (confirm == JOptionPane.YES_OPTION) {
+                    switchReceptionistLoginPanel();
+                }
                 break;
         }
     }
@@ -61,6 +70,7 @@ public class ReceptionistLableController implements MouseListener {
         view.getReceptionistPanel().getCardLayout().show(view.getReceptionistPanel().getCenterPanel(), "DentistIntroduce");
     }
     public void switchReceptionistPatientsPanel(){
+        view.getReceptionistPanel().getShowPatientsReceptionistPanel().reloadPatientList();
         view.getReceptionistPanel().getCardLayout().show(view.getReceptionistPanel().getCenterPanel(), "ShowPatientsReceptionist");
     }
     public void switchReceptionistaddPatientPanel(){

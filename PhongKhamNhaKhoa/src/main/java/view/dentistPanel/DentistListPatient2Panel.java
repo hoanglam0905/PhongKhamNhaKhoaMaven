@@ -71,41 +71,17 @@ public class DentistListPatient2Panel extends JPanel {
 
         add(headerPanel, BorderLayout.PAGE_START);
 
-        String[] columnNames = {"Mã BN", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Khám"};
-
-        ImageIcon seeIcon;
-        try {
-            seeIcon = new ImageIcon(getClass().getResource("/img/see.png"));
-            Image scaled = seeIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-            seeIcon = new ImageIcon(scaled);
-        } catch (Exception e) {
-            System.err.println("Không tìm thấy ảnh see.png");
-            seeIcon = null;
-        }
+        String[] columnNames = {"Mã BN", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi"};
         PatientDAO dao = new PatientDAO();
         List<Object[]> list = dao.getAllPatients();
-
-        for (Object[] row : list) {
-            if (row.length >= 6) {
-                row[5] = seeIcon;
-            }
-        }
 
         data = list.toArray(new Object[0][]);
 
         DefaultTableModel model = new DefaultTableModel(data, columnNames) {
-            final boolean[] canEdit = new boolean[]{
-                    false, false, false, false, false, false
-            };
-
-            @Override
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit[columnIndex];
-            }
+            final boolean[] canEdit = new boolean[]{ false, false, false, false, false };
 
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 6) return Icon.class;
                 return String.class;
             }
         };
@@ -176,11 +152,7 @@ public class DentistListPatient2Panel extends JPanel {
         };
 
         for (int i = 0; i < tblPatients.getColumnCount(); i++) {
-            if (i == 5) {
-                tblPatients.getColumnModel().getColumn(i).setCellRenderer(iconRenderer);
-            } else {
-                tblPatients.getColumnModel().getColumn(i).setCellRenderer(whiteCenterRenderer);
-            }
+            tblPatients.getColumnModel().getColumn(i).setCellRenderer(whiteCenterRenderer);
         }
 
         // Kích thước từng cột
@@ -189,7 +161,6 @@ public class DentistListPatient2Panel extends JPanel {
         tblPatients.getColumnModel().getColumn(2).setPreferredWidth(120);  // SĐT
         tblPatients.getColumnModel().getColumn(3).setPreferredWidth(60);   // Giới tính
         tblPatients.getColumnModel().getColumn(4).setPreferredWidth(50);   // Tuổi
-        tblPatients.getColumnModel().getColumn(5).setPreferredWidth(60);   // Khám
     }
 
     public JPanel getHeaderPanel() {
@@ -251,25 +222,21 @@ public class DentistListPatient2Panel extends JPanel {
         PatientDAO dao = new PatientDAO();
         List<Object[]> list = dao.getAllPatients();
 
-        ImageIcon seeIcon;
-        try {
-            seeIcon = new ImageIcon(getClass().getResource("/img/see.png"));
-            Image scaled = seeIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-            seeIcon = new ImageIcon(scaled);
-        } catch (Exception e) {
-            System.err.println("Không tìm thấy ảnh see.png");
-            seeIcon = null;
-        }
-
-        for (Object[] row : list) {
-            if (row.length >= 6) {
-                row[5] = seeIcon;
-            }
-        }
-
         Object[][] newData = list.toArray(new Object[0][]);
         DefaultTableModel model = (DefaultTableModel) tblPatients.getModel();
-        model.setDataVector(newData, new Object[]{"Mã BN", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Khám"});
+        model.setDataVector(newData, new Object[]{"Mã BN", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi"});
+        // Căn giữa toàn bộ nội dung bảng
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        for (int i = 0; i < tblPatients.getColumnCount(); i++) {
+            tblPatients.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+
+        //Căn giữa tiêu đề cột
+        JTableHeader header = tblPatients.getTableHeader();
+        DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) header.getDefaultRenderer();
+        headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
     }
 
 }

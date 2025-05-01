@@ -24,7 +24,7 @@ public class ButtonPaymentController implements ActionListener {
             String content = "Thanh toán hóa đơn #" + id;
 
             PaymentQRComponent qrPanel = view.getDrugStorePanel().getPaymentQRComponent();
-            qrPanel.setAmountAndContent(2000, content);
+            qrPanel.setAmountAndContent(BillDao.getPriceInPre(id), content);
 
             qrPanel.setOnPaymentSuccess(() -> {
                 // 1. Cập nhật DB

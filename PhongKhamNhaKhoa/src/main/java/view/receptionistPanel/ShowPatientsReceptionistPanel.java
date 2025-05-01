@@ -166,7 +166,7 @@ public class ShowPatientsReceptionistPanel extends JPanel {
         // Tùy chỉnh renderer cho các cột nút trong bảng 2
         patientActionTable.getColumnModel().getColumn(0).setCellRenderer(new ButtonRenderer("Tái Khám", new Color(0, 153, 51)));
         patientActionTable.getColumnModel().getColumn(1).setCellRenderer(new ButtonRenderer("Lịch hẹn mới", new Color(0, 153, 51)));
-        patientActionTable.getColumnModel().getColumn(2).setCellRenderer(new ButtonRenderer("✎", new Color(0, 153, 51)));
+        patientActionTable.getColumnModel().getColumn(2).setCellRenderer(new ButtonRenderer("Sửa", new Color(0, 153, 51)));
 
         // Đặt hai bảng trong các JScrollPane
         JScrollPane infoTableScroll = new JScrollPane(patientInfoTable);
@@ -179,7 +179,6 @@ public class ShowPatientsReceptionistPanel extends JPanel {
         // Điều chỉnh kích thước bảng
         infoTableScroll.setPreferredSize(new Dimension(380, 400)); // Bảng bên trái rộng hơn
         actionTableScroll.setPreferredSize(new Dimension(300, 400)); // Bảng bên phải nhỏ hơn
-
 
         // Sắp xếp hai bảng cạnh nhau
         JPanel combinedTablePanel = new JPanel(new BorderLayout());
@@ -212,8 +211,8 @@ public class ShowPatientsReceptionistPanel extends JPanel {
             button.setFocusPainted(false);
             button.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
-            if (buttonText.equals("✎")) {
-                button.setFont(new Font("Arial", Font.PLAIN, 16));
+            if (buttonText.equals("Sửa")) {
+                button.setFont(new Font("Arial", Font.PLAIN, 12));
             }
             return button;
         }
@@ -230,4 +229,20 @@ public class ShowPatientsReceptionistPanel extends JPanel {
     public void setInfoTableModel(DefaultTableModel infoTableModel) { this.infoTableModel = infoTableModel; }
     public DefaultTableModel getActionTableModel() { return actionTableModel; }
     public void setActionTableModel(DefaultTableModel actionTableModel) { this.actionTableModel = actionTableModel; }
+    public void reloadPatientList() {
+        // Xóa dữ liệu cũ
+        infoTableModel.setRowCount(0);
+        actionTableModel.setRowCount(0);
+
+        // Lấy danh sách mới từ DAO
+        PatientDAO dao = new PatientDAO();
+        List<Object[]> list = dao.getAllPatients();
+
+        // Thêm vào bảng
+        for (Object[] row : list) {
+            infoTableModel.addRow(row);
+            actionTableModel.addRow(new Object[]{"Tái Khám", "Lịch hẹn mới", "Sửa"});
+        }
+    }
+
 }

@@ -131,6 +131,7 @@ public class MainFrame extends JFrame {
         this.drugStorePanel.getListBillPanel().getTblPatients().addMouseListener(lbtc);
         //set name cho label của nvqt
         this.drugStorePanel.getDrugStoreMenuPanel().getLblHome().setName("Home");
+        this.drugStorePanel.getDentistTaskbar().getLblDoctorName().setName("Login");
         this.drugStorePanel.getDrugStoreMenuPanel().getLblBill().setName("Bills");
         this.drugStorePanel.getDrugStoreMenuPanel().getLblListDrug().setName("ListMedicine");
 
@@ -138,6 +139,7 @@ public class MainFrame extends JFrame {
         this.drugStorePanel.getDrugStoreMenuPanel().getLblHome().addMouseListener(dmct);
         this.drugStorePanel.getDrugStoreMenuPanel().getLblBill().addMouseListener(dmct);
         this.drugStorePanel.getDrugStoreMenuPanel().getLblListDrug().addMouseListener(dmct);
+        this.drugStorePanel.getDentistTaskbar().getLblDoctorName().addMouseListener(dmct);
 
         ButtonPaymentController bp=new ButtonPaymentController(this);
         this.drugStorePanel.getBillPanel().getButtonCash().addActionListener(bp);
