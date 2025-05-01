@@ -25,5 +25,9 @@ public class PatientService {
  public boolean addPatient(Patient patient) throws SQLException, IOException, ClassNotFoundException {
      return patientRepository.addPatient(patient);
  }
+
+ public int addPatientAndReturnId(Patient patient) throws SQLException, ClassNotFoundException, IOException {
+	    return patientRepository.addPatientAndReturnId(patient);
+	}
 }
 

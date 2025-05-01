@@ -25,7 +25,7 @@ public class Doctor extends Employee {
 
     @Override
 	public String toString() {
-		return "Doctor [specialty=" + specialty + ", patientQueue=" + patientQueue + "]";
+		return this.name;
 	}
 
 	public Queue<Patient> getPatientQueue() { // Sửa kiểu trả về

@@ -15,12 +15,14 @@ public class ReceptionTableController implements MouseListener{
     @Override
     public void mouseClicked(MouseEvent e) {
         int row = view.getReceptionistPanel().getShowPatientsReceptionistPanel().getPatientActionTable().rowAtPoint(e.getPoint());
-                int col = view.getReceptionistPanel().getShowPatientsReceptionistPanel().getPatientActionTable().columnAtPoint(e.getPoint());
-
-                if (row >= 0) {
-                    String patientName = (String) view.getReceptionistPanel().getShowPatientsReceptionistPanel().getPatientInfoTable().getValueAt(row, 1);
-                    if (col == 0) {
-                        view.getReceptionistPanel().getCardLayout().show(view.getReceptionistPanel().getCenterPanel(), "Followup");
+        int col = view.getReceptionistPanel().getShowPatientsReceptionistPanel().getPatientActionTable().columnAtPoint(e.getPoint());
+        String patientName =view.getReceptionistPanel().getShowPatientsReceptionistPanel().getPatientInfoTable().getValueAt(row, 1).toString();
+        
+        if (row >= 0) {
+        	if (col == 0) {
+        		int patientId = (int) view.getReceptionistPanel().getShowPatientsReceptionistPanel().getPatientInfoTable().getValueAt(row, 0);
+                view.getReceptionistPanel().getFollowupPanel().loadPatientInfo(patientId);
+                view.getReceptionistPanel().getCardLayout().show(view.getReceptionistPanel().getCenterPanel(), "Followup");
                     } else if (col == 1) {
                         view.getReceptionistPanel().getCardLayout().show(view.getReceptionistPanel().getCenterPanel(), "NewAppointment");
                     } else if (col == 2) {
