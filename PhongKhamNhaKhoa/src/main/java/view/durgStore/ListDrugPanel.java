@@ -1,7 +1,6 @@
 package view.durgStore;
 
-import dao.DrugDao;
-import dao.PatientDAO;
+import reponsitory.dao.DrugDao;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;

@@ -1,6 +1,6 @@
 package controller.login;
 
-import dao.DentistDao;
+import reponsitory.dao.DentistDao;
 import view.listPanelMain.MainFrame;
 
 import javax.swing.*;

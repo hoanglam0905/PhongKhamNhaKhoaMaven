@@ -1,7 +1,7 @@
 package view.dentistPanel;
 
-import dao.DentistDao;
-import dao.PatientDAO;
+import reponsitory.dao.DentistDao;
+import reponsitory.dao.PatientDAO;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;

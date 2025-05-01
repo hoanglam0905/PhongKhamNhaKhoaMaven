@@ -1,6 +1,6 @@
 package view.dentistPanel;
 
-import dao.PatientDAO;
+import reponsitory.dao.PatientDAO;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -247,5 +247,30 @@ public class DentistListPatient2Panel extends JPanel {
     public void setData(Object[][] data) {
         this.data = data;
     }
+    public void reloadPatientList() {
+        PatientDAO dao = new PatientDAO();
+        List<Object[]> list = dao.getAllPatients();
+
+        ImageIcon seeIcon;
+        try {
+            seeIcon = new ImageIcon(getClass().getResource("/img/see.png"));
+            Image scaled = seeIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+            seeIcon = new ImageIcon(scaled);
+        } catch (Exception e) {
+            System.err.println("Không tìm thấy ảnh see.png");
+            seeIcon = null;
+        }
+
+        for (Object[] row : list) {
+            if (row.length >= 6) {
+                row[5] = seeIcon;
+            }
+        }
+
+        Object[][] newData = list.toArray(new Object[0][]);
+        DefaultTableModel model = (DefaultTableModel) tblPatients.getModel();
+        model.setDataVector(newData, new Object[]{"Mã BN", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Khám"});
+    }
+
 }
 

@@ -1,7 +1,7 @@
 package view.dentistPanel;
 
 import Utils.CustomDocumentFilter;
-import dao.ServiceDao;
+import reponsitory.dao.ServiceDao;
 import model.Service;
 
 import javax.swing.*;
@@ -77,7 +77,9 @@ public class ServicePanel extends JPanel {
         txtQuantity.setBounds(10, 145, 200, 35);
         txtQuantity.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         ((AbstractDocument) txtQuantity.getDocument()).setDocumentFilter(new CustomDocumentFilter("\\d+"));
-
+        cboServiceName.addActionListener(e -> {
+            txtQuantity.setText("");
+        });
         JButton btnConfirm = new JButton("Xác nhận");
         btnConfirm.setBounds(10, 215, 100, 30);
         btnConfirm.setBackground(new Color(0, 123, 255));

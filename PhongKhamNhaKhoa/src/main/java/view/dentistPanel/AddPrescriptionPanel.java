@@ -1,11 +1,9 @@
 package view.dentistPanel;
 
 import Utils.CustomDocumentFilter;
-import dao.DrugDao;
-import dao.ServiceDao;
+import reponsitory.dao.DrugDao;
 import model.Drug;
 import model.DrugDose;
-import model.Service;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -13,24 +11,12 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -395,9 +381,24 @@ public class AddPrescriptionPanel extends JPanel {
         int noon = txtNoon.getText().isEmpty() ? 0 : Integer.parseInt(txtNoon.getText());
         int afternoon = txtAfternoon.getText().isEmpty() ? 0 : Integer.parseInt(txtAfternoon.getText());
 
+        if (morning > 2) {
+            morning = 0;
+            SwingUtilities.invokeLater(() -> txtMorning.setText("0"));
+        }
+        if (noon > 2) {
+            noon = 0;
+            SwingUtilities.invokeLater(() -> txtNoon.setText("0"));
+        }
+        if (afternoon > 2) {
+            afternoon = 0;
+            SwingUtilities.invokeLater(() -> txtAfternoon.setText("0"));
+        }
+
         int quantity = (morning + noon + afternoon) * 7;
         txtQuantity.setText(String.valueOf(quantity));
     }
+
+
     public void showText(){
         for (DrugDose list:listDrugDose){
             System.out.println(list);

@@ -1,4 +1,4 @@
-package dao;
+package reponsitory.dao;
 
 import Utils.JDBCUtil;
 import model.Drug;
@@ -58,7 +58,7 @@ public class ServiceDao {
         List<Object[]> list = new ArrayList<>();
         try {
             Connection con = JDBCUtil.getConnection();
-            String sql = "SELECT s.name AS TenDichVu, s.price AS DonGia " +
+            String sql = "SELECT s.name AS TenDichVu, s.price AS DonGia, psd.quantity AS SoLuong " +
                     "FROM PrescriptionServiceDetail psd " +
                     "JOIN Service s ON psd.service_id = s.id " +
                     "WHERE psd.prescription_id = ?";
@@ -69,9 +69,9 @@ public class ServiceDao {
             int stt = 1;
             while (rs.next()) {
                 String name = rs.getString("TenDichVu");
-                int quantity = 1;
+                int quantity = rs.getInt("SoLuong");
                 double price = rs.getDouble("DonGia");
-                double total = price;
+                double total = price * quantity;
 
                 list.add(new Object[]{stt++, name, quantity, price, total});
             }
@@ -84,4 +84,5 @@ public class ServiceDao {
         }
         return list;
     }
+
 }

@@ -57,10 +57,12 @@ public class DentistManagerLableController implements MouseListener {
     }
 
     public void switchDentistPatient1Panel() {
+        view.getMainPanel().getDentistListPatient().reloadTableData(view.getLoginPanel().getAcc(), view.getLoginPanel().getPass());
         view.getMainPanel().getCardLayout().show(view.getMainPanel().getCenterPanel(), "Patient1");
     }
 
     public void switchDentistPatient2Panel() {
+        view.getMainPanel().getDentistListPatient2().reloadPatientList();
         view.getMainPanel().getCardLayout().show(view.getMainPanel().getCenterPanel(), "Patient2");
     }
     public void switchReceptionistLoginPanel(){
