@@ -18,8 +18,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 
 public class MainFrame extends JFrame {
-    private JPanel containerPanel; // Panel chính dùng CardLayout
-    private CardLayout cardLayout; // CardLayout điều khiển các panel
+    private JPanel containerPanel;
+    private CardLayout cardLayout;
     private LoginPanel loginPanel;
     private DentistPanel mainPanel;
     private ReceptionistPanel receptionistPanel;
