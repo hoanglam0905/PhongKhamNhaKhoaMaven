@@ -6,6 +6,7 @@ import model.Service;
 
 import java.io.IOException;
 import java.sql.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,8 +57,11 @@ public class ServiceDao {
 
     public static List<Object[]> getListServiceFromPre(String id_pre) {
         List<Object[]> list = new ArrayList<>();
+        DecimalFormat formatter = new DecimalFormat("#,###");
+
         try {
             Connection con = JDBCUtil.getConnection();
+
             String sql = "SELECT s.name AS TenDichVu, s.price AS DonGia, psd.quantity AS SoLuong " +
                     "FROM PrescriptionServiceDetail psd " +
                     "JOIN Service s ON psd.service_id = s.id " +
@@ -73,7 +77,10 @@ public class ServiceDao {
                 double price = rs.getDouble("DonGia");
                 double total = price * quantity;
 
-                list.add(new Object[]{stt++, name, quantity, price, total});
+                String priceFormatted = formatter.format(price) + " VND";
+                String totalFormatted = formatter.format(total) + " VND";
+
+                list.add(new Object[]{stt++, name, quantity, priceFormatted, totalFormatted});
             }
 
             rs.close();
@@ -84,5 +91,6 @@ public class ServiceDao {
         }
         return list;
     }
+
 
 }

@@ -25,6 +25,9 @@ public class DrugMenuController implements MouseListener {
         System.out.println("Đã click: " + name);
 
         switch (name) {
+            case"Home":
+                switchIntroPanel();
+                break;
             case "Bills":
                 switchBillsPanel();
                 break;
@@ -53,6 +56,9 @@ public class DrugMenuController implements MouseListener {
 
     private void switchListMedicinePanel() {
         view.getDrugStorePanel().getCardLayout().show(view.getDrugStorePanel().getCenterPanel(), "Drugs");
+    }
+    private void switchIntroPanel() {
+        view.getDrugStorePanel().getCardLayout().show(view.getDrugStorePanel().getCenterPanel(), "IntroducePanel");
     }
 
     @Override

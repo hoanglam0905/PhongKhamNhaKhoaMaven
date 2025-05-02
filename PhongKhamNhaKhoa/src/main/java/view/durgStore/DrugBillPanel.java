@@ -4,6 +4,7 @@ import reponsitory.dao.DrugDao;
 import reponsitory.dao.ServiceDao;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
@@ -265,6 +266,17 @@ public class DrugBillPanel extends JPanel {
             modelService.addRow(row);
         }
         tableService.setModel(modelService);
+        // Renderer căn giữa cho bảng
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        for (int i = 0; i < tableMedicine.getColumnCount(); i++) {
+            tableMedicine.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+        for (int i = 0; i < tableService.getColumnCount(); i++) {
+            tableService.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+
     }
 
 }
