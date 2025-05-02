@@ -99,4 +99,7 @@ public class DrugDao {
         }
         return list;
     }
+    public static void udateStockDrug(String id_drug){
+
+    }
 }
