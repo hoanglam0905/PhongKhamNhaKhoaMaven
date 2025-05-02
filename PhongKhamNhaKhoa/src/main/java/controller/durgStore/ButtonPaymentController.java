@@ -29,19 +29,15 @@ public class ButtonPaymentController implements ActionListener {
             qrPanel.setOnPaymentSuccess(() -> {
                 // 1. Cập nhật DB
                 BillDao.updatePaymentStatusToPaid(id);
-
                 // 2. Cập nhật giao diện
                 view.getDrugStorePanel().getBillConfPanel().getStatus().setText("Đã thanh toán");
-
                 // 3. Xuất PDF
                 ExportToPDF.billToPDF(id+"");
-
                 // 4. Chuyển panel
                 view.getDrugStorePanel().getCardLayout().show(
                         view.getDrugStorePanel().getCenterPanel(), "BillConf"
                 );
             });
-
             view.getDrugStorePanel().getCardLayout().show(
                     view.getDrugStorePanel().getCenterPanel(), "QR"
             );

@@ -241,13 +241,20 @@ public class AddPrescriptionPanel extends JPanel {
                     );
 
                     if (confirm == JOptionPane.YES_OPTION) {
+                        String drugName = tableModel.getValueAt(row, 1).toString();  // lấy tên thuốc ở dòng vừa xóa
+
+                        // Xóa khỏi bảng
                         ((DefaultTableModel) serviceTable.getModel()).removeRow(row);
+
+                        // Xóa khỏi listDrugDose (list logic)
+                        listDrugDose.removeIf(drug -> drug.getName().equalsIgnoreCase(drugName));
 
                         // Cập nhật lại STT
                         for (int i = 0; i < tableModel.getRowCount(); i++) {
                             tableModel.setValueAt(i + 1, i, 0);
                         }
                     }
+
                 }
             }
         });
