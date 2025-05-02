@@ -78,24 +78,27 @@ public class PatientDAO {
                     "        ELSE 'Khác'\n" +
                     "    END AS GioiTinh,\n" +
                     "    pr.paymentStatus AS TrangThaiThanhToan,\n" +
-                    "    IFNULL(SUM(d.price * pd.quantity), 0) + IFNULL(SUM(s.price), 0) AS TongTien,\n" +
+                    "    (\n" +
+                    "        (SELECT COALESCE(SUM(s.price * psd.quantity), 0) \n" +
+                    "         FROM PrescriptionServiceDetail psd \n" +
+                    "         JOIN Service s ON psd.service_id = s.id \n" +
+                    "         WHERE psd.prescription_id = pr.id) \n" +
+                    "      + \n" +
+                    "        (SELECT COALESCE(SUM(d.price * pd.quantity), 0) \n" +
+                    "         FROM PrescriptionDrugDetail pd \n" +
+                    "         JOIN Drug d ON pd.drug_id = d.id \n" +
+                    "         WHERE pd.prescription_id = pr.id)\n" +
+                    "    ) AS TongTien,\n" +
                     "    YEAR(p.birthDate) AS NamSinh\n" +
                     "FROM \n" +
                     "    Patient p\n" +
                     "LEFT JOIN \n" +
                     "    Prescription pr ON p.id = pr.patient_id\n" +
-                    "LEFT JOIN \n" +
-                    "    PrescriptionDrugDetail pd ON pr.id = pd.prescription_id\n" +
-                    "LEFT JOIN \n" +
-                    "    Drug d ON pd.drug_id = d.id\n" +
-                    "LEFT JOIN \n" +
-                    "    PrescriptionServiceDetail psd ON pr.id = psd.prescription_id\n" +
-                    "LEFT JOIN \n" +
-                    "    Service s ON psd.service_id = s.id\n" +
                     "GROUP BY \n" +
-                    "    p.id, pr.id\n" +
+                    "    pr.id, p.name, p.birthDate, p.phoneNumber, p.gender, pr.paymentStatus\n" +
                     "ORDER BY \n" +
                     "    pr.id ASC;";
+
 
             PreparedStatement stmt = conn.prepareStatement(query);
             ResultSet rs = stmt.executeQuery();
