@@ -1,6 +1,5 @@
 package view.listPanelMain;
 
-import Utils.PaymentQRComponent;
 import controller.dentist.*;
 import controller.durgStore.ButtonPaymentController;
 import controller.durgStore.DrugMenuController;
@@ -40,7 +39,7 @@ public class MainFrame extends JFrame {
         cardLayout = new CardLayout();
         containerPanel = new JPanel(cardLayout);
 
-        // Thêm các "card" vào containerPanel
+        // Thêm các card vào containerPanel
         containerPanel.add(loginPanel, "LoginPanel");
         containerPanel.add(mainPanel, "DentistPanel");
         containerPanel.add(receptionistPanel, "ReceptionistPanel");

@@ -5,6 +5,7 @@ import model.Patient;
 
 import java.io.IOException;
 import java.sql.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,9 +93,14 @@ public class PatientDAO {
                     "LEFT JOIN \n" +
                     "    Service s ON psd.service_id = s.id\n" +
                     "GROUP BY \n" +
-                    "    p.id, pr.id;";
+                    "    p.id, pr.id\n" +
+                    "ORDER BY \n" +
+                    "    pr.id ASC;";
+
             PreparedStatement stmt = conn.prepareStatement(query);
             ResultSet rs = stmt.executeQuery();
+
+            DecimalFormat formatter = new DecimalFormat("#,###");
 
             while (rs.next()) {
                 String paymentStatus = rs.getString("TrangThaiThanhToan");
@@ -106,7 +112,8 @@ public class PatientDAO {
                     int age = rs.getInt("Tuoi");
                     String phone = rs.getString("SoDienThoai");
                     String genderText = rs.getString("GioiTinh");
-                    double totalAmount = rs.getDouble("TongTien");
+                    double totalAmountRaw = rs.getDouble("TongTien");
+                    String totalAmountFormatted = formatter.format(totalAmountRaw);
                     int birthYear = rs.getInt("NamSinh");
 
                     list.add(new Object[]{
@@ -115,7 +122,7 @@ public class PatientDAO {
                             phone,
                             genderText,
                             age,
-                            totalAmount,
+                            totalAmountFormatted + " VND",
                             paymentStatus,
                             null
                     });
