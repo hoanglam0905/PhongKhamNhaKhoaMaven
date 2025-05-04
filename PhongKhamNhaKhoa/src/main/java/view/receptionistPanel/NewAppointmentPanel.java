@@ -10,7 +10,7 @@ public class NewAppointmentPanel extends JPanel {
     private JTextField txtAge;
     private JTextField txtGender;
     private JTextField txtAdress;
-    private JTextField txtDoctor;
+    private JComboBox<String> cmbDoctor;
     private JButton btnAddPatient;
 
     public NewAppointmentPanel() {
@@ -18,17 +18,14 @@ public class NewAppointmentPanel extends JPanel {
     }
 
     private void initComponents() {
-        setLayout(null); 
+        setLayout(null);
         setBackground(Color.WHITE);
 
-        // Tiêu đề
         JLabel lblTitle = new JLabel("Lịch khám mới");
         lblTitle.setFont(new Font("Arial", Font.BOLD, 18));
         lblTitle.setBounds(10, 10, 200, 30);
         add(lblTitle);
 
-
-        // Tên bệnh nhân
         JLabel lblName = new JLabel("Họ và tên:");
         lblName.setFont(new Font("Arial", Font.ITALIC, 16));
         lblName.setBounds(50, 50, 100, 20);
@@ -38,7 +35,6 @@ public class NewAppointmentPanel extends JPanel {
         add(lblName);
         add(txtName);
 
-        // Số điện thoại
         JLabel lblPhone = new JLabel("Số điện thoại:");
         lblPhone.setFont(new Font("Arial", Font.ITALIC, 16));
         lblPhone.setBounds(370, 50 , 100, 20);
@@ -48,7 +44,6 @@ public class NewAppointmentPanel extends JPanel {
         add(lblPhone);
         add(txtPhone);
 
-        // Tuổi
         JLabel lblAge = new JLabel("Tuổi:");
         lblAge.setFont(new Font("Arial", Font.ITALIC, 16));
         lblAge.setBounds(50, 130, 100, 20);
@@ -58,7 +53,6 @@ public class NewAppointmentPanel extends JPanel {
         add(lblAge);
         add(txtAge);
 
-        // Giới tính
         JLabel lblGender = new JLabel("Giới tính:");
         lblGender.setFont(new Font("Arial", Font.ITALIC, 16));
         lblGender.setBounds(370, 130 , 100, 20);
@@ -68,7 +62,6 @@ public class NewAppointmentPanel extends JPanel {
         add(lblGender);
         add(txtGender);
 
-        // Chẩn đoán
         JLabel lblAdress = new JLabel("Địa chỉ:");
         lblAdress.setFont(new Font("Arial", Font.ITALIC, 16));
         lblAdress.setBounds(50, 210 , 100, 20);
@@ -77,40 +70,43 @@ public class NewAppointmentPanel extends JPanel {
         txtAdress.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         add(lblAdress);
         add(txtAdress);
-        
+
         JLabel lblDoctor = new JLabel("Bác sĩ:");
         lblDoctor.setFont(new Font("Arial", Font.ITALIC, 16));
         lblDoctor.setBounds(50, 290 , 100, 20);
-        txtDoctor = new JTextField();
-        txtDoctor.setBounds(50, 320, 550, 30);
-        txtDoctor.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        add(lblDoctor);
-        add(txtDoctor);
 
-        // Nút "Thêm Bệnh Nhân và Lịch Hẹn"
+        cmbDoctor = new JComboBox<>(new String[]{
+                "-- Chọn bác sĩ --", "Bs. Nguyễn Văn A", "Bs. Trần Thị B", "Bs. Lê Văn C"
+        });
+        cmbDoctor.setBounds(50, 320, 550, 30);
+        cmbDoctor.setBackground(Color.WHITE);
+        cmbDoctor.setFont(new Font("Arial", Font.PLAIN, 14));
+        cmbDoctor.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        add(lblDoctor);
+        add(cmbDoctor);
+
         btnAddPatient = new JButton("Thêm Lịch Hẹn");
         btnAddPatient.setFont(new Font("Arial", Font.BOLD, 14));
-        btnAddPatient.setBackground(new Color(0, 123, 255)); // Màu xanh dương
+        btnAddPatient.setBackground(new Color(0, 123, 255));
         btnAddPatient.setForeground(Color.WHITE);
         btnAddPatient.setBounds(450, 370, 150, 40);
         btnAddPatient.setFocusPainted(false);
         add(btnAddPatient);
 
-        // Xử lý sự kiện nút "Thêm Bệnh Nhân và Lịch Hẹn"
         btnAddPatient.addActionListener(e -> {
             String name = txtName.getText().trim();
             String phone = txtPhone.getText().trim();
             String age = txtAge.getText().trim();
             String gender = txtGender.getText().trim();
             String adress = txtAdress.getText().trim();
-            String doctor = txtDoctor.getText().trim();
+            String doctor = (String) cmbDoctor.getSelectedItem();
 
-            if (name.isEmpty() || phone.isEmpty() || age.isEmpty() || gender.isEmpty() || adress.isEmpty() || doctor.isEmpty()) {
+            if (name.isEmpty() || phone.isEmpty() || age.isEmpty() || gender.isEmpty() || adress.isEmpty()
+                    || cmbDoctor.getSelectedIndex() == 0) {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin.");
                 return;
             }
 
-            // Thực hiện thêm bệnh nhân (có thể thêm logic lưu vào cơ sở dữ liệu ở đây)
             JOptionPane.showMessageDialog(this, "Thêm bệnh nhân thành công!");
             clearFields();
         });
@@ -122,22 +118,15 @@ public class NewAppointmentPanel extends JPanel {
         txtAge.setText("");
         txtGender.setText("");
         txtAdress.setText("");
-        txtDoctor.setText("");
+        cmbDoctor.setSelectedIndex(0);
     }
 
     // Getters và Setters
     public JTextField getTxtName() { return txtName; }
-    public void setTxtName(JTextField txtName) { this.txtName = txtName; }
     public JTextField getTxtPhone() { return txtPhone; }
-    public void setTxtPhone(JTextField txtPhone) { this.txtPhone = txtPhone; }
     public JTextField getTxtAge() { return txtAge; }
-    public void setTxtAge(JTextField txtAge) { this.txtAge = txtAge; }
     public JTextField getTxtGender() { return txtGender; }
-    public void setTxtGender(JTextField txtGender) { this.txtGender = txtGender; }
     public JTextField getTxtAdress() { return txtAdress; }
-    public void setTxtAdress(JTextField txtAdress) { this.txtAdress = txtAdress; }
-    public JTextField getTxtDoctor() { return txtDoctor; }
-    public void setTxtDoctor(JTextField txtDoctor) { this.txtDoctor = txtDoctor; }
+    public JComboBox<String> getCmbDoctor() { return cmbDoctor; }
     public JButton getBtnAddPatient() { return btnAddPatient; }
-    public void setBtnAddPatient(JButton btnAddPatient) { this.btnAddPatient = btnAddPatient; }
 }

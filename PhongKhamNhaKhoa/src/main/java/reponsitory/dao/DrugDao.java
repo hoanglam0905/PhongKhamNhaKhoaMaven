@@ -34,8 +34,8 @@ public class DrugDao {
             throw new RuntimeException(e);
         }
     }
-    public static List<Object[]> getListAllDrug() {
-        List<Object[]> list = new ArrayList<>();
+    public static List<Drug> getListAllDrug() {
+        List<Drug> list = new ArrayList<>();
 
         try (Connection conn = JDBCUtil.getConnection()) {
             String query = "SELECT * FROM Drug";
@@ -43,18 +43,14 @@ public class DrugDao {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                String id = rs.getString("id");
+                int id = rs.getInt("id");
                 String name = rs.getString("name");
-                String price = rs.getString("price");
+                String description = rs.getString("description");
+                double price = rs.getDouble("price");
                 int stock = rs.getInt("stockQuantity");
 
-                list.add(new Object[]{
-                        id,
-                        name,
-                        stock,
-                        "Vỉ",
-                        price
-                });
+                Drug drug = new Drug(id, name, description, price, stock);
+                list.add(drug);
             }
 
         } catch (Exception e) {
@@ -63,6 +59,7 @@ public class DrugDao {
 
         return list;
     }
+
 
     public static List<Object[]> getListDrugFromPre(String id_pre) {
         List<Object[]> list = new ArrayList<>();
@@ -99,7 +96,16 @@ public class DrugDao {
         }
         return list;
     }
-    public static void udateStockDrug(String id_drug){
-
+    public static void updateDrugQuantity(String drugName, int quantitySold) {
+        try (Connection conn = JDBCUtil.getConnection()) {
+            String sql = "UPDATE Drug SET stockQuantity = stockQuantity - ? WHERE name = ?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1, quantitySold);
+            pst.setString(2, drugName);
+            pst.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
 }
