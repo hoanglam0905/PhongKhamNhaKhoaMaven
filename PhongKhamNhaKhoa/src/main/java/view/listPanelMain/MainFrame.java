@@ -1,5 +1,6 @@
 package view.listPanelMain;
 
+import controller.admin.*;
 import controller.dentist.*;
 import controller.durgStore.ButtonPaymentController;
 import controller.durgStore.DrugMenuController;
@@ -24,6 +25,7 @@ public class MainFrame extends JFrame {
     private DentistPanel mainPanel;
     private ReceptionistPanel receptionistPanel;
     private DrugStorePanel drugStorePanel;
+    private AdminPanel adminPanel;
 
     public MainFrame() {
         initComponents();
@@ -35,6 +37,7 @@ public class MainFrame extends JFrame {
         mainPanel = new DentistPanel();
         receptionistPanel = new ReceptionistPanel();
         drugStorePanel =new DrugStorePanel();
+        adminPanel = new AdminPanel();
 
         cardLayout = new CardLayout();
         containerPanel = new JPanel(cardLayout);
@@ -44,6 +47,7 @@ public class MainFrame extends JFrame {
         containerPanel.add(mainPanel, "DentistPanel");
         containerPanel.add(receptionistPanel, "ReceptionistPanel");
         containerPanel.add(drugStorePanel,"drugstore");
+        containerPanel.add(adminPanel, "AdminPanel");
         // Set layout chính cho MainFrame
         setLayout(new BorderLayout());
         add(containerPanel, BorderLayout.CENTER);
@@ -143,6 +147,51 @@ public class MainFrame extends JFrame {
         ButtonPaymentController bp=new ButtonPaymentController(this);
         this.drugStorePanel.getBillPanel().getButtonCash().addActionListener(bp);
         this.drugStorePanel.getBillPanel().getButtonQRCode().addActionListener(bp);
+
+        this.adminPanel.getAdminMenuPanel().getLblHome().setName("Home");
+        this.adminPanel.getAdminMenuPanel().getLblEmp().setName("ListEmployee");
+        this.adminPanel.getAdminMenuPanel().getLblDrugs().setName("ListDrug");
+        this.adminPanel.getAdminMenuPanel().getLblService().setName("ListService");
+        this.adminPanel.getAdminMenuPanel().getLblStatistic().setName("TK");
+        this.adminPanel.getAdminMenuPanel().getLblPatient().setName("ListPatient");
+        this.adminPanel.getDentistTaskbar().getLblDoctorName().setName("Login");
+        //them controller cho admin
+        LableController lb=new LableController(this);
+        this.adminPanel.getAdminMenuPanel().getLblHome().addMouseListener(lb);
+        this.adminPanel.getAdminMenuPanel().getLblEmp().addMouseListener(lb);
+        this.adminPanel.getAdminMenuPanel().getLblPatient().addMouseListener(lb);
+        this.adminPanel.getAdminMenuPanel().getLblService().addMouseListener(lb);
+        this.adminPanel.getAdminMenuPanel().getLblStatistic().addMouseListener(lb);
+        this.adminPanel.getDentistTaskbar().getLblDoctorName().addMouseListener(lb);
+        this.adminPanel.getAdminMenuPanel().getLblDrugs().addMouseListener(lb);
+
+        EmployeeButtonController ebtc=new EmployeeButtonController(this);
+        this.adminPanel.getAdminEmployee().getBtnAdd().addActionListener(ebtc);
+        this.adminPanel.getAdminEmployeeInfo().getBtnDelete().addActionListener(ebtc);
+        this.adminPanel.getAdminEmployeeInfo().getBtnEdit().addActionListener(ebtc);
+        this.adminPanel.getAdminEmployeeEdit().getBtnConf().addActionListener(ebtc);
+        this.adminPanel.getAdminEmployeeAdd().getBtnAdd().addActionListener(ebtc);
+
+        ServiceButtonController sbtc=new ServiceButtonController(this);
+        this.adminPanel.getAdminService().getBtnAdd().addActionListener(sbtc);
+        this.adminPanel.getAdminServiceInfo().getBtnDelete().addActionListener(sbtc);
+        this.adminPanel.getAdminServiceInfo().getBtnEdit().addActionListener(sbtc);
+        this.adminPanel.getAdminServiceEdit().getBtnConf().addActionListener(sbtc);
+        this.adminPanel.getAdminServiceAdd().getBtnAdd().addActionListener(ebtc);
+
+        DrugButtonController dbcl=new DrugButtonController(this);
+        this.adminPanel.getAdminDrug().getBtnAdd().addActionListener(dbcl);
+        this.adminPanel.getAdminDrugInfo().getBtnDelete().addActionListener(dbcl);
+        this.adminPanel.getAdminDrugEdit().getBtnConf().addActionListener(dbcl);
+        this.adminPanel.getAdminDrugInfo().getBtnEdit().addActionListener(dbcl);
+        this.adminPanel.getAdminDrugAdd().getBtnAdd().addActionListener(dbcl);
+        // controller table
+        EmployeeTableController etct=new EmployeeTableController(this);
+        this.adminPanel.getAdminEmployee().getTable().addMouseListener(etct);
+        ServiceTableController stct=new ServiceTableController(this);
+        this.adminPanel.getAdminService().getTable().addMouseListener(stct);
+        DrugTableController dtcl=new DrugTableController(this);
+        this.adminPanel.getAdminDrug().getTable().addMouseListener(dtcl);
     }
 
     public DentistPanel getMainPanel() {
@@ -191,6 +240,14 @@ public class MainFrame extends JFrame {
 
     public void setDrugStorePanel(DrugStorePanel drugStorePanel) {
         this.drugStorePanel = drugStorePanel;
+    }
+
+    public AdminPanel getAdminPanel() {
+        return adminPanel;
+    }
+
+    public void setAdminPanel(AdminPanel adminPanel) {
+        this.adminPanel = adminPanel;
     }
 
     public static void main(String[] args) {

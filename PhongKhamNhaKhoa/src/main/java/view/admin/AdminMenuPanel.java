@@ -1,19 +1,18 @@
-package view.dentistPanel;
-
-import view.admin.AdminMenuPanel;
+package view.admin;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class DentistMenuPanel extends JPanel {
+public class AdminMenuPanel extends JPanel {
 
     private JLabel lblHome;
-    private JLabel lblSchedule;
-    private JLabel lblPatients;
-    private JLabel lblFeature1;
-    private JLabel lblFeature2;
+    private JLabel lblPatient;
+    private JLabel lblEmp;
+    private JLabel lblDrugs;
+    private JLabel lblService;
+    private JLabel lblStatistic;
 
-    public DentistMenuPanel() {
+    public AdminMenuPanel() {
         initComponents();
     }
 
@@ -59,21 +58,26 @@ public class DentistMenuPanel extends JPanel {
         gbc.anchor = GridBagConstraints.NORTHWEST;
 
         //Các menu label
-        lblSchedule = createMenuLabel("Xem lịch khám", 1, gbc,"/img/calendar.png");
-        lblSchedule.setOpaque(true);
-        lblSchedule.setBackground(Color.WHITE);
+        lblPatient = createMenuLabel("DS bệnh nhân", 1, gbc,"/img/group.png");
+        lblPatient.setOpaque(true);
+        lblPatient.setBackground(Color.WHITE);
 
-        lblPatients = createMenuLabel("Xem bệnh nhân", 2, gbc,"/img/icontooth.png");
-        lblPatients.setOpaque(true);
-        lblPatients.setBackground(Color.WHITE);
+        lblEmp = createMenuLabel("DS nhân viên", 2, gbc,"/img/group.png");
+        lblEmp.setOpaque(true);
+        lblEmp.setBackground(Color.WHITE);
 
-        lblFeature1 = createMenuLabel("Tính năng khác", 3, gbc,"/img/see.png");
-        lblFeature1.setOpaque(true);
-        lblFeature1.setBackground(Color.WHITE);
+        lblDrugs = createMenuLabel("DS thuốc", 3, gbc,"/img/medicine.png");
+        lblDrugs.setOpaque(true);
+        lblDrugs.setBackground(Color.WHITE);
 
-        lblFeature2 = createMenuLabel("Tính năng khác", 4, gbc,"/img/see.png");
-        lblFeature2.setOpaque(true);
-        lblFeature2.setBackground(Color.WHITE);
+        lblService = createMenuLabel("DS dịch vụ", 4, gbc,"/img/list.png");
+        lblService.setOpaque(true);
+        lblService.setBackground(Color.WHITE);
+
+        //thêm thống kê
+        lblStatistic = createMenuLabel("Thống kê", 5, gbc, "/img/statistics.png");
+        lblStatistic.setOpaque(true);
+        lblStatistic.setBackground(Color.WHITE);
 
         // Thêm 1 thành phần đẩy nội dung lên trên (tránh dồn xuống giữa)
         gbc.gridy = 5;
@@ -128,35 +132,53 @@ public class DentistMenuPanel extends JPanel {
         this.lblHome = lblHome;
     }
 
-    public JLabel getLblSchedule() {
-        return lblSchedule;
+    public JLabel getLblPatient() {
+        return lblPatient;
     }
 
-    public void setLblSchedule(JLabel lblSchedule) {
-        this.lblSchedule = lblSchedule;
+    public void setLblPatient(JLabel lblPatient) {
+        this.lblPatient = lblPatient;
     }
 
-    public JLabel getLblPatients() {
-        return lblPatients;
+    public JLabel getLblEmp() {
+        return lblEmp;
     }
 
-    public void setLblPatients(JLabel lblPatients) {
-        this.lblPatients = lblPatients;
+    public void setLblEmp(JLabel lblEmp) {
+        this.lblEmp = lblEmp;
     }
 
-    public JLabel getLblFeature1() {
-        return lblFeature1;
+    public JLabel getLblDrugs() {
+        return lblDrugs;
     }
 
-    public void setLblFeature1(JLabel lblFeature1) {
-        this.lblFeature1 = lblFeature1;
+    public void setLblDrugs(JLabel lblDrugs) {
+        this.lblDrugs = lblDrugs;
     }
 
-    public JLabel getLblFeature2() {
-        return lblFeature2;
+    public JLabel getLblService() {
+        return lblService;
     }
 
-    public void setLblFeature2(JLabel lblFeature2) {
-        this.lblFeature2 = lblFeature2;
+    public void setLblService(JLabel lblService) {
+        this.lblService = lblService;
+    }
+
+    public JLabel getLblStatistic() {
+        return lblStatistic;
+    }
+
+    public void setLblStatistic(JLabel lblStatistic) {
+        this.lblStatistic = lblStatistic;
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 400);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+        frame.getContentPane().add(new AdminMenuPanel());
     }
 }
+
