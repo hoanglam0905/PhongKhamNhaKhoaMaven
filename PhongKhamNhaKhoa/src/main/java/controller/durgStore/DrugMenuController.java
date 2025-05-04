@@ -55,6 +55,7 @@ public class DrugMenuController implements MouseListener {
     }
 
     private void switchListMedicinePanel() {
+        view.getDrugStorePanel().getListDrugPanel().reloadTableData();
         view.getDrugStorePanel().getCardLayout().show(view.getDrugStorePanel().getCenterPanel(), "Drugs");
     }
     private void switchIntroPanel() {

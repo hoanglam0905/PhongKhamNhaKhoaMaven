@@ -183,7 +183,7 @@ public class AddPrescriptionPanel extends JPanel {
         JScrollPane tableScroll = new JScrollPane(serviceTable);
         tableScroll.setPreferredSize(new Dimension(500, 100)); // <= Giới hạn chiều cao
         tableScroll.getViewport().setBackground(Color.WHITE);  // Nền vùng cuộn
-     // Tạo renderer căn giữa
+        // Tạo renderer căn giữa
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 
@@ -245,11 +245,7 @@ public class AddPrescriptionPanel extends JPanel {
 
                         // Xóa khỏi bảng
                         ((DefaultTableModel) serviceTable.getModel()).removeRow(row);
-
-                        // Xóa khỏi listDrugDose (list logic)
                         listDrugDose.removeIf(drug -> drug.getName().equalsIgnoreCase(drugName));
-
-                        // Cập nhật lại STT
                         for (int i = 0; i < tableModel.getRowCount(); i++) {
                             tableModel.setValueAt(i + 1, i, 0);
                         }
@@ -268,33 +264,50 @@ public class AddPrescriptionPanel extends JPanel {
                 return;
             }
 
-            DefaultTableModel model = (DefaultTableModel) serviceTable.getModel();
-            boolean exists = false;
-            for (int i = 0; i < model.getRowCount(); i++) {
-                String existingMedicineName = model.getValueAt(i, 1).toString();
-                if (existingMedicineName.equalsIgnoreCase(medicineName)) {
-                    exists = true;
+            int quantity = Integer.parseInt(quantityStr);
+
+            // Lấy danh sách thuốc hiện có
+            List<Drug> drugList = DrugDao.getListDrug();
+            Drug selectedDrug = null;
+
+            for (Drug drug : drugList) {
+                if (drug.getName().equalsIgnoreCase(medicineName)) {
+                    selectedDrug = drug;
                     break;
                 }
             }
 
-            if (exists) {
-                JOptionPane.showMessageDialog(this, "Thuốc này đã được thêm vào!");
+            if (selectedDrug == null) {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin thuốc trong cơ sở dữ liệu!");
                 return;
             }
 
+            if (selectedDrug.getStockQuantity() < quantity) {
+                JOptionPane.showMessageDialog(this, "Thuốc '" + medicineName + "' trong kho chỉ còn " +
+                        selectedDrug.getStockQuantity() + " viên. Không đủ để kê " + quantity + " viên.");
+                return;
+            }
+
+            // Kiểm tra trùng thuốc trong bảng
+            DefaultTableModel model = (DefaultTableModel) serviceTable.getModel();
+            for (int i = 0; i < model.getRowCount(); i++) {
+                String existingMedicineName = model.getValueAt(i, 1).toString();
+                if (existingMedicineName.equalsIgnoreCase(medicineName)) {
+                    JOptionPane.showMessageDialog(this, "Thuốc này đã được thêm vào!");
+                    return;
+                }
+            }
+
+            // Thêm vào bảng và list nếu đủ thuốc
             int stt = model.getRowCount() + 1;
             model.addRow(new Object[]{stt, medicineName, quantityStr, "x"});
 
-            // ---- Thêm vào listDrug ----
-            int quantity = Integer.parseInt(quantityStr);
             int morning = txtMorning.getText().isEmpty() ? 0 : Integer.parseInt(txtMorning.getText());
             int noon = txtNoon.getText().isEmpty() ? 0 : Integer.parseInt(txtNoon.getText());
             int afternoon = txtAfternoon.getText().isEmpty() ? 0 : Integer.parseInt(txtAfternoon.getText());
 
             DrugDose drugDose = new DrugDose(medicineName, morning, noon, afternoon);
             listDrugDose.add(drugDose);
-
         });
 
     }

@@ -2,9 +2,11 @@ package controller.durgStore;
 
 import Utils.PaymentQRComponent;
 import reponsitory.dao.BillDao;
+import reponsitory.dao.DrugDao;
 import service.ExportToPDF;
 import view.listPanelMain.MainFrame;
 
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -27,16 +29,24 @@ public class ButtonPaymentController implements ActionListener {
             qrPanel.setAmountAndContent(BillDao.getPriceInPre(id), content);
 
             qrPanel.setOnPaymentSuccess(() -> {
-                // 1. Cập nhật DB
+                // Cập nhật DB
                 BillDao.updatePaymentStatusToPaid(id);
-                // 2. Cập nhật giao diện
+                // Cập nhật giao diện
                 view.getDrugStorePanel().getBillConfPanel().getStatus().setText("Đã thanh toán");
-                // 3. Xuất PDF
+                // Xuất PDF
                 ExportToPDF.billToPDF(id+"");
-                // 4. Chuyển panel
+                //  Chuyển panel
                 view.getDrugStorePanel().getCardLayout().show(
                         view.getDrugStorePanel().getCenterPanel(), "BillConf"
                 );
+                // cập nhật lại data thuốc
+                DefaultTableModel model = (DefaultTableModel) view.getDrugStorePanel().getBillPanel().getTableMedicine().getModel();
+                for (int i = 0; i < model.getRowCount(); i++) {
+                    String drugName = model.getValueAt(i, 1).toString();        // Tên thuốc
+                    int quantity = Integer.parseInt(model.getValueAt(i, 2).toString());  // Số lượng
+                    DrugDao.updateDrugQuantity(drugName, quantity);
+                }
+
             });
             view.getDrugStorePanel().getCardLayout().show(
                     view.getDrugStorePanel().getCenterPanel(), "QR"
@@ -54,6 +64,13 @@ public class ButtonPaymentController implements ActionListener {
         ExportToPDF.billToPDF(id+"");
 
         view.getDrugStorePanel().getCardLayout().show(view.getDrugStorePanel().getCenterPanel(), "BillConf");
+        // Cập nhật số lượng thuốc
+        DefaultTableModel model = (DefaultTableModel) view.getDrugStorePanel().getBillPanel().getTableMedicine().getModel();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String drugName = model.getValueAt(i, 1).toString();        // Tên thuốc
+            int quantity = Integer.parseInt(model.getValueAt(i, 2).toString());  // Số lượng
+            DrugDao.updateDrugQuantity(drugName, quantity);
+        }
     }
 
 }
