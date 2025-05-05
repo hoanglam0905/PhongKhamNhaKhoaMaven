@@ -21,8 +21,8 @@ public class DrugTableController implements MouseListener {
         if (e.getClickCount() == 2 && table.getSelectedRow() != -1) {
             int row = table.getSelectedRow();
             // Gọi panel khám
-            switchDrugInfro(
-                    table.getValueAt(row, 0).toString() //id của thuốc, dùng nó để truy xuất thông tin
+            switchDrugInfo(
+                    (int)table.getValueAt(row, 0) //id của thuốc, dùng nó để truy xuất thông tin
             );
         }
     }
@@ -46,8 +46,9 @@ public class DrugTableController implements MouseListener {
     public void mouseExited(MouseEvent e) {
 
     }
-    public void switchDrugInfro(String id){
+    public void switchDrugInfo(int id){
         //set lại text thông tin của nhân viên
+    	view.getAdminPanel().getAdminDrugInfo().loadData(id);;
         view.getAdminPanel().getCardLayout().show(view.getAdminPanel().getCenterPanel(),"adminDrugInfo");
     }
 }

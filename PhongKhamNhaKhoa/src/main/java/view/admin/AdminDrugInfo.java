@@ -1,10 +1,15 @@
 package view.admin;
 
 import javax.swing.*;
+
+import model.Drug;
+import reponsitory.EmployeeRepository;
+import service.DrugService;
+
 import java.awt.*;
 
 public class AdminDrugInfo extends JPanel {
-
+	private int drugId;
     private JTextField tfName, tfDescription, tfPrice, tfStock;
     private JLabel lblId;
     private JButton btnDelete, btnEdit;
@@ -131,6 +136,30 @@ public class AdminDrugInfo extends JPanel {
         this.btnEdit = btnEdit;
     }
 
+    
+    public int getDrugId() {
+		return drugId;
+	}
+
+	public void setDrugId(int drugId) {
+		this.drugId = drugId;
+	}
+
+	public void loadData(int id) {
+		this.drugId = id;
+	    DrugService service = new DrugService();
+	    Drug drug = service.getDrugDetail(id);
+
+	    if (drug != null) {
+	        lblId.setText("Mã số: " + drug.getId());
+	        tfName.setText(drug.getName());
+	        tfDescription.setText(drug.getDescription());
+	        tfPrice.setText(String.valueOf(drug.getPrice()));
+	        tfStock.setText(String.valueOf(drug.getStockQuantity()));
+	    } else {
+	        JOptionPane.showMessageDialog(this, "Không tìm thấy thuốc có ID = " + id, "Lỗi", JOptionPane.ERROR_MESSAGE);
+	    }
+    }
     public static void main(String[] args) {
         JFrame frame = new JFrame("Thông tin thuốc");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
