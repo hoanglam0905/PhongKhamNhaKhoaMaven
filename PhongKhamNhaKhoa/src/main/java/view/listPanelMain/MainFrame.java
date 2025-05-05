@@ -167,6 +167,9 @@ public class MainFrame extends JFrame {
 
         EmployeeButtonController ebtc=new EmployeeButtonController(this);
         this.adminPanel.getAdminEmployee().getBtnAdd().addActionListener(ebtc);
+        this.adminPanel.getAdminEmployee().getTfSearch().getDocument().addDocumentListener(
+                new EmployeeSearchController(this.adminPanel.getAdminEmployee())
+        );
         this.adminPanel.getAdminEmployeeInfo().getBtnDelete().addActionListener(ebtc);
         this.adminPanel.getAdminEmployeeInfo().getBtnEdit().addActionListener(ebtc);
         this.adminPanel.getAdminEmployeeEdit().getBtnConf().addActionListener(ebtc);

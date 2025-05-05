@@ -1,7 +1,12 @@
 package view.admin;
 
 import javax.swing.*;
+
+import com.toedter.calendar.JDateChooser;
+
 import java.awt.*;
+import java.util.Calendar;
+import java.util.Date;
 
 public class AdminEmployeeAdd extends JPanel {
     private JTextField tfName, tfPhone, tfBirth,
@@ -11,7 +16,8 @@ public class AdminEmployeeAdd extends JPanel {
     private JComboBox<String> cbGender;
     private JLabel lblId;
     private JButton btnAdd;
-
+    private JDateChooser dateChooser;
+    
     public AdminEmployeeAdd() {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
@@ -39,10 +45,26 @@ public class AdminEmployeeAdd extends JPanel {
         formPanel.setPreferredSize(new Dimension(500, 400));
 
         tfName = new JTextField(); tfPhone = new JTextField();
-        tfBirth = new JTextField(); cbGender = new JComboBox<>(new String[]{"Nam", "Nữ"});
+        dateChooser = new JDateChooser();
+        dateChooser.setDateFormatString("dd-MM-yyyy");
+        Calendar today = Calendar.getInstance();
+
+        // Tính ngày nhỏ nhất: hôm nay - 60 năm
+        Calendar min = (Calendar) today.clone();
+        min.add(Calendar.YEAR, -60);
+
+        // Tính ngày lớn nhất: hôm nay - 18 năm
+        Calendar max = (Calendar) today.clone();
+        max.add(Calendar.YEAR, -18);
+
+        // Đặt giới hạn
+        dateChooser.setMinSelectableDate(min.getTime());
+        dateChooser.setMaxSelectableDate(max.getTime());
+        
+        cbGender = new JComboBox<>(new String[]{"Nam", "Nữ"});
         tfAddress = new JTextField(); tfCCCD = new JTextField();
         tfSalary = new JTextField();
-        cbRole = new JComboBox<>(new String[]{"Lễ tân", "Bác sĩ", "Nhân viên quầy thuốc","Quản lí"});
+        cbRole = new JComboBox<>(new String[]{"Lễ tân", "Bác sĩ", "Nhân viên quầy thuốc","Admin"});
         tfUsername = new JTextField(); tfPassword = new JTextField();
         tfYear = new JTextField();
 
@@ -58,7 +80,7 @@ public class AdminEmployeeAdd extends JPanel {
 
         formPanel.add(new JLabel("Ngày sinh"));
         formPanel.add(new JLabel("Giới tính"));
-        formPanel.add(tfBirth); formPanel.add(cbGender); // Dùng JComboBox ở đây
+        formPanel.add(dateChooser); formPanel.add(cbGender); // Dùng JComboBox ở đây
 
         formPanel.add(new JLabel("Địa chỉ"));
         formPanel.add(new JLabel("CCCD"));
@@ -187,7 +209,16 @@ public class AdminEmployeeAdd extends JPanel {
         this.btnAdd = btnAdd;
     }
 
-    public static void main(String[] args) {
+    
+    public JDateChooser getDateChooser() {
+		return dateChooser;
+	}
+
+	public void setDateChooser(JDateChooser dateChooser) {
+		this.dateChooser = dateChooser;
+	}
+
+	public static void main(String[] args) {
         JFrame frame = new JFrame("Test AdminEmployeeAdd");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(600, 600);
@@ -195,4 +226,6 @@ public class AdminEmployeeAdd extends JPanel {
         frame.setContentPane(new AdminEmployeeAdd());
         frame.setVisible(true);
     }
+
+	
 }

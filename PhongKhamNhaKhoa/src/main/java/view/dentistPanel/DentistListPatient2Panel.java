@@ -239,5 +239,22 @@ public class DentistListPatient2Panel extends JPanel {
         headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
     }
 
+    public static void main(String[] args) {
+        // Thiết lập giao diện Swing chạy trong Event Dispatch Thread
+        SwingUtilities.invokeLater(() -> {
+            // Tạo frame
+            JFrame frame = new JFrame("Danh sách bệnh nhân");
+
+            // Tạo panel
+            DentistListPatient2Panel panel = new DentistListPatient2Panel();
+
+            // Gắn panel vào frame
+            frame.setContentPane(panel);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(800, 600); // Kích thước khung
+            frame.setLocationRelativeTo(null); // Hiển thị giữa màn hình
+            frame.setVisible(true);
+        });
+    }
 }
 

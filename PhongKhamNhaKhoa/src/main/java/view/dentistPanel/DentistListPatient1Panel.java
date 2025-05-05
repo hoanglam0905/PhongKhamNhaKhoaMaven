@@ -254,5 +254,21 @@ public class DentistListPatient1Panel extends JPanel {
         headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
     }
 
+        public static void main(String[] args) {
+            // Tạo JFrame
+            JFrame frame = new JFrame("Danh sách bệnh nhân của bác sĩ");
 
+            // Tạo instance panel
+            DentistListPatient1Panel panel = new DentistListPatient1Panel();
+
+            // Nếu cần, gán id bác sĩ
+            panel.setId_doctor("1"); // hoặc giá trị phù hợp
+
+            // Gắn panel vào frame
+            frame.setContentPane(panel);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(800, 600);
+            frame.setLocationRelativeTo(null); // canh giữa màn hình
+            frame.setVisible(true);
+        }
 }
