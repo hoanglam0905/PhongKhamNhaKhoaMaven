@@ -1,7 +1,15 @@
 package view.admin;
 
 import javax.swing.*;
+
+import com.toedter.calendar.JDateChooser;
+
+import reponsitory.EmployeeRepository;
+
 import java.awt.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class AdminEmployeeEdit extends JPanel {
     private final JComboBox<String> cbRole;
@@ -11,6 +19,7 @@ public class AdminEmployeeEdit extends JPanel {
             tfUsername, tfPassword;
     private JLabel lblId;
     private JButton btnConf;
+    JDateChooser dateChooser;
 
     public AdminEmployeeEdit() {
         setLayout(new BorderLayout());
@@ -40,7 +49,22 @@ public class AdminEmployeeEdit extends JPanel {
 
         tfName = new JTextField();
         tfPhone = new JTextField();
-        tfBirth = new JTextField();
+        dateChooser = new JDateChooser();
+        dateChooser.setDateFormatString("dd-MM-yyyy");
+        Calendar today = Calendar.getInstance();
+
+        // Tính ngày nhỏ nhất: hôm nay - 60 năm
+        Calendar min = (Calendar) today.clone();
+        min.add(Calendar.YEAR, -60);
+
+        // Tính ngày lớn nhất: hôm nay - 18 năm
+        Calendar max = (Calendar) today.clone();
+        max.add(Calendar.YEAR, -18);
+
+        // Đặt giới hạn
+        dateChooser.setMinSelectableDate(min.getTime());
+        dateChooser.setMaxSelectableDate(max.getTime());
+        
         cbGender = new JComboBox<>(new String[]{"Nam", "Nữ"});
         tfAddress = new JTextField();
         tfCCCD = new JTextField();
@@ -55,7 +79,7 @@ public class AdminEmployeeEdit extends JPanel {
 
         formPanel.add(new JLabel("Ngày sinh"));
         formPanel.add(new JLabel("Giới tính"));
-        formPanel.add(tfBirth); formPanel.add(cbGender);
+        formPanel.add(dateChooser); formPanel.add(cbGender);
 
         formPanel.add(new JLabel("Địa chỉ"));
         formPanel.add(new JLabel("CCCD"));
@@ -177,6 +201,39 @@ public class AdminEmployeeEdit extends JPanel {
         this.btnConf = btnConf;
     }
 
+    
+    public JDateChooser getDateChooser() {
+		return dateChooser;
+	}
+
+	public void setDateChooser(JDateChooser dateChooser) {
+		this.dateChooser = dateChooser;
+	}
+
+	public void loadData(int id) throws ParseException {
+        Object[] emp = EmployeeRepository.findById(id);
+        if (emp != null) {
+            lblId.setText("Mã số: " + emp[0]);
+            tfName.setText((String) emp[1]);
+            tfPhone.setText((String) emp[2]);
+//            tfBirth.setText((String) emp[3]);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            java.util.Date date = sdf.parse((String) emp[3]);
+            // Set vào JDateChooser
+            dateChooser.setDate(date);
+            cbGender.setSelectedItem(emp[4]);
+            tfAddress.setText((String) emp[5]);
+            tfCCCD.setText((String) emp[6]);
+            tfSalary.setText(String.valueOf(emp[7]));
+            cbRole.setSelectedItem(emp[8]);
+            tfUsername.setText((String) emp[9]);
+            tfPassword.setText((String) emp[10]);
+        } else {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy nhân viên có ID = " + id,
+                    "Thông báo", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+    
     public static void main(String[] args) {
         JFrame frame = new JFrame("Sửa thông tin nhân viên");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

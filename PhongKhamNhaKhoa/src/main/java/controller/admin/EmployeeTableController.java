@@ -22,7 +22,7 @@ public class EmployeeTableController implements MouseListener {
             int row = table.getSelectedRow();
             // Gọi panel khám
             switchEmpInfro(
-                    table.getValueAt(row, 0).toString() //id của nhân viên, dùng nó để truy xuất thông tin
+                    (int)table.getValueAt(row, 0) //id của nhân viên, dùng nó để truy xuất thông tin
             );
         }
     }
@@ -46,8 +46,9 @@ public class EmployeeTableController implements MouseListener {
     public void mouseExited(MouseEvent e) {
 
     }
-    public void switchEmpInfro(String id){
+    public void switchEmpInfro(int id){
         //set lại text thông tin của nhân viên
+    	view.getAdminPanel().getAdminEmployeeInfo().loadData(id);
         view.getAdminPanel().getCardLayout().show(view.getAdminPanel().getCenterPanel(),"adminEmployeeInfo");
     }
 }

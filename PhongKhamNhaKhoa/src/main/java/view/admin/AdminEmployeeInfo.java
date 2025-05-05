@@ -1,13 +1,16 @@
 package view.admin;
 
 import javax.swing.*;
+
+import reponsitory.EmployeeRepository;
+
 import java.awt.*;
 
 public class AdminEmployeeInfo extends JPanel {
+	private int employeeId;
     private JTextField tfName, tfPhone, tfBirth,
             tfAddress, tfCCCD, tfSalary, tfRole,
-            tfUsername, tfPassword;
-    private JComboBox<String> cbGender;
+            tfUsername, tfPassword, tfGender;
     private JLabel lblId;
     private JButton btnDelete, btnEdit;
 
@@ -38,7 +41,7 @@ public class AdminEmployeeInfo extends JPanel {
         formPanel.setPreferredSize(new Dimension(500, 350));
 
         tfName = new JTextField(); tfPhone = new JTextField();
-        tfBirth = new JTextField(); cbGender = new JComboBox<>(new String[] { "Nam", "Nữ" });
+        tfBirth = new JTextField(); tfGender = new JTextField();
         tfAddress = new JTextField(); tfCCCD = new JTextField();
         tfSalary = new JTextField(); tfRole = new JTextField();
         tfUsername = new JTextField(); tfPassword = new JTextField();
@@ -49,7 +52,7 @@ public class AdminEmployeeInfo extends JPanel {
 
         formPanel.add(new JLabel("Ngày sinh"));
         formPanel.add(new JLabel("Giới tính"));
-        formPanel.add(tfBirth); formPanel.add(cbGender);
+        formPanel.add(tfBirth); formPanel.add(tfGender);
 
         formPanel.add(new JLabel("Địa chỉ"));
         formPanel.add(new JLabel("CCCD"));
@@ -161,12 +164,12 @@ public class AdminEmployeeInfo extends JPanel {
         this.tfPassword = tfPassword;
     }
 
-    public JComboBox<String> getCbGender() {
-        return cbGender;
+    public JTextField getCbGender() {
+        return tfGender;
     }
 
-    public void setCbGender(JComboBox<String> cbGender) {
-        this.cbGender = cbGender;
+    public void setCbGender(JTextField tfGender) {
+        this.tfGender = tfGender;
     }
 
     public JLabel getLblId() {
@@ -191,6 +194,35 @@ public class AdminEmployeeInfo extends JPanel {
 
     public void setBtnEdit(JButton btnEdit) {
         this.btnEdit = btnEdit;
+    }
+
+    public int getEmployeeId() {
+    	return this.employeeId;
+    }
+    
+    public void setEmployeeID(int x) {
+    	this.employeeId=x;
+    }
+    
+    public void loadData(int id) {
+    	this.employeeId=id;
+        Object[] emp = EmployeeRepository.findById(id);
+        if (emp != null) {
+            lblId.setText("Mã số: " + emp[0]);
+            tfName.setText((String) emp[1]);
+            tfPhone.setText((String) emp[2]);
+            tfBirth.setText((String) emp[3]);
+            tfGender.setText((String) emp[4]);
+            tfAddress.setText((String) emp[5]);
+            tfCCCD.setText((String) emp[6]);
+            tfSalary.setText(String.valueOf(emp[7]));
+            tfRole.setText((String) emp[8]);
+            tfUsername.setText((String) emp[9]);
+            tfPassword.setText((String) emp[10]);
+        } else {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy nhân viên có ID = " + id,
+                    "Thông báo", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     public static void main(String[] args) {
