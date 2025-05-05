@@ -37,9 +37,15 @@ public class ShowPatientsReceptionistPanel extends JPanel {
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         searchPanel.setBackground(Color.WHITE);
 
+        // Adding "Tìm kiếm" label before search field
+        JLabel lblSearch = new JLabel("Tìm kiếm: ");
+        lblSearch.setFont(new Font("Arial", Font.PLAIN, 14));
+        searchPanel.add(lblSearch);
+
         txtSearch = new JTextField("");
         txtSearch.setPreferredSize(new Dimension(200, 30));
         txtSearch.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        txtSearch.setForeground(Color.GRAY); // Placeholder color
         searchPanel.add(txtSearch);
 
         topPanel.add(searchPanel, BorderLayout.EAST);
@@ -64,6 +70,11 @@ public class ShowPatientsReceptionistPanel extends JPanel {
         patientInfoTable.setForeground(Color.BLACK);
         patientInfoTable.setSelectionBackground(new Color(0, 123, 255));
         patientInfoTable.setGridColor(Color.LIGHT_GRAY);
+        patientInfoTable.getColumnModel().getColumn(0).setPreferredWidth(70);
+        patientInfoTable.getColumnModel().getColumn(1).setPreferredWidth(150);
+        patientInfoTable.getColumnModel().getColumn(2).setPreferredWidth(100);
+        patientInfoTable.getColumnModel().getColumn(3).setPreferredWidth(120);
+        patientInfoTable.getColumnModel().getColumn(4).setPreferredWidth(80);
 
         JTableHeader infoHeader = patientInfoTable.getTableHeader();
         infoHeader.setPreferredSize(new Dimension(0, 30));
@@ -76,7 +87,6 @@ public class ShowPatientsReceptionistPanel extends JPanel {
                 label.setForeground(Color.WHITE);
                 label.setFont(new Font("Arial", Font.BOLD, 13));
                 label.setHorizontalAlignment(SwingConstants.CENTER);
-                label.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 3, Color.WHITE));
                 return label;
             }
         });
@@ -89,6 +99,10 @@ public class ShowPatientsReceptionistPanel extends JPanel {
 
         infoHeader.setReorderingAllowed(false);
         infoHeader.setResizingAllowed(false);
+
+        JScrollPane infoTableScroll = new JScrollPane(patientInfoTable);
+        infoTableScroll.setBorder(null);
+        infoTableScroll.getViewport().setBackground(Color.WHITE);
 
         // Table 2 - Action Buttons
         actionTableModel = new DefaultTableModel(
@@ -117,7 +131,6 @@ public class ShowPatientsReceptionistPanel extends JPanel {
                 label.setForeground(Color.WHITE);
                 label.setFont(new Font("Arial", Font.BOLD, 13));
                 label.setHorizontalAlignment(SwingConstants.CENTER);
-                label.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 3, Color.WHITE));
                 return label;
             }
         });
@@ -125,40 +138,34 @@ public class ShowPatientsReceptionistPanel extends JPanel {
         for (int i = 0; i < patientActionTable.getColumnCount(); i++) {
             patientActionTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
-
-        actionHeader.setReorderingAllowed(false);
-        actionHeader.setResizingAllowed(false);
-
-        // Sample Data
-        PatientDAO dao = new PatientDAO();
-        List<Object[]> list = dao.getAllPatients();
-        for (Object[] row : list) {
-            infoTableModel.addRow(row);
-            actionTableModel.addRow(new Object[]{"Tái Khám", "Lịch hẹn mới", "✎"});
-        }
-
         patientActionTable.getColumnModel().getColumn(0).setCellRenderer(new ButtonRenderer("Tái Khám", new Color(0, 153, 51)));
         patientActionTable.getColumnModel().getColumn(1).setCellRenderer(new ButtonRenderer("Lịch hẹn mới", new Color(0, 153, 51)));
         patientActionTable.getColumnModel().getColumn(2).setCellRenderer(new ButtonRenderer("Sửa", new Color(0, 153, 51)));
+        
+        patientActionTable.getColumnModel().getColumn(0).setPreferredWidth(100); // Cột "Tái Khám"
+        patientActionTable.getColumnModel().getColumn(1).setPreferredWidth(120); // Cột "Lịch hẹn mới"
+        patientActionTable.getColumnModel().getColumn(2).setPreferredWidth(80);  // Cột "Sửa"
 
-        JScrollPane infoTableScroll = new JScrollPane(patientInfoTable);
-        infoTableScroll.setBorder(null);
-        infoTableScroll.getViewport().setBackground(Color.WHITE);
+        actionHeader.setReorderingAllowed(false);
+        actionHeader.setResizingAllowed(false);
 
         JScrollPane actionTableScroll = new JScrollPane(patientActionTable);
         actionTableScroll.setBorder(null);
         actionTableScroll.getViewport().setBackground(Color.WHITE);
 
-        // 👉 SỬ DỤNG JSplitPane THAY CHO BorderLayout để bảng co giãn
+        // Sử dụng JSplitPane với dividerSize = 0 để sát lại
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, infoTableScroll, actionTableScroll);
-        splitPane.setResizeWeight(0.7); // chiếm 70% bên trái
-        splitPane.setOneTouchExpandable(true);
+        splitPane.setResizeWeight(0.6); // Giữ nguyên tỷ lệ 70% cho bảng thông tin
+        splitPane.setOneTouchExpandable(false); // Tắt nút mở rộng
         splitPane.setContinuousLayout(true);
-        splitPane.setDividerSize(5);
+        splitPane.setDividerSize(0); // Đặt kích thước divider về 0 để sát hai bảng
         splitPane.setBorder(null);
 
         tablePanel.add(splitPane, BorderLayout.CENTER);
         add(tablePanel, BorderLayout.CENTER);
+
+        // Load dữ liệu ban đầu
+        reloadPatientList();
     }
 
     // Renderer nút bấm trong bảng
