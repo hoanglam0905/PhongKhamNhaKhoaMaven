@@ -1,6 +1,10 @@
 package view.admin;
 
 import javax.swing.*;
+
+import model.Drug;
+import service.DrugService;
+
 import java.awt.*;
 
 public class AdminDrugEdit extends JPanel {
@@ -123,5 +127,20 @@ public class AdminDrugEdit extends JPanel {
         frame.setLocationRelativeTo(null);
         frame.setContentPane(new AdminDrugEdit());
         frame.setVisible(true);
+    }
+
+    public void loadData(int id) {
+	    DrugService service = new DrugService();
+	    Drug drug = service.getDrugDetail(id);
+
+	    if (drug != null) {
+	        lblId.setText("Mã số: " + drug.getId());
+	        tfName.setText(drug.getName());
+	        tfDescription.setText(drug.getDescription());
+	        tfPrice.setText(String.valueOf(drug.getPrice()));
+	        tfStock.setText(String.valueOf(drug.getStockQuantity()));
+	    } else {
+	        JOptionPane.showMessageDialog(this, "Không tìm thấy thuốc có ID = " + id, "Lỗi", JOptionPane.ERROR_MESSAGE);
+	    }
     }
 }

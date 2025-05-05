@@ -15,6 +15,7 @@ public class Drug {
         this.stockQuantity = stockQuantity;
     }
 
+    public Drug() {}
     @Override
 	public String toString() {
 		return "Drug [id=" + id + ", name=" + name + ", description=" + description + ", price=" + price
