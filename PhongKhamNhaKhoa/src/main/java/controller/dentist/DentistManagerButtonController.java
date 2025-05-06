@@ -36,23 +36,44 @@ public class DentistManagerButtonController implements ActionListener {
         } else if (command.equals("Thêm danh sách thuốc")) {
             switchDentistAddPrescriptionPanelPanel();
         } else if (command.equals("Xuất đơn thuốc")){
+            boolean isDrugListEmpty = view.getMainPanel().getAddPrescriptionPanel().getListDrugDose().isEmpty();
+            boolean isServiceListEmpty = view.getMainPanel().getServicePanel().getTableModel().getRowCount() == 0;
+
+            if (isDrugListEmpty && isServiceListEmpty) {
+                JOptionPane.showMessageDialog(view, "Không có dịch vụ hoặc đơn thuốc nào để xuất!");
+                return;
+            }
+
+            // Nếu chỉ thuốc rỗng (không có thuốc)
+            if (isDrugListEmpty) {
+                JOptionPane.showMessageDialog(view, "Danh sách thuốc đang trống. Không thể xuất đơn thuốc.");
+                return;
+            }
+
             switchDentistPatient1Panel();
-            int id_patient= PatientDAO.getIdPatient(view.getMainPanel().getDentistExaminationPanel().getSdtPatient());
-            int id_doctor= DentistDao.getIdDentistLogin(view.getLoginPanel().getAcc(),view.getLoginPanel().getPass());
-            ExamDao.updateExam(id_doctor+"",id_patient+"");
-            ExportToPDF.prescriptionToPDF(id_pre+"");
+            int id_patient = PatientDAO.getIdPatient(view.getMainPanel().getDentistExaminationPanel().getSdtPatient());
+            int id_doctor = DentistDao.getIdDentistLogin(view.getLoginPanel().getAcc(), view.getLoginPanel().getPass());
+            ExamDao.updateExam(id_doctor + "", id_patient + "");
+            ExportToPDF.prescriptionToPDF(id_pre + "");
         } else if (command.equals("Hủy")) {
             switchDentistPatient1Panel();
         }
     }
     public void switchDentistAddPrescriptionPanelPanel() {
-        view.getMainPanel().getServicePanel().readServiceTableData();// doc thong tin cua dich vu
+        view.getMainPanel().getServicePanel().readServiceTableData();
         view.getMainPanel().getServicePanel().showText();
-        if(view.getMainPanel().getServicePanel().getTxtQuantity().getText().equals("")){
-            JOptionPane.showMessageDialog(view, "Vui lòng điền đầy đủ thông tin !");
-        } else
-            view.getMainPanel().getCardLayout().show(view.getMainPanel().getCenterPanel(), "addPrescriptionPanel");
+
+        boolean isServiceEmpty = view.getMainPanel().getServicePanel().getTableModel().getRowCount() == 0;
+        boolean isDrugEmpty = view.getMainPanel().getAddPrescriptionPanel().getListDrugDose().isEmpty();
+
+        if (isServiceEmpty && isDrugEmpty) {
+            JOptionPane.showMessageDialog(view, "Vui lòng thêm ít nhất một dịch vụ hoặc thuốc trước khi kê đơn!");
+            return;
+        }
+
+        view.getMainPanel().getCardLayout().show(view.getMainPanel().getCenterPanel(), "addPrescriptionPanel");
     }
+
     public void switchDentistServicePanel() {
         view.getMainPanel().getDentistExaminationPanel().setInfo();//set thong tin benh nhan
         if(view.getMainPanel().getDentistExaminationPanel().getTfSymptom().getText().equals("")||

@@ -224,7 +224,7 @@ public class ServicePanel extends JPanel {
                 int stt = model.getRowCount() + 1;
                 model.addRow(new Object[]{stt, serviceName, quantity, "x"});
 
-                cboServiceName.setSelectedIndex(0);
+//                cboServiceName.setSelectedIndex(0);
                 txtQuantity.setText("");
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Số lượng phải là số nguyên.");
