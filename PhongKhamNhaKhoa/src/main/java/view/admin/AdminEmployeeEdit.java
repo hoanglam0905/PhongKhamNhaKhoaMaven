@@ -19,7 +19,7 @@ public class AdminEmployeeEdit extends JPanel {
             tfUsername, tfPassword;
     private JLabel lblId;
     private JButton btnConf;
-    JDateChooser dateChooser;
+    private JDateChooser dateChooser;
 
     public AdminEmployeeEdit() {
         setLayout(new BorderLayout());

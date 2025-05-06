@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-public class DoctorService {
+public class DoctorService implements IDoctorService {
     private DoctorRepository doctorRepository;
 
     public DoctorService() {

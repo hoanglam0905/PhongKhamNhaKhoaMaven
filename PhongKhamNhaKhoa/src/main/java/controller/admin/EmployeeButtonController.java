@@ -43,10 +43,16 @@ public class EmployeeButtonController implements ActionListener {
     }
     
     private void insertEmployee() {
-    	AdminEmployeeAdd addPanel = view.getAdminPanel().getAdminEmployeeAdd();
+        AdminEmployeeAdd addPanel = view.getAdminPanel().getAdminEmployeeAdd();
 
         String name = addPanel.getTfName().getText().trim();
         String phone = addPanel.getTfPhone().getText().trim();
+        String address = addPanel.getTfAddress().getText().trim();
+        String cccd = addPanel.getTfCCCD().getText().trim();
+        String username = addPanel.getTfUsername().getText().trim();
+        String password = addPanel.getTfPassword().getText().trim();
+        String salaryText = addPanel.getTfSalary().getText().trim();
+        String yearText = addPanel.getTfYear().getText().trim();
         java.util.Date birthUtilDate = addPanel.getDateChooser().getDate();
         if (birthUtilDate == null) {
             JOptionPane.showMessageDialog(view, "Vui lòng chọn ngày sinh hợp lệ.");
@@ -54,25 +60,47 @@ public class EmployeeButtonController implements ActionListener {
         }
         java.sql.Date birthDate = new java.sql.Date(birthUtilDate.getTime());
 
-        int gender = addPanel.getCbGender().getSelectedItem().equals("Nam") ? 1 : 0;
-        String address = addPanel.getTfAddress().getText().trim();
-        String cccd = addPanel.getTfCCCD().getText().trim();
-        double salary = Double.parseDouble(addPanel.getTfSalary().getText().trim());
-        String role = (String) addPanel.getCbRole().getSelectedItem();
-        String username = addPanel.getTfUsername().getText().trim();
-        String password = addPanel.getTfPassword().getText().trim();
-        int year = Integer.parseInt(addPanel.getTfYear().getText().trim());
-
-        boolean success = EmployeeService.insertEmployee(name, birthDate, address, gender, phone, cccd, username, password, salary, year, role);
-
-        if (success) {
-            JOptionPane.showMessageDialog(view, "Thêm nhân viên thành công!");
-            // Optionally reset form or chuyển về danh sách
-        } else {
-            JOptionPane.showMessageDialog(view, "Thêm thất bại! Kiểm tra lại thông tin.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        // Kiểm tra rỗng
+        if (name.isEmpty() || phone.isEmpty() || address.isEmpty() || cccd.isEmpty() ||
+            username.isEmpty() || password.isEmpty() || salaryText.isEmpty() || yearText.isEmpty()) {
+            JOptionPane.showMessageDialog(view, "Vui lòng điền đầy đủ thông tin.", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
+            return;
         }
-		
-	}
+
+        // Kiểm tra số năm kinh nghiệm là số nguyên
+        int year;
+        try {
+            year = Integer.parseInt(yearText);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(view, "Năm kinh nghiệm phải là số nguyên.", "Lỗi định dạng", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Kiểm tra lương là số thực
+        double salary;
+        try {
+            salary = Double.parseDouble(salaryText);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(view, "Hệ số lương phải là số thực.", "Lỗi định dạng", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int gender = addPanel.getCbGender().getSelectedItem().equals("Nam") ? 1 : 0;
+        String role = (String) addPanel.getCbRole().getSelectedItem();
+
+        // Gọi service
+        try {
+            boolean success = EmployeeService.insertEmployee(name, birthDate, address, gender, phone, cccd, username, password, salary, year, role);
+            if (success) {
+                JOptionPane.showMessageDialog(view, "Thêm nhân viên thành công!");
+            } else {
+                JOptionPane.showMessageDialog(view, "Thêm thất bại! Kiểm tra lại thông tin.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(view, ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
 
 	public void updateValue() {
     	AdminEmployeeEdit editPanel = view.getAdminPanel().getAdminEmployeeEdit();

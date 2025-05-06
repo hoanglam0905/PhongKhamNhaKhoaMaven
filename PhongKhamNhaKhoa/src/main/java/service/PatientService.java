@@ -29,5 +29,13 @@ public class PatientService {
  public int addPatientAndReturnId(Patient patient) throws SQLException, ClassNotFoundException, IOException {
 	    return patientRepository.addPatientAndReturnId(patient);
 	}
+ 
+ public boolean isPhoneExists(String phone) throws SQLException, ClassNotFoundException, FileNotFoundException, IOException {
+	    return PatientRepository.isPhoneExists(phone);
+	}
+
+	public boolean isIdCardExists(String idCard) throws SQLException, ClassNotFoundException, FileNotFoundException, IOException {
+	    return PatientRepository.isIdCardExists(idCard);
+	}
 }
 

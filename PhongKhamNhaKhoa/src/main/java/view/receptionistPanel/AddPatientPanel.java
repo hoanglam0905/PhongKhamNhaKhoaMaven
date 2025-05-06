@@ -1,9 +1,12 @@
 package view.receptionistPanel;
 
+import java.util.Calendar;
 import java.util.List;
 import model.Doctor;
 import reponsitory.DoctorRepository;
 import javax.swing.*;
+
+import com.toedter.calendar.JDateChooser;
 
 import controller.receptionist.AddPatientController;
 
@@ -16,11 +19,12 @@ public class AddPatientPanel extends JPanel {
 
     private JTextField txtName;
     private JTextField txtPhone;
-    private JTextField txtBirthDate;
+//    private JTextField txtBirthDate;
     private JComboBox<String> genderCombo;
     private JTextField txtIdCard;
     private JTextField txtAdress;
     private JComboBox<Doctor> doctorCombo;
+    private JDateChooser dateChooser;
     private JButton btnAdd, btnCancel;
     private JPanel contentPanel;
 
@@ -57,11 +61,24 @@ public class AddPatientPanel extends JPanel {
         txtPhone = new JTextField();
         txtPhone.setPreferredSize(new Dimension(180, 35));
 
-        JLabel lblBirthDate = new JLabel("Ngày sinh (dd/MM/yyyy):");
+        JLabel lblBirthDate = new JLabel("Ngày sinh:");
         lblBirthDate.setFont(new Font("Arial", Font.ITALIC, 14));
-        txtBirthDate = new JTextField();
-        txtBirthDate.setPreferredSize(new Dimension(180, 35));
+        dateChooser = new JDateChooser();
+        dateChooser.setDateFormatString("dd-MM-yyyy");
+        Calendar today = Calendar.getInstance();
 
+        // Tính ngày nhỏ nhất: hôm nay - 60 năm
+        Calendar min = (Calendar) today.clone();
+        min.add(Calendar.YEAR, -60);
+
+        // Tính ngày lớn nhất: hôm nay - 18 năm
+        Calendar max = (Calendar) today.clone();
+        max.add(Calendar.YEAR, -16);
+     // Đặt giới hạn
+        dateChooser.setMinSelectableDate(min.getTime());
+        dateChooser.setMaxSelectableDate(max.getTime());
+        
+        
         JLabel lblGender = new JLabel("Giới tính:");
         lblGender.setFont(new Font("Arial", Font.ITALIC, 14));
         genderCombo = new JComboBox<>(new String[]{"Nữ", "Nam"});
@@ -106,7 +123,7 @@ public class AddPatientPanel extends JPanel {
                         .addComponent(lblName)
                         .addComponent(txtName, 180, 180, 180) // Đồng bộ với preferredSize
                         .addComponent(lblBirthDate)
-                        .addComponent(txtBirthDate, 180, 180, 180))
+                        .addComponent(dateChooser, 180, 180, 180))
                     .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                     .addGroup(layout.createParallelGroup()
                         .addComponent(lblPhone)
@@ -139,7 +156,7 @@ public class AddPatientPanel extends JPanel {
                     .addComponent(lblBirthDate)
                     .addComponent(lblGender))
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtBirthDate, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dateChooser, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
                     .addComponent(genderCombo, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE))
                 .addComponent(lblIdCard)
                 .addComponent(txtIdCard, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
@@ -189,16 +206,20 @@ public class AddPatientPanel extends JPanel {
     private void clearFields() {
         txtName.setText("");
         txtPhone.setText("");
-        txtBirthDate.setText("");
         txtAdress.setText("");
         doctorCombo.setSelectedIndex(-1);
     }
 
     public JTextField getTxtName() { return txtName; }
     public JTextField getTxtPhone() { return txtPhone; }
-    public JTextField txtBirthDate() { return txtBirthDate; }
-    public void txtBirthDate(JTextField txtBirthDate) { this.txtBirthDate = txtBirthDate; }
-    public JComboBox<String> getGenderCombo() { return genderCombo; }
+    public JDateChooser getDateChooser() {
+		return dateChooser;
+	}
+
+	public void setDateChooser(JDateChooser dateChooser) {
+		this.dateChooser = dateChooser;
+	}
+	public JComboBox<String> getGenderCombo() { return genderCombo; }
     public void setGenderCombo(JComboBox<String> genderCombo) { this.genderCombo = genderCombo; }
     public JTextField getTxtIdCard() { return txtIdCard; }
     public JTextField getTxtAdress() { return txtAdress; }

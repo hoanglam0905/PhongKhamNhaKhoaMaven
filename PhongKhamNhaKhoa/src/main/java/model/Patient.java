@@ -17,6 +17,11 @@ public class Patient extends Person {
 }
 
 
+public Patient(int id, String name, java.util.Date birthUtilDate, String address, int gender, String phone,
+		String idCard) {
+	// TODO Auto-generated constructor stub
+}
+
 public MedicalRecord getMedicalRecord() {
      return medicalRecord;
  }

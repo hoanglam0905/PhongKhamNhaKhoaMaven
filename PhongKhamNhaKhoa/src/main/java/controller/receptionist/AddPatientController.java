@@ -35,13 +35,18 @@ public class AddPatientController implements ActionListener{
 		System.out.println("bạn nhấn nút "+src);
 		if (src.equals("Thêm Bệnh Nhân và Lịch Hẹn")) {
           String name = addPatientView.getTxtName().getText();
-          String birth = addPatientView.txtBirthDate().getText();
+          java.util.Date birthUtilDate = addPatientView.getDateChooser().getDate();
+          if (birthUtilDate == null) {
+              JOptionPane.showMessageDialog(null, "Vui lòng chọn ngày sinh hợp lệ.");
+              return;
+          }
+          java.sql.Date birthDate = new java.sql.Date(birthUtilDate.getTime());
           String idCard=addPatientView.getTxtIdCard().getText();
           String address = addPatientView.getTxtAdress().getText();
           int gender = addPatientView.getGenderCombo().getSelectedIndex(); // 0: Nam, 1: Nữ
           String phone = addPatientView.getTxtPhone().getText();
 
-          if (name.isEmpty() || birth.isEmpty() || address.isEmpty() || phone.isEmpty()) {
+          if (name.isEmpty() || address.isEmpty() || phone.isEmpty()) {
               JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin.");
               return;
           }
@@ -51,15 +56,28 @@ public class AddPatientController implements ActionListener{
               return;
           }
 
-          java.sql.Date sqlDate = Utils.parseDate(birth);
-          if (sqlDate == null) {
-              JOptionPane.showMessageDialog(null, "Ngày sinh không đúng định dạng.");
-              return;
-          }
+         
           if (!Utils.validateIDCard(idCard)) {
               JOptionPane.showMessageDialog(null, "CCCD không hợp lệ.");
               return;
           } 
+          
+          try {
+        	    if (patientService.isPhoneExists(phone)) {
+        	        JOptionPane.showMessageDialog(null, "Số điện thoại đã tồn tại trong hệ thống.");
+        	        return;
+        	    }
+        	    if (patientService.isIdCardExists(idCard)) {
+        	        JOptionPane.showMessageDialog(null, "CCCD đã tồn tại trong hệ thống.");
+        	        return;
+        	    }
+        	} catch (Exception ex) {
+        	    ex.printStackTrace();
+        	    JOptionPane.showMessageDialog(null, "Lỗi khi kiểm tra trùng dữ liệu.");
+        	    return;
+        	}
+          
+          
           // Lấy bác sĩ được chọn
           Doctor selectedDoctor = addPatientView.getSelectedDoctor();
           if (selectedDoctor == null) {
@@ -68,7 +86,7 @@ public class AddPatientController implements ActionListener{
           }
 
           // Tạo bệnh nhân mới
-          Patient newPatient = new Patient(1, name, sqlDate, address, gender, phone, idCard);
+          Patient newPatient = new Patient(1, name, birthDate, address, gender, phone, idCard);
 
           try {
               // Thêm bệnh nhân vào DB và lấy id bệnh nhân mới

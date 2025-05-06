@@ -168,4 +168,25 @@ public class PatientRepository {
 
         return patient;
     }
+    
+    public static boolean isPhoneExists(String phone) throws SQLException, ClassNotFoundException, FileNotFoundException, IOException {
+        String sql = "SELECT 1 FROM Patient WHERE phoneNumber = ?";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, phone);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
+        }
+    }
+
+    public static boolean isIdCardExists(String idCard) throws SQLException, ClassNotFoundException, FileNotFoundException, IOException {
+        String sql = "SELECT 1 FROM Patient WHERE idCard = ?";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, idCard);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
+        }
+    }
+
 }

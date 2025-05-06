@@ -3,7 +3,7 @@ package service;
 import model.Drug;
 import reponsitory.DrugRepository;
 
-public class DrugService {
+public class DrugService implements IDrugService {
     private DrugRepository repo = new DrugRepository();
 
     public Drug getDrugDetail(int id) {
