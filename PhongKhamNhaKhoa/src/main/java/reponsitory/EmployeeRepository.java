@@ -155,4 +155,62 @@ public class EmployeeRepository {
 			return false;
 		}
 	}
+
+	public static boolean isPhoneExists(String phone) {
+	    String query = "SELECT COUNT(*) FROM Employee WHERE phoneNumber = ?";
+	    
+	    try (Connection conn = JDBCUtil.getConnection();
+	         PreparedStatement stmt = conn.prepareStatement(query)) {
+	        
+	        stmt.setString(1, phone);  // Gán số điện thoại vào câu truy vấn
+	        ResultSet rs = stmt.executeQuery();
+	        
+	        if (rs.next()) {
+	            return rs.getInt(1) > 0;  // Nếu số điện thoại tồn tại trong cơ sở dữ liệu, trả về true
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return false;  // Nếu không tìm thấy số điện thoại, trả về false
+	}
+
+	
+	public static boolean isCCCDExists(String idCard) {
+	    String query = "SELECT COUNT(*) FROM Employee WHERE idCard = ?";
+	    
+	    try (Connection conn = JDBCUtil.getConnection();
+	         PreparedStatement stmt = conn.prepareStatement(query)) {
+	        
+	        stmt.setString(1, idCard);  // Gán CCCD vào câu truy vấn
+	        ResultSet rs = stmt.executeQuery();
+	        
+	        if (rs.next()) {
+	            return rs.getInt(1) > 0;  // Nếu CCCD tồn tại trong cơ sở dữ liệu, trả về true
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return false;  // Nếu không tìm thấy CCCD, trả về false
+	}
+
+	public static boolean isUsernameExists(String username) {
+	    String query = "SELECT COUNT(*) FROM Employee WHERE username = ?";
+
+	    try (Connection conn = JDBCUtil.getConnection();
+	         PreparedStatement stmt = conn.prepareStatement(query)) {
+
+	        stmt.setString(1, username);  // Gán username vào câu truy vấn
+	        ResultSet rs = stmt.executeQuery();
+
+	        if (rs.next()) {
+	            return rs.getInt(1) > 0;  // Nếu số lượng bản ghi > 0, tức là username đã tồn tại
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return false;  // Nếu không tìm thấy username, trả về false
+	}
+
+
+
 }
