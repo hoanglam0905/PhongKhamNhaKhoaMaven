@@ -266,10 +266,9 @@ public class AddPrescriptionPanel extends JPanel {
 
             int quantity = Integer.parseInt(quantityStr);
 
-            // Lấy danh sách thuốc hiện có
+            // Lấy thông tin thuốc từ cơ sở dữ liệu
             List<Drug> drugList = DrugDao.getListDrug();
             Drug selectedDrug = null;
-
             for (Drug drug : drugList) {
                 if (drug.getName().equalsIgnoreCase(medicineName)) {
                     selectedDrug = drug;
@@ -288,27 +287,34 @@ public class AddPrescriptionPanel extends JPanel {
                 return;
             }
 
-            // Kiểm tra trùng thuốc trong bảng
+            // Kiểm tra trùng thuốc và cập nhật luôn
             DefaultTableModel model = (DefaultTableModel) serviceTable.getModel();
+            boolean updated = false;
             for (int i = 0; i < model.getRowCount(); i++) {
                 String existingMedicineName = model.getValueAt(i, 1).toString();
                 if (existingMedicineName.equalsIgnoreCase(medicineName)) {
-                    JOptionPane.showMessageDialog(this, "Thuốc này đã được thêm vào!");
-                    return;
+                    model.setValueAt(quantityStr, i, 2); // Ghi đè số lượng
+                    updated = true;
+                    JOptionPane.showMessageDialog(this, "Thuốc đã tồn tại, số lượng đã được cập nhật.");
+                    break;
                 }
             }
 
-            // Thêm vào bảng và list nếu đủ thuốc
-            int stt = model.getRowCount() + 1;
-            model.addRow(new Object[]{stt, medicineName, quantityStr, "x"});
+            if (!updated) {
+                int stt = model.getRowCount() + 1;
+                model.addRow(new Object[]{stt, medicineName, quantityStr, "x"});
+            }
 
+            // Cập nhật lại vào listDrugDose
             int morning = txtMorning.getText().isEmpty() ? 0 : Integer.parseInt(txtMorning.getText());
             int noon = txtNoon.getText().isEmpty() ? 0 : Integer.parseInt(txtNoon.getText());
             int afternoon = txtAfternoon.getText().isEmpty() ? 0 : Integer.parseInt(txtAfternoon.getText());
 
-            DrugDose drugDose = new DrugDose(medicineName, morning, noon, afternoon);
-            listDrugDose.add(drugDose);
+            // Xóa nếu đã có, thêm bản mới
+            listDrugDose.removeIf(drug -> drug.getName().equalsIgnoreCase(medicineName));
+            listDrugDose.add(new DrugDose(medicineName, morning, noon, afternoon));
         });
+
 
     }
 
