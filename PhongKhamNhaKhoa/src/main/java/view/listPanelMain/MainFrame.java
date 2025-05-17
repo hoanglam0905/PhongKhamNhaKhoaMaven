@@ -73,13 +73,18 @@ public class MainFrame extends JFrame {
         this.mainPanel.getDentistMenuPanel().getLblFeature2().setName("Feature 2");
 
         //add xử lí cho menu
-        MouseListener ml = new DentistManagerLableController(this);
+        DentistManagerLableController ml = new DentistManagerLableController(this);
         this.mainPanel.getDentistTaskbar().getLblDoctorName().addMouseListener(ml);
         this.mainPanel.getDentistMenuPanel().getLblHome().addMouseListener(ml);
         this.mainPanel.getDentistMenuPanel().getLblSchedule().addMouseListener(ml);
         this.mainPanel.getDentistMenuPanel().getLblPatients().addMouseListener(ml);
         this.mainPanel.getDentistMenuPanel().getLblFeature1().addMouseListener(ml);
         this.mainPanel.getDentistMenuPanel().getLblFeature2().addMouseListener(ml);
+        ml.setLabelEvent(this.mainPanel.getDentistMenuPanel().getLblHome(),
+                this.mainPanel.getDentistMenuPanel().getLblSchedule(),
+                this.mainPanel.getDentistMenuPanel().getLblPatients(),
+                this.mainPanel.getDentistMenuPanel().getLblFeature1(),
+                this.mainPanel.getDentistMenuPanel().getLblFeature2());
 
         //add xử lí khi ấn vào bệnh nhân có trong lịch
         DentistManagerTableController ma=new DentistManagerTableController(this);
@@ -105,12 +110,17 @@ public class MainFrame extends JFrame {
         this.receptionistPanel.getReceptionistMenuPanel().getLblPatients().setName("Patients");//xem bệnh nhân
         this.receptionistPanel.getReceptionistMenuPanel().getLblFeature1().setName("addPatient");//thêm bệnh nhân
         //add xử lí khi ấn menu trong giao diện lễ tân
-        MouseListener mlr=new ReceptionistLableController(this);
+        ReceptionistLableController mlr=new ReceptionistLableController(this);
         this.receptionistPanel.getDentistTaskbar().getLblDoctorName().addMouseListener(mlr);
         this.receptionistPanel.getReceptionistMenuPanel().getLblHome().addMouseListener(mlr);
         this.receptionistPanel.getReceptionistMenuPanel().getLblSchedule().addMouseListener(mlr);
         this.receptionistPanel.getReceptionistMenuPanel().getLblPatients().addMouseListener(mlr);
         this.receptionistPanel.getReceptionistMenuPanel().getLblFeature1().addMouseListener(mlr);
+        mlr.setLabelEvent(this.receptionistPanel.getReceptionistMenuPanel().getLblHome(),
+                this.receptionistPanel.getReceptionistMenuPanel().getLblSchedule(),
+                this.receptionistPanel.getReceptionistMenuPanel().getLblPatients(),
+                this.receptionistPanel.getReceptionistMenuPanel().getLblFeature1());
+
         //add xử lí khi button dentist bị ấn
         ActionListener ald=new DentistManagerButtonController(this);
         this.mainPanel.getDentistExaminationPanel().getBtnAddService().addActionListener(ald);
@@ -143,6 +153,9 @@ public class MainFrame extends JFrame {
         this.drugStorePanel.getDrugStoreMenuPanel().getLblBill().addMouseListener(dmct);
         this.drugStorePanel.getDrugStoreMenuPanel().getLblListDrug().addMouseListener(dmct);
         this.drugStorePanel.getDentistTaskbar().getLblDoctorName().addMouseListener(dmct);
+        dmct.setLabelEvent(this.drugStorePanel.getDrugStoreMenuPanel().getLblHome(),
+                this.drugStorePanel.getDrugStoreMenuPanel().getLblBill(),
+                this.drugStorePanel.getDrugStoreMenuPanel().getLblListDrug());
 
         ButtonPaymentController bp=new ButtonPaymentController(this);
         this.drugStorePanel.getBillPanel().getButtonCash().addActionListener(bp);
@@ -164,6 +177,12 @@ public class MainFrame extends JFrame {
         this.adminPanel.getAdminMenuPanel().getLblStatistic().addMouseListener(lb);
         this.adminPanel.getDentistTaskbar().getLblDoctorName().addMouseListener(lb);
         this.adminPanel.getAdminMenuPanel().getLblDrugs().addMouseListener(lb);
+        lb.setLabelEvent(this.adminPanel.getAdminMenuPanel().getLblHome(),
+                this.adminPanel.getAdminMenuPanel().getLblEmp(),
+                this.adminPanel.getAdminMenuPanel().getLblPatient(),
+                this.adminPanel.getAdminMenuPanel().getLblService(),
+                this.adminPanel.getAdminMenuPanel().getLblStatistic(),
+                this.adminPanel.getAdminMenuPanel().getLblDrugs());
 
         EmployeeButtonController ebtc=new EmployeeButtonController(this);
         this.adminPanel.getAdminEmployee().getBtnAdd().addActionListener(ebtc);

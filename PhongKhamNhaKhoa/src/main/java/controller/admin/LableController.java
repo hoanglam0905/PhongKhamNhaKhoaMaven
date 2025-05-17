@@ -3,6 +3,8 @@ package controller.admin;
 import view.listPanelMain.MainFrame;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -99,5 +101,34 @@ public class LableController implements MouseListener {
 
     public void switchTK() {
         view.getAdminPanel().getCardLayout().show(view.getAdminPanel().getCenterPanel(), "adminStatistical");
+    }
+
+    private JLabel selectedLabel = null;
+
+    public void setLabelEvent(JLabel... labels) {
+        for (JLabel label : labels) {
+            label.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (selectedLabel != null) {
+                        selectedLabel.setBackground(Color.WHITE);
+                        selectedLabel.setOpaque(false);
+                        selectedLabel.setBorder(null);
+                        selectedLabel.repaint();
+                    }
+                    // Kiểm tra nếu là Home
+                    if ("Home".equals(label.getName())) {
+                        selectedLabel = null;
+                    } else {
+                        selectedLabel = label;
+                        selectedLabel.setBackground(Color.LIGHT_GRAY);
+                        selectedLabel.setOpaque(true);
+                        // Thêm viền
+                        selectedLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
+                        selectedLabel.repaint();
+                    }
+                }
+            });
+        }
     }
 }
