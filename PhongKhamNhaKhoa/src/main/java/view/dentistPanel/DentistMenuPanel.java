@@ -1,5 +1,6 @@
 package view.dentistPanel;
 
+import controller.dentist.DentistManagerLableController;
 import view.admin.AdminMenuPanel;
 
 import javax.swing.*;
