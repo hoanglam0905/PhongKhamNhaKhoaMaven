@@ -1,7 +1,7 @@
 package view.dentistPanel;
 
 import Utils.CustomDocumentFilter;
-import reponsitory.dao.ServiceDao;
+import reponsitory.ServiceReponsitory;
 import model.Service;
 
 import javax.swing.*;
@@ -65,7 +65,7 @@ public class ServicePanel extends JPanel {
         cboServiceName.setBackground(Color.WHITE);
 
         cboServiceName.removeAllItems();
-        List<Service> serviceListnew = ServiceDao.getListService();
+        List<Service> serviceListnew = ServiceReponsitory.getListService();
         for (Service service : serviceListnew) {
             cboServiceName.addItem(service.getName());
         }

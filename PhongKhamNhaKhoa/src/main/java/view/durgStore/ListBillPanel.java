@@ -1,7 +1,7 @@
 package view.durgStore;
 //package view.durgStore;
 
-import reponsitory.dao.PatientDAO;
+import reponsitory.Patientreponsitory;
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -79,7 +79,7 @@ public class ListBillPanel extends JPanel {
 
         // Table data
         String[] columnNames = {"Mã HD", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Tổng tiền", "Trạng thái", "Xem chi tiết"};
-        PatientDAO dao = new PatientDAO();
+        Patientreponsitory dao = new Patientreponsitory();
         List<Object[]> list = dao.getAllBillPatients();
 
         // Icon see
@@ -270,7 +270,7 @@ public class ListBillPanel extends JPanel {
         this.model = model;
     }
     public void reloadTableData() {
-        PatientDAO dao = new PatientDAO();
+        Patientreponsitory dao = new Patientreponsitory();
         List<Object[]> list = dao.getAllBillPatients();
 
         // Icon xem chi tiết

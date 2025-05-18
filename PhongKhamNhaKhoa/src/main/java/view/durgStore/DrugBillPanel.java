@@ -1,7 +1,7 @@
 package view.durgStore;
 
-import reponsitory.dao.DrugDao;
-import reponsitory.dao.ServiceDao;
+import reponsitory.DrugReponsitory;
+import reponsitory.ServiceReponsitory;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -250,8 +250,8 @@ public class DrugBillPanel extends JPanel {
         frame.setVisible(true);
     }
     public void loadPrescriptionData(String idPre) {
-        java.util.List<Object[]> drugs = DrugDao.getListDrugFromPre(idPre);
-        java.util.List<Object[]> services = ServiceDao.getListServiceFromPre(idPre);
+        java.util.List<Object[]> drugs = DrugReponsitory.getListDrugFromPre(idPre);
+        java.util.List<Object[]> services = ServiceReponsitory.getListServiceFromPre(idPre);
 
         String[] columns = {"STT", "Tên", "Số lượng", "Đơn giá", "Thành tiền"};
 

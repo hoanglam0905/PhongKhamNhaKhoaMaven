@@ -3,7 +3,7 @@ package controller.dentist;
 import Utils.JDBCUtil;
 import model.DrugDose;
 import model.Service;
-import reponsitory.dao.*;
+import reponsitory.*;
 import service.ExportToPDF;
 import view.listPanelMain.MainFrame;
 
@@ -51,9 +51,9 @@ public class DentistManagerButtonController implements ActionListener {
             }
 
             switchDentistPatient1Panel();
-            int id_patient = PatientDAO.getIdPatient(view.getMainPanel().getDentistExaminationPanel().getSdtPatient());
-            int id_doctor = DentistDao.getIdDentistLogin(view.getLoginPanel().getAcc(), view.getLoginPanel().getPass());
-            ExamDao.updateExam(id_doctor + "", id_patient + "");
+            int id_patient = Patientreponsitory.getIdPatient(view.getMainPanel().getDentistExaminationPanel().getSdtPatient());
+            int id_doctor = DentistReponsitory.getIdDentistLogin(view.getLoginPanel().getAcc(), view.getLoginPanel().getPass());
+            ExamReponsitory.updateExam(id_doctor + "", id_patient + "");
             ExportToPDF.prescriptionToPDF(id_pre + "");
         } else if (command.equals("Hủy")) {
             switchDentistPatient1Panel();
@@ -87,14 +87,14 @@ public class DentistManagerButtonController implements ActionListener {
     }
     public void switchDentistPatient1Panel() {
         //them vao co so du lieu
-        int id_patient = PatientDAO.getIdPatient(view.getMainPanel().getDentistExaminationPanel().getSdtPatient());
-        int id_doctor = DentistDao.getIdDentistLogin(view.getLoginPanel().getAcc(), view.getLoginPanel().getPass());
+        int id_patient = Patientreponsitory.getIdPatient(view.getMainPanel().getDentistExaminationPanel().getSdtPatient());
+        int id_doctor = DentistReponsitory.getIdDentistLogin(view.getLoginPanel().getAcc(), view.getLoginPanel().getPass());
         String symptom = view.getMainPanel().getDentistExaminationPanel().getSymptom();
         String diagnosis = view.getMainPanel().getDentistExaminationPanel().getDiagnosis();
         String treatment = view.getMainPanel().getDentistExaminationPanel().getTreatment();
 
         // luôn tạo prescription mới, cập nhật lại id_pre
-        this.id_pre = PrescriptionDAO.insertPrescription(id_doctor, id_patient, diagnosis, treatment, symptom, "Uống thuốc đầy đủ");
+        this.id_pre = PrescriptionReponsitory.insertPrescription(id_doctor, id_patient, diagnosis, treatment, symptom, "Uống thuốc đầy đủ");
         System.out.println("DEBUG: id_pre mới được tạo = " + id_pre);
 
 
@@ -124,7 +124,7 @@ public class DentistManagerButtonController implements ActionListener {
             System.out.println(listID.get(i));
         }
         for (int i = 0; i < listID.size(); i++) {
-            PrescriptionDAO.insertPrescriptionDetail(id_pre,listID.get(i),(listDrug.get(i).getDoseMor()+listDrug.get(i).getDoseNoon()+listDrug.get(i).getDoseAfternoon())*7,listDrug.get(i).getDoseMor(),listDrug.get(i).getDoseNoon(),listDrug.get(i).getDoseAfternoon());
+            PrescriptionReponsitory.insertPrescriptionDetail(id_pre,listID.get(i),(listDrug.get(i).getDoseMor()+listDrug.get(i).getDoseNoon()+listDrug.get(i).getDoseAfternoon())*7,listDrug.get(i).getDoseMor(),listDrug.get(i).getDoseNoon(),listDrug.get(i).getDoseAfternoon());
         }
 
         //them dich vu vao csdl
@@ -146,7 +146,7 @@ public class DentistManagerButtonController implements ActionListener {
                 }
 
                 if (serviceId != -1) {
-                    ServiceDao.addPrescriptionServiceDetail(id_pre, serviceId, quantity);
+                    ServiceReponsitory.addPrescriptionServiceDetail(id_pre, serviceId, quantity);
                 }
             }
 

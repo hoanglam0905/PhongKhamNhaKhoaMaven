@@ -1,6 +1,6 @@
 package view.receptionistPanel;
 
-import reponsitory.dao.PatientDAO;
+import reponsitory.Patientreponsitory;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -72,7 +72,7 @@ public class ReceptionistCalendarPanel extends JPanel {
 
         String[] columnNames = {"STT", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Trạng thái"};
 
-        PatientDAO dao = new PatientDAO();
+        Patientreponsitory dao = new Patientreponsitory();
         List<Object[]> list = dao.getAllPatients();
 
         data = list.toArray(new Object[0][]);

@@ -1,9 +1,7 @@
 package view.admin;
 
-import model.Employee;
 import model.Patient;
-import reponsitory.dao.EmployeeDao;
-import reponsitory.dao.PatientDAO;
+import reponsitory.Patientreponsitory;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -124,7 +122,7 @@ public class AdminPatient extends JPanel {
     }
     // Hàm cập nhật lại dữ liệu bảng
     public void loadPatientData() {
-        List<Patient> patients = PatientDAO.getListPatients();
+        List<Patient> patients = Patientreponsitory.getListPatients();
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
 

@@ -1,4 +1,4 @@
-package reponsitory.dao;
+package reponsitory;
 
 import Utils.JDBCUtil;
 import model.Patient;
@@ -9,7 +9,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PatientDAO {
+public class Patientreponsitory {
 
     public static List<Object[]> getAllPatients() {
         List<Object[]> list = new ArrayList<>();
@@ -350,7 +350,7 @@ public class PatientDAO {
         return list;
     }
     public static void main(String[] args) {
-        PatientDAO patientDAO = new PatientDAO();
+        Patientreponsitory patientDAO = new Patientreponsitory();
         System.out.println(patientDAO.getIdPatient("0987654321"));
     }
 }

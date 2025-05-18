@@ -1,7 +1,6 @@
-package reponsitory.dao;
+package reponsitory;
 
 import Utils.JDBCUtil;
-import model.Drug;
 import model.Service;
 
 import java.io.IOException;
@@ -10,7 +9,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServiceDao {
+public class ServiceReponsitory {
     public static List<Service> getListService() {
         List<Service> listService=new ArrayList<>();
         try {

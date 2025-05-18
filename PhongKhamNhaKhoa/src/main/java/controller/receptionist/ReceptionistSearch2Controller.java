@@ -1,13 +1,12 @@
 package controller.receptionist;
 
-import reponsitory.dao.PatientDAO;
+import reponsitory.Patientreponsitory;
 import view.receptionistPanel.ReceptionistCalendarPanel;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 import java.util.List;
 
 public class ReceptionistSearch2Controller implements DocumentListener {
@@ -33,7 +32,7 @@ public class ReceptionistSearch2Controller implements DocumentListener {
 
     private void search() {
         String keyword = view.getTfSearch().getText().trim();
-        List<Object[]> results = PatientDAO.getPatientsChar(keyword);
+        List<Object[]> results = Patientreponsitory.getPatientsChar(keyword);
 
         // Gán icon vào từng dòng
         for (int i = 0; i < results.size(); i++) {

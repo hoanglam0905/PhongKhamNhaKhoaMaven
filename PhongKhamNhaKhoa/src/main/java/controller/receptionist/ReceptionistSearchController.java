@@ -1,6 +1,6 @@
 package controller.receptionist;
 
-import reponsitory.dao.PatientDAO;
+import reponsitory.Patientreponsitory;
 import view.receptionistPanel.ShowPatientsReceptionistPanel;
 
 import javax.swing.*;
@@ -33,7 +33,7 @@ public class ReceptionistSearchController implements DocumentListener {
 
     private void search() {
         String keyword = view.getTxtSearch().getText().trim();
-        List<Object[]> results = PatientDAO.getPatientsChar(keyword);
+        List<Object[]> results = Patientreponsitory.getPatientsChar(keyword);
 
         JTable table = view.getPatientInfoTable();
         DefaultTableModel model = (DefaultTableModel) table.getModel();

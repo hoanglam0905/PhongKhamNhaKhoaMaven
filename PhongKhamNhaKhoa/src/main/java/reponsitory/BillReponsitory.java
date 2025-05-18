@@ -1,11 +1,11 @@
-package reponsitory.dao;
+package reponsitory;
 
 import Utils.JDBCUtil;
 
 import java.io.IOException;
 import java.sql.*;
 
-public class BillDao {
+public class BillReponsitory {
     public static void updatePaymentStatusToPaid(int prescriptionId) {
         try (Connection con = JDBCUtil.getConnection()) {
             String sql = "UPDATE Prescription SET paymentStatus = 'Đã thanh toán' WHERE id = ?";
