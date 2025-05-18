@@ -1,6 +1,6 @@
 package view.dentistPanel;
 
-import reponsitory.dao.PatientDAO;
+import reponsitory.Patientreponsitory;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -72,7 +72,7 @@ public class DentistListPatient2Panel extends JPanel {
         add(headerPanel, BorderLayout.PAGE_START);
 
         String[] columnNames = {"Mã BN", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi"};
-        PatientDAO dao = new PatientDAO();
+        Patientreponsitory dao = new Patientreponsitory();
         List<Object[]> list = dao.getAllPatients();
 
         data = list.toArray(new Object[0][]);
@@ -219,7 +219,7 @@ public class DentistListPatient2Panel extends JPanel {
         this.data = data;
     }
     public void reloadPatientList() {
-        PatientDAO dao = new PatientDAO();
+        Patientreponsitory dao = new Patientreponsitory();
         List<Object[]> list = dao.getAllPatients();
 
         Object[][] newData = list.toArray(new Object[0][]);

@@ -1,7 +1,7 @@
 package view.durgStore;
 
 import model.Drug;
-import reponsitory.dao.DrugDao;
+import reponsitory.DrugReponsitory;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -75,7 +75,7 @@ public class ListDrugPanel extends JPanel {
 
         String[] columnNames = {"Mã thuốc", "Tên thuốc", "Số lượng còn", "Đơn vị tính", "Đơn giá"};
 
-        List<Drug> list = DrugDao.getListAllDrug();
+        List<Drug> list = DrugReponsitory.getListAllDrug();
         data = new Object[list.size()][5];
         DecimalFormat formatter = new DecimalFormat("#,###");
 
@@ -238,7 +238,7 @@ public class ListDrugPanel extends JPanel {
         this.data = data;
     }
     public void reloadTableData() {
-        List<Drug> list = DrugDao.getListAllDrug();
+        List<Drug> list = DrugReponsitory.getListAllDrug();
         DecimalFormat formatter = new DecimalFormat("#,###");
 
         DefaultTableModel model = (DefaultTableModel) tblDrugs.getModel();

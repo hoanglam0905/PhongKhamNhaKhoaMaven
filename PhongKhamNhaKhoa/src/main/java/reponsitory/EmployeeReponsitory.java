@@ -1,16 +1,14 @@
-package reponsitory.dao;
+package reponsitory;
 
 import Utils.JDBCUtil;
-import model.Doctor;
 import model.Employee;
 
 import java.io.IOException;
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EmployeeDao {
+public class EmployeeReponsitory {
     public static List<Employee> getEmployees() {
         try {
             Connection con= JDBCUtil.getConnection();

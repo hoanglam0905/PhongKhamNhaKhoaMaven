@@ -1,7 +1,7 @@
 package view.dentistPanel;
 
 import Utils.CustomDocumentFilter;
-import reponsitory.dao.DrugDao;
+import reponsitory.DrugReponsitory;
 import model.Drug;
 import model.DrugDose;
 
@@ -77,7 +77,7 @@ public class AddPrescriptionPanel extends JPanel {
         comboMedicinename.setBackground(Color.WHITE);
 
         comboMedicinename.removeAllItems();
-        List<Drug> listDrug = DrugDao.getListDrug();
+        List<Drug> listDrug = DrugReponsitory.getListDrug();
         for (Drug service : listDrug) {
             comboMedicinename.addItem(service.getName());
         }
@@ -267,7 +267,7 @@ public class AddPrescriptionPanel extends JPanel {
             int quantity = Integer.parseInt(quantityStr);
 
             // Lấy thông tin thuốc từ cơ sở dữ liệu
-            List<Drug> drugList = DrugDao.getListDrug();
+            List<Drug> drugList = DrugReponsitory.getListDrug();
             Drug selectedDrug = null;
             for (Drug drug : drugList) {
                 if (drug.getName().equalsIgnoreCase(medicineName)) {

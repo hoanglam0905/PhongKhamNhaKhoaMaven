@@ -1,7 +1,7 @@
 package view.admin;
 
 import model.Employee;
-import reponsitory.dao.EmployeeDao;
+import reponsitory.EmployeeReponsitory;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -121,7 +121,7 @@ public class AdminEmployee extends JPanel {
     }
     // Hàm cập nhật lại dữ liệu bảng
     public void loadEmployeeData() {
-        List<Employee> employees = EmployeeDao.getEmployees();
+        List<Employee> employees = EmployeeReponsitory.getEmployees();
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
 

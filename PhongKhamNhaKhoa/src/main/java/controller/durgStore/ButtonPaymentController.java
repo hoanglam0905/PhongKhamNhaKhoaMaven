@@ -1,8 +1,8 @@
 package controller.durgStore;
 
 import Utils.PaymentQRComponent;
-import reponsitory.dao.BillDao;
-import reponsitory.dao.DrugDao;
+import reponsitory.BillReponsitory;
+import reponsitory.DrugReponsitory;
 import service.ExportToPDF;
 import view.listPanelMain.MainFrame;
 
@@ -26,11 +26,11 @@ public class ButtonPaymentController implements ActionListener {
             String content = "Thanh toán hóa đơn #" + id;
 
             PaymentQRComponent qrPanel = view.getDrugStorePanel().getPaymentQRComponent();
-            qrPanel.setAmountAndContent(BillDao.getPriceInPre(id), content);
+            qrPanel.setAmountAndContent(BillReponsitory.getPriceInPre(id), content);
 
             qrPanel.setOnPaymentSuccess(() -> {
                 // Cập nhật DB
-                BillDao.updatePaymentStatusToPaid(id);
+                BillReponsitory.updatePaymentStatusToPaid(id);
                 // Cập nhật giao diện
                 view.getDrugStorePanel().getBillConfPanel().getStatus().setText("Đã thanh toán");
                 // Xuất PDF
@@ -44,7 +44,7 @@ public class ButtonPaymentController implements ActionListener {
                 for (int i = 0; i < model.getRowCount(); i++) {
                     String drugName = model.getValueAt(i, 1).toString();        // Tên thuốc
                     int quantity = Integer.parseInt(model.getValueAt(i, 2).toString());  // Số lượng
-                    DrugDao.updateDrugQuantity(drugName, quantity);
+                    DrugReponsitory.updateDrugQuantity(drugName, quantity);
                 }
 
             });
@@ -57,7 +57,7 @@ public class ButtonPaymentController implements ActionListener {
         String idStr = view.getDrugStorePanel().getBillPanel().getIdBill().getText();
         int id = Integer.parseInt(idStr);
 
-        BillDao.updatePaymentStatusToPaid(id);
+        BillReponsitory.updatePaymentStatusToPaid(id);
 
         view.getDrugStorePanel().getBillConfPanel().getStatus().setText("Đã thanh toán");
 
@@ -69,7 +69,7 @@ public class ButtonPaymentController implements ActionListener {
         for (int i = 0; i < model.getRowCount(); i++) {
             String drugName = model.getValueAt(i, 1).toString();        // Tên thuốc
             int quantity = Integer.parseInt(model.getValueAt(i, 2).toString());  // Số lượng
-            DrugDao.updateDrugQuantity(drugName, quantity);
+            DrugReponsitory.updateDrugQuantity(drugName, quantity);
         }
     }
 

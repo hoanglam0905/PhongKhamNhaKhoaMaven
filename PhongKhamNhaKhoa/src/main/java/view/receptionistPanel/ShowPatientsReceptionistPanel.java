@@ -1,6 +1,6 @@
 package view.receptionistPanel;
 
-import reponsitory.dao.PatientDAO;
+import reponsitory.Patientreponsitory;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -207,7 +207,7 @@ public class ShowPatientsReceptionistPanel extends JPanel {
     public void reloadPatientList() {
         infoTableModel.setRowCount(0);
         actionTableModel.setRowCount(0);
-        PatientDAO dao = new PatientDAO();
+        Patientreponsitory dao = new Patientreponsitory();
         List<Object[]> list = dao.getAllPatients();
         for (Object[] row : list) {
             infoTableModel.addRow(row);

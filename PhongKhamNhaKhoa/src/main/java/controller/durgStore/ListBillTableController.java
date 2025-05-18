@@ -1,6 +1,6 @@
 package controller.durgStore;
 
-import reponsitory.dao.DentistDao;
+import reponsitory.DentistReponsitory;
 import view.listPanelMain.MainFrame;
 
 import javax.swing.*;
@@ -32,14 +32,14 @@ public class ListBillTableController extends MouseAdapter {
             switchDrugBillPanel(
                     table.getValueAt(row, 0).toString(),  // Mã hóa đơn
                     table.getValueAt(row, 1).toString(),  // Tên bệnh nhân
-                    DentistDao.getNameDenFormBill(table.getValueAt(row, 0).toString()),
+                    DentistReponsitory.getNameDenFormBill(table.getValueAt(row, 0).toString()),
                     table.getValueAt(row, 5).toString(),  // Tổng tiền
                     table.getValueAt(row, 6).toString()   // Trạng thái
             );
             switchDrugConfBillPanel(
                     table.getValueAt(row, 0).toString(),  // Mã hóa đơn
                     table.getValueAt(row, 1).toString(),  // Tên bệnh nhân
-                    DentistDao.getNameDenFormBill(table.getValueAt(row, 0).toString()),
+                    DentistReponsitory.getNameDenFormBill(table.getValueAt(row, 0).toString()),
                     table.getValueAt(row, 5).toString(),  // Tổng tiền
                     "Đã thanh toán"   // Trạng thái
             );

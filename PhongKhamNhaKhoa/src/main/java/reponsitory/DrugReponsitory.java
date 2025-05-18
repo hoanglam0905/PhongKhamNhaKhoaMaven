@@ -1,8 +1,7 @@
-package reponsitory.dao;
+package reponsitory;
 
 import Utils.JDBCUtil;
 import model.Drug;
-import model.DrugDose;
 
 import java.io.IOException;
 import java.sql.*;
@@ -10,7 +9,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DrugDao {
+public class DrugReponsitory {
     public static List<Drug> getListDrug(){
         List<Drug> listDrug=new ArrayList<>();
         try {

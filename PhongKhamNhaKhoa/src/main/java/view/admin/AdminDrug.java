@@ -1,7 +1,7 @@
 package view.admin;
 
 import model.Drug;
-import reponsitory.dao.DrugDao;
+import reponsitory.DrugReponsitory;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -101,7 +101,7 @@ public class AdminDrug extends JPanel {
     public void loadDrugData() {
         tableModel.setRowCount(0);
         DecimalFormat formatter = new DecimalFormat("#,###");
-        List<Drug> drugs = DrugDao.getListDrug();
+        List<Drug> drugs = DrugReponsitory.getListDrug();
         for (Drug drug : drugs) {
             tableModel.addRow(new Object[]{
                     drug.getId(),

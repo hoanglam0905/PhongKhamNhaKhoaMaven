@@ -10,9 +10,8 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 import reponsitory.EmployeeRepository;
-import reponsitory.dao.PatientDAO;
+import reponsitory.Patientreponsitory;
 import view.admin.AdminEmployee;
-import view.dentistPanel.DentistListPatient1Panel;
 
 public class EmployeeSearchController implements DocumentListener {
 	private final AdminEmployee view;
@@ -39,7 +38,7 @@ public class EmployeeSearchController implements DocumentListener {
 
     private void search() {
         String keyword = view.getTfSearch().getText().trim();
-        List<Object[]> results = PatientDAO.getPatientsChar(keyword);
+        List<Object[]> results = Patientreponsitory.getPatientsChar(keyword);
 
         // Load icon xem
         ImageIcon seeIcon = null;

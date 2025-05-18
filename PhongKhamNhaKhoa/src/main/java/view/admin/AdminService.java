@@ -1,7 +1,7 @@
 package view.admin;
 
 import model.Service;
-import reponsitory.dao.ServiceDao;
+import reponsitory.ServiceReponsitory;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -109,7 +109,7 @@ public class AdminService extends JPanel {
     public void loadServiceData() {
         tableModel.setRowCount(0);
         DecimalFormat formatter = new DecimalFormat("#,###");
-        List<Service> services = ServiceDao.getListService();
+        List<Service> services = ServiceReponsitory.getListService();
 
         for (Service s : services) {
             tableModel.addRow(new Object[]{
