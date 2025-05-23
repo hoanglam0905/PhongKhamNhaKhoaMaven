@@ -24,7 +24,7 @@ public class MainFrame extends JFrame {
     private CardLayout cardLayout; // CardLayout điều khiển các panel
     private LoginPanel loginPanel;
     private DentistPanel mainPanel;
-    private ReceptionistPanel receptionistPanel;nvqt1
+    private ReceptionistPanel receptionistPanel;
     private DrugStorePanel drugStorePanel;
 
 

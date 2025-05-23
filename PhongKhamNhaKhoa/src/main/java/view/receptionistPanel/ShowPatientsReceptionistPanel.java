@@ -1,14 +1,13 @@
 package view.receptionistPanel;
 
 import dao.PatientDAO;
+import view.listPanelMain.ReceptionistPanel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.List;
 
 public class ShowPatientsReceptionistPanel extends JPanel {
@@ -18,8 +17,10 @@ public class ShowPatientsReceptionistPanel extends JPanel {
     private JTable patientActionTable; // Bảng 2: Hành động
     private DefaultTableModel infoTableModel;
     private DefaultTableModel actionTableModel;
+    private ReceptionistPanel receptionistPanel; // Reference to parent panel
 
-    public ShowPatientsReceptionistPanel() {
+    public ShowPatientsReceptionistPanel(ReceptionistPanel receptionistPanel) {
+        this.receptionistPanel = receptionistPanel; // Initialize the parent panel reference
         initComponents();
     }
 
@@ -32,7 +33,7 @@ public class ShowPatientsReceptionistPanel extends JPanel {
         topPanel.setBackground(Color.WHITE);
 
         // Tiêu đề bên trái
-        JLabel lblTitle = new JLabel("Danh Sách Bệnh Nhân Nè");
+        JLabel lblTitle = new JLabel("Danh Sách Bệnh Nhân");
         lblTitle.setFont(new Font("Arial", Font.BOLD, 18));
         lblTitle.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 0)); // padding trái
         topPanel.add(lblTitle, BorderLayout.WEST);
@@ -85,7 +86,7 @@ public class ShowPatientsReceptionistPanel extends JPanel {
                 label.setForeground(Color.WHITE);
                 label.setFont(new Font("Arial", Font.BOLD, 13));
                 label.setHorizontalAlignment(SwingConstants.CENTER);
-                label.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 3, Color.WHITE)); // viền trắng giữa các cột
+                label.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, Color.WHITE)); // viền trắng giữa các cột
                 return label;
             }
         });
@@ -138,7 +139,7 @@ public class ShowPatientsReceptionistPanel extends JPanel {
                 label.setForeground(Color.WHITE);
                 label.setFont(new Font("Arial", Font.BOLD, 13));
                 label.setHorizontalAlignment(SwingConstants.CENTER);
-                label.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 3, Color.WHITE)); // viền trắng chia cột
+                label.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, Color.WHITE)); // viền trắng chia cột
                 return label;
             }
         });

@@ -3,6 +3,7 @@ package dao;
 import Utils.JDBCUtil;
 import model.Patient;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
@@ -115,6 +116,20 @@ public class PatientDAO {
 
         return list;
     }
+    public static void updatePatient(Patient patient, int age) throws SQLException, FileNotFoundException, ClassNotFoundException, IOException {
+        try (Connection conn = JDBCUtil.getConnection()) {
+            String sql = "UPDATE Patient SET name = ?, birthDate = ?, address = ?, gender = ?, phoneNumber = ? WHERE id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, patient.getName());
+            stmt.setDate(2, new Date(java.time.LocalDate.now().minusYears(age).toEpochDay() * 1000 * 60 * 60 * 24));
+            stmt.setString(3, patient.getAddress());
+            stmt.setInt(4, patient.getGender());
+            stmt.setString(5, patient.getPhoneNumber());
+            stmt.setInt(6, patient.getId());
+            stmt.executeUpdate();
+        }
+    }
+
     public static List<Patient> getListPatients() {
         List<Patient> list = new ArrayList<>();
 
