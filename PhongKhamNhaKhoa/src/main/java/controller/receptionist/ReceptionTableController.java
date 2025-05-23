@@ -22,21 +22,6 @@ public class ReceptionTableController implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-<<<<<<< HEAD
-        int row = view.getReceptionistPanel().getShowPatientsReceptionistPanel().getPatientActionTable().rowAtPoint(e.getPoint());
-        int col = view.getReceptionistPanel().getShowPatientsReceptionistPanel().getPatientActionTable().columnAtPoint(e.getPoint());
-        String patientName =view.getReceptionistPanel().getShowPatientsReceptionistPanel().getPatientInfoTable().getValueAt(row, 1).toString();
-        
-        if (row >= 0) {
-        	if (col == 0) {
-        		int patientId = (int) view.getReceptionistPanel().getShowPatientsReceptionistPanel().getPatientInfoTable().getValueAt(row, 0);
-                view.getReceptionistPanel().getFollowupPanel().loadPatientInfo(patientId);
-                view.getReceptionistPanel().getCardLayout().show(view.getReceptionistPanel().getCenterPanel(), "Followup");
-                    } else if (col == 1) {
-                        view.getReceptionistPanel().getCardLayout().show(view.getReceptionistPanel().getCenterPanel(), "NewAppointment");
-                    } else if (col == 2) {
-                        JOptionPane.showMessageDialog(null, "Sửa thông tin bệnh nhân: " + patientName);
-=======
         JTable actionTable = view.getReceptionistPanel().getShowPatientsReceptionistPanel().getPatientActionTable();
         int row = actionTable.rowAtPoint(e.getPoint());
         int col = actionTable.columnAtPoint(e.getPoint());
@@ -67,7 +52,6 @@ public class ReceptionTableController implements MouseListener {
                             selectedPatient = patient;
                             break;
                         }
->>>>>>> minh2
                     }
 
                     if (selectedPatient != null) {
