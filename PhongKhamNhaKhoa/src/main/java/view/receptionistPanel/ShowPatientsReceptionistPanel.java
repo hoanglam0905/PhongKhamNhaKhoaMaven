@@ -1,11 +1,8 @@
 package view.receptionistPanel;
 
-<<<<<<< HEAD
 import reponsitory.Patientreponsitory;
-=======
-import dao.PatientDAO;
 import view.listPanelMain.ReceptionistPanel;
->>>>>>> minh2
+
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -35,11 +32,6 @@ public class ShowPatientsReceptionistPanel extends JPanel {
         // Top Panel
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(Color.WHITE);
-
-<<<<<<< HEAD
-=======
-        // Tiêu đề bên trái
->>>>>>> minh2
         JLabel lblTitle = new JLabel("Danh Sách Bệnh Nhân");
         lblTitle.setFont(new Font("Arial", Font.BOLD, 18));
         lblTitle.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 0));
@@ -98,11 +90,7 @@ public class ShowPatientsReceptionistPanel extends JPanel {
                 label.setForeground(Color.WHITE);
                 label.setFont(new Font("Arial", Font.BOLD, 13));
                 label.setHorizontalAlignment(SwingConstants.CENTER);
-<<<<<<< HEAD
-=======
-                label.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, Color.WHITE)); // viền trắng giữa các cột
->>>>>>> minh2
-                return label;
+               return label;
             }
         });
 
@@ -146,10 +134,7 @@ public class ShowPatientsReceptionistPanel extends JPanel {
                 label.setForeground(Color.WHITE);
                 label.setFont(new Font("Arial", Font.BOLD, 13));
                 label.setHorizontalAlignment(SwingConstants.CENTER);
-<<<<<<< HEAD
-=======
-                label.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, Color.WHITE)); // viền trắng chia cột
->>>>>>> minh2
+
                 return label;
             }
         });
@@ -167,27 +152,6 @@ public class ShowPatientsReceptionistPanel extends JPanel {
 
         actionHeader.setReorderingAllowed(false);
         actionHeader.setResizingAllowed(false);
-
-<<<<<<< HEAD
-=======
-        // Thêm dữ liệu mẫu
-        PatientDAO dao = new PatientDAO();
-        List<Object[]> list = dao.getAllPatients();
-        for (Object[] row : list) {
-            infoTableModel.addRow(new Object[]{row[0], row[1], row[2], row[3], row[4], row[5]});
-            actionTableModel.addRow(new Object[]{"Tái Khám", "Lịch hẹn mới", "✎"});
-        }
-
-        // Tùy chỉnh renderer cho các cột nút trong bảng 2
-        patientActionTable.getColumnModel().getColumn(0).setCellRenderer(new ButtonRenderer("Tái Khám", new Color(0, 153, 51)));
-        patientActionTable.getColumnModel().getColumn(1).setCellRenderer(new ButtonRenderer("Lịch hẹn mới", new Color(0, 153, 51)));
-        patientActionTable.getColumnModel().getColumn(2).setCellRenderer(new ButtonRenderer("✎", new Color(0, 153, 51)));
-
-        // Đặt hai bảng trong các JScrollPane
-        JScrollPane infoTableScroll = new JScrollPane(patientInfoTable);
-        infoTableScroll.setBorder(null); // Xóa viền tổng
-        infoTableScroll.getViewport().setBackground(Color.WHITE);
->>>>>>> minh2
         JScrollPane actionTableScroll = new JScrollPane(patientActionTable);
         actionTableScroll.setBorder(null);
         actionTableScroll.getViewport().setBackground(Color.WHITE);

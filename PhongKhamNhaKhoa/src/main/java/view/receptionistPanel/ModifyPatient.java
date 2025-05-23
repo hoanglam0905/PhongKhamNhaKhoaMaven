@@ -1,17 +1,11 @@
 package view.receptionistPanel;
 
-import dao.PatientDAO;
+import reponsitory.Patientreponsitory;
 import model.Patient;
 import view.listPanelMain.ReceptionistPanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.function.Consumer;
 
 public class ModifyPatient extends JPanel {
@@ -33,73 +27,103 @@ public class ModifyPatient extends JPanel {
     }
 
     private void initComponents() {
-        setLayout(null); // Sử dụng layout tự do để căn chỉnh chính xác như hình
+        setLayout(new GridBagLayout());
         setBackground(Color.WHITE);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Khoảng cách giữa các thành phần
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Tiêu đề
         JLabel lblTitle = new JLabel("Chỉnh Sửa Bệnh Nhân");
-        lblTitle.setFont(new Font("Arial", Font.BOLD, 18));
-        lblTitle.setBounds(10, 10, 200, 30);
-        add(lblTitle);
+        lblTitle.setFont(new Font("Arial", Font.BOLD, 16));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2; // Chiếm 2 cột
+        gbc.anchor = GridBagConstraints.WEST;
+        add(lblTitle, gbc);
 
         // Tên bệnh nhân
         JLabel lblName = new JLabel("Họ và tên:");
-        lblName.setFont(new Font("Arial", Font.ITALIC, 18));
-        lblName.setBounds(210, 140, 100, 20);
-        txtName = new JTextField();
-        txtName.setBounds(200, 170, 270, 40);
+        lblName.setFont(new Font("Arial", Font.ITALIC, 16));
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        add(lblName, gbc);
+
+        txtName = new JTextField(28);
+        txtName.setFont(new Font("Arial", Font.PLAIN, 16));
         txtName.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        add(lblName);
-        add(txtName);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        add(txtName, gbc);
 
         // Số điện thoại
         JLabel lblPhone = new JLabel("Số điện thoại:");
-        lblPhone.setFont(new Font("Arial", Font.ITALIC, 18));
-        lblPhone.setBounds(560, 140, 150, 20);
-        txtPhone = new JTextField();
-        txtPhone.setBounds(550, 170, 250, 40);
+        lblPhone.setFont(new Font("Arial", Font.ITALIC, 16));
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        add(lblPhone, gbc);
+
+        txtPhone = new JTextField(28);
+        txtPhone.setFont(new Font("Arial", Font.PLAIN, 16));
         txtPhone.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        add(lblPhone);
-        add(txtPhone);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        add(txtPhone, gbc);
 
         // Tuổi
         JLabel lblAge = new JLabel("Tuổi:");
-        lblAge.setFont(new Font("Arial", Font.ITALIC, 18));
-        lblAge.setBounds(210, 230, 100, 20);
-        txtAge = new JTextField();
-        txtAge.setBounds(200, 260, 270, 40);
+        lblAge.setFont(new Font("Arial", Font.ITALIC, 16));
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        add(lblAge, gbc);
+
+        txtAge = new JTextField(28);
+        txtAge.setFont(new Font("Arial", Font.PLAIN, 16));
         txtAge.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        add(lblAge);
-        add(txtAge);
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        add(txtAge, gbc);
 
         // Giới tính
         JLabel lblGender = new JLabel("Giới tính:");
-        lblGender.setFont(new Font("Arial", Font.ITALIC, 18));
-        lblGender.setBounds(560, 230, 100, 20);
-        txtGender = new JTextField();
-        txtGender.setBounds(550, 260, 250, 40);
+        lblGender.setFont(new Font("Arial", Font.ITALIC, 16));
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        add(lblGender, gbc);
+
+        txtGender = new JTextField(28);
+        txtGender.setFont(new Font("Arial", Font.PLAIN, 16));
         txtGender.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        add(lblGender);
-        add(txtGender);
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        add(txtGender, gbc);
 
         // Địa chỉ
         JLabel lblAddress = new JLabel("Địa chỉ:");
-        lblAddress.setFont(new Font("Arial", Font.ITALIC, 18));
-        lblAddress.setBounds(210, 320, 100, 20);
-        txtAddress = new JTextField();
-        txtAddress.setBounds(200, 350, 600, 40);
+        lblAddress.setFont(new Font("Arial", Font.ITALIC, 16));
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        add(lblAddress, gbc);
+
+        txtAddress = new JTextField(28);
+        txtAddress.setFont(new Font("Arial", Font.PLAIN, 16));
         txtAddress.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        add(lblAddress);
-        add(txtAddress);
+        gbc.gridx = 1;
+        gbc.gridy = 5;
+        add(txtAddress, gbc);
 
         // Nút "Chỉnh sửa"
         btnModify = new JButton("Chỉnh sửa");
         btnModify.setFont(new Font("Arial", Font.BOLD, 16));
-        btnModify.setBackground(new Color(0, 123, 255)); // Màu xanh dương
+        btnModify.setBackground(new Color(0, 123, 255));
         btnModify.setForeground(Color.WHITE);
-        btnModify.setBounds(500, 500, 300, 45);
         btnModify.setFocusPainted(false);
-        add(btnModify);
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        add(btnModify, gbc);
 
         // Xử lý sự kiện nút "Chỉnh sửa"
         btnModify.addActionListener(e -> {
@@ -141,7 +165,6 @@ public class ModifyPatient extends JPanel {
                     JOptionPane.QUESTION_MESSAGE
             );
 
-         // Trong btnModify.addActionListener
             if (confirm == JOptionPane.OK_OPTION) {
                 Patient updatedPatient = new Patient(
                         patient.getId(),
@@ -152,17 +175,16 @@ public class ModifyPatient extends JPanel {
                         phone,
                         patient.getIdCard()
                 );
+
                 try {
-                    PatientDAO.updatePatient(updatedPatient, age);
-                    JOptionPane.showMessageDialog(this, "Chỉnh sửa thông tin thành công!");
-                    clearFields();
+                    Patientreponsitory.updatePatient(updatedPatient, age);
+                    JOptionPane.showMessageDialog(this, "Chỉnh sửa bệnh nhân thành công!");
                     if (onSaveListener != null) {
                         onSaveListener.accept(null);
                     }
-                    receptionistPanel.getCardLayout().show(receptionistPanel.getCenterPanel(), "ShowPatientsReceptionist");
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật thông tin: " + ex.getMessage());
+                    receptionistPanel.getCardLayout().show(receptionistPanel.getCenterPanel(), "ShowPatients");
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Lỗi khi chỉnh sửa bệnh nhân: " + ex.getMessage());
                 }
             }
         });

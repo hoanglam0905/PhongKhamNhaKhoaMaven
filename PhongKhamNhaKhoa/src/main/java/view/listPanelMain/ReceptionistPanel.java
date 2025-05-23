@@ -62,6 +62,7 @@ public class ReceptionistPanel extends JPanel{
         // sau này cần add thêm ExaminationPanel hoặc CalendarPanel thì add luôn ở đây
 
         add(centerPanel, BorderLayout.CENTER); //Chỉ add centerPanel
+        
     }
 
     public DentistTaskbar getDentistTaskbar() {

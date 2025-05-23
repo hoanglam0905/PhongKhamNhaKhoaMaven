@@ -1,6 +1,6 @@
 package controller.receptionist;
 
-import dao.PatientDAO;
+import reponsitory.Patientreponsitory;
 import model.Patient;
 import view.listPanelMain.MainFrame;
 import view.receptionistPanel.ModifyPatient;
@@ -41,11 +41,11 @@ public class ReceptionTableController implements MouseListener {
             } else if (col == 2) {
                 // Xử lý nút Sửa
                 String phoneNumber = (String) infoTableModel.getValueAt(row, 2); // Lấy số điện thoại từ cột SĐT
-                int patientId = PatientDAO.getIdPatient(phoneNumber);
+                int patientId = Patientreponsitory.getIdPatient(phoneNumber);
 
                 if (patientId != -1) {
                     // Lấy thông tin bệnh nhân
-                    List<Patient> patients = PatientDAO.getListPatients();
+                    List<Patient> patients = Patientreponsitory.getListPatients();
                     Patient selectedPatient = null;
                     for (Patient patient : patients) {
                         if (patient.getId() == patientId) {
@@ -65,7 +65,7 @@ public class ReceptionTableController implements MouseListener {
                             // Làm mới bảng ShowPatientsReceptionistPanel
                             infoTableModel.setRowCount(0);
                             actionTableModel.setRowCount(0);
-                            List<Object[]> updatedList = PatientDAO.getAllPatients();
+                            List<Object[]> updatedList = Patientreponsitory.getAllPatients();
                             for (Object[] updatedRow : updatedList) {
                                 infoTableModel.addRow(new Object[]{updatedRow[0], updatedRow[1], updatedRow[2], updatedRow[3], updatedRow[4]});
                                 actionTableModel.addRow(new Object[]{"Tái Khám", "Lịch hẹn mới", "✎"});
