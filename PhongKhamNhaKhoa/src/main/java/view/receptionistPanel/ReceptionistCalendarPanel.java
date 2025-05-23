@@ -8,12 +8,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class ReceptionistCalendarPanel extends JPanel {
 
@@ -23,7 +18,6 @@ public class ReceptionistCalendarPanel extends JPanel {
     private JTable tblPatients;
     private JScrollPane scrollPane;
     Object[][] data;
-    private Consumer<Void> onRefreshListener;
 
     public ReceptionistCalendarPanel() {
         initComponents();
@@ -32,8 +26,7 @@ public class ReceptionistCalendarPanel extends JPanel {
     private void initComponents() {
         setLayout(new BorderLayout());
         this.setBackground(Color.WHITE);
-
-        // Header Panel
+        //Header Panel
         headerPanel = new JPanel();
         headerPanel.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
         headerPanel.setPreferredSize(new Dimension(641, 40));
@@ -45,28 +38,9 @@ public class ReceptionistCalendarPanel extends JPanel {
         lblSearch = new JLabel("Tìm kiếm");
         lblSearch.setFont(new Font("Arial", Font.PLAIN, 15));
         lblSearch.setForeground(Color.BLACK);
-        tfSearch = new JTextField("Nhập tên hoặc số điện thoại...");
+        tfSearch = new JTextField("");
         tfSearch.setPreferredSize(new Dimension(200, 25));
-        tfSearch.setForeground(Color.GRAY);
-
-        // Thêm placeholder cho ô tìm kiếm
-        tfSearch.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (tfSearch.getText().equals("Nhập tên hoặc số điện thoại...")) {
-                    tfSearch.setText("");
-                    tfSearch.setForeground(Color.BLACK);
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (tfSearch.getText().isEmpty()) {
-                    tfSearch.setText("Nhập tên hoặc số điện thoại...");
-                    tfSearch.setForeground(Color.GRAY);
-                }
-            }
-        });
+        tfSearch.setForeground(Color.GRAY); // Placeholder color
 
         GroupLayout headerLayout = new GroupLayout(headerPanel);
         headerPanel.setLayout(headerLayout);
@@ -85,12 +59,12 @@ public class ReceptionistCalendarPanel extends JPanel {
         hGroup.addGap(10);
         hGroup.addComponent(tfSearch, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE);
 
-        // Vertical Group
+        //Vertical Group
         vGroup.addComponent(lblTitle);
         vGroup.addComponent(lblSearch);
         vGroup.addComponent(tfSearch, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE);
 
-        // Set layout
+        //Set layout
         headerLayout.setHorizontalGroup(hGroup);
         headerLayout.setVerticalGroup(vGroup);
 
@@ -98,12 +72,26 @@ public class ReceptionistCalendarPanel extends JPanel {
 
         String[] columnNames = {"STT", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Trạng thái"};
 
-        DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
-            final boolean[] canEdit = new boolean[]{false, false, false, false, false, false};
+        Patientreponsitory dao = new Patientreponsitory();
+        List<Object[]> list = dao.getAllPatients();
+
+        data = list.toArray(new Object[0][]);
+
+
+        DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+            final boolean[] canEdit = new boolean[]{
+                    false, false, false, false, false, false
+            };
 
             @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit[columnIndex];
+            }
+
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                if (columnIndex == 6) return Icon.class;
+                return String.class;
             }
         };
 
@@ -156,6 +144,21 @@ public class ReceptionistCalendarPanel extends JPanel {
             }
         };
 
+//        DefaultTableCellRenderer iconRenderer = new DefaultTableCellRenderer() {
+//            @Override
+//            public Component getTableCellRendererComponent(JTable table, Object value,
+//                                                           boolean isSelected, boolean hasFocus,
+//                                                           int row, int column) {
+//                JLabel lbl = new JLabel();
+//                lbl.setHorizontalAlignment(SwingConstants.CENTER);
+//                if (value instanceof Icon) {
+//                    lbl.setIcon((Icon) value);
+//                }
+//                lbl.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+//                return lbl;
+//            }
+//        };
+
         for (int i = 0; i < tblPatients.getColumnCount(); i++) {
             tblPatients.getColumnModel().getColumn(i).setCellRenderer(whiteCenterRenderer);
         }
@@ -167,83 +170,7 @@ public class ReceptionistCalendarPanel extends JPanel {
         tblPatients.getColumnModel().getColumn(3).setPreferredWidth(60);   // Giới tính
         tblPatients.getColumnModel().getColumn(4).setPreferredWidth(50);   // Tuổi
         tblPatients.getColumnModel().getColumn(5).setPreferredWidth(100);  // Trạng thái
-
-        // Thêm sự kiện tìm kiếm
-        tfSearch.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                String searchText = tfSearch.getText().trim();
-                if (!searchText.equals("Nhập tên hoặc số điện thoại...")) {
-                    filterTable(searchText);
-                } else {
-                    refreshTable();
-                }
-            }
-        });
-
-        // Làm mới bảng lần đầu
-        refreshTable();
-    }
-
-    public void refreshTable() {
-        try {
-            Patientreponsitory dao = new Patientreponsitory();
-            List<Object[]> list = dao.getAllPatients();
-            if (list == null || list.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Không có dữ liệu bệnh nhân để hiển thị.");
-                data = new Object[0][];
-            } else {
-                data = list.toArray(new Object[0][]);
-            }
-
-            DefaultTableModel model = (DefaultTableModel) tblPatients.getModel();
-            model.setRowCount(0); // Xóa dữ liệu cũ
-            for (Object[] row : data) {
-                model.addRow(row);
-            }
-            tblPatients.revalidate();
-            tblPatients.repaint();
-            if (onRefreshListener != null) {
-                onRefreshListener.accept(null);
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Lỗi khi làm mới bảng: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    private void filterTable(String searchText) {
-        try {
-            Patientreponsitory dao = new Patientreponsitory();
-            List<Object[]> list;
-            if (searchText.isEmpty()) {
-                list = dao.getAllPatients();
-            } else {
-                list = dao.getPatientsChar(searchText);
-            }
-
-            if (list == null || list.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Không tìm thấy bệnh nhân nào khớp với \"" + searchText + "\".");
-                data = new Object[0][];
-            } else {
-                data = list.toArray(new Object[0][]);
-            }
-
-            DefaultTableModel model = (DefaultTableModel) tblPatients.getModel();
-            model.setRowCount(0); // Xóa dữ liệu cũ
-            for (Object[] row : data) {
-                model.addRow(row);
-            }
-            tblPatients.revalidate();
-            tblPatients.repaint();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Lỗi khi tìm kiếm: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    public void setOnRefreshListener(Consumer<Void> listener) {
-        this.onRefreshListener = listener;
+//        tblPatients.getColumnModel().getColumn(6).setPreferredWidth(60);   // Khám
     }
 
     public JPanel getHeaderPanel() {
@@ -301,4 +228,5 @@ public class ReceptionistCalendarPanel extends JPanel {
     public void setData(Object[][] data) {
         this.data = data;
     }
+
 }

@@ -78,32 +78,15 @@ public class ListBillPanel extends JPanel {
         add(headerPanel, BorderLayout.PAGE_START);
 
         // Table data
-        String[] columnNames = {"Mã HD", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Tổng tiền", "Trạng thái", "Xem chi tiết"};
+        String[] columnNames = {"Mã HD", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Tổng tiền", "Trạng thái"};
         Patientreponsitory dao = new Patientreponsitory();
         List<Object[]> list = dao.getAllBillPatients();
-
-        // Icon see
-        ImageIcon seeIcon;
-        try {
-            seeIcon = new ImageIcon(getClass().getResource("/img/see.png"));
-            Image scaled = seeIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-            seeIcon = new ImageIcon(scaled);
-        } catch (Exception e) {
-            System.err.println("Không tìm thấy ảnh see.png");
-            seeIcon = null;
-        }
-
-        for (Object[] row : list) {
-            if (row.length >= 8) {
-                row[7] = seeIcon;
-            }
-        }
 
         data = list.toArray(new Object[0][]);
 
         model = new DefaultTableModel(data, columnNames) {
             final boolean[] canEdit = new boolean[]{
-                    false, false, false, false, false, false, false, false
+                    false, false, false, false, false, false, false
             };
 
             @Override
@@ -181,11 +164,7 @@ public class ListBillPanel extends JPanel {
         };
 
         for (int i = 0; i < tblPatients.getColumnCount(); i++) {
-            if (i == 7) {
-                tblPatients.getColumnModel().getColumn(i).setCellRenderer(iconRenderer);
-            } else {
-                tblPatients.getColumnModel().getColumn(i).setCellRenderer(whiteCenterRenderer);
-            }
+            tblPatients.getColumnModel().getColumn(i).setCellRenderer(whiteCenterRenderer);
         }
 
         tblPatients.getColumnModel().getColumn(0).setPreferredWidth(40);   // STT
@@ -195,7 +174,6 @@ public class ListBillPanel extends JPanel {
         tblPatients.getColumnModel().getColumn(4).setPreferredWidth(50);   // Tuổi
         tblPatients.getColumnModel().getColumn(5).setPreferredWidth(100);  // Tổng tiền
         tblPatients.getColumnModel().getColumn(6).setPreferredWidth(100);  // Trạng thái
-        tblPatients.getColumnModel().getColumn(7).setPreferredWidth(60);   // Xem chi tiết
     }
 
     public JPanel getHeaderPanel() {
@@ -273,26 +251,9 @@ public class ListBillPanel extends JPanel {
         Patientreponsitory dao = new Patientreponsitory();
         List<Object[]> list = dao.getAllBillPatients();
 
-        // Icon xem chi tiết
-        ImageIcon seeIcon;
-        try {
-            seeIcon = new ImageIcon(getClass().getResource("/img/see.png"));
-            Image scaled = seeIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-            seeIcon = new ImageIcon(scaled);
-        } catch (Exception e) {
-            System.err.println("Không tìm thấy ảnh see.png");
-            seeIcon = null;
-        }
-
-        for (Object[] row : list) {
-            if (row.length >= 8) {
-                row[7] = seeIcon;
-            }
-        }
-
         data = list.toArray(new Object[0][]);
         model.setDataVector(data, new String[]{
-                "Mã HD", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Tổng tiền", "Trạng thái", "Xem chi tiết"
+                "Mã HD", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Tổng tiền", "Trạng thái"
         });
 
         tblPatients.setModel(model);
@@ -334,11 +295,7 @@ public class ListBillPanel extends JPanel {
         };
 
         for (int i = 0; i < tblPatients.getColumnCount(); i++) {
-            if (i == 7) { // Cột icon
-                tblPatients.getColumnModel().getColumn(i).setCellRenderer(iconRenderer);
-            } else {
-                tblPatients.getColumnModel().getColumn(i).setCellRenderer(whiteCenterRenderer);
-            }
+            tblPatients.getColumnModel().getColumn(i).setCellRenderer(whiteCenterRenderer);
         }
     }
 }

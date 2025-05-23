@@ -1,13 +1,12 @@
 package reponsitory;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.io.IOException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import Utils.JDBCUtil;
+import model.Employee;
 
 public class EmployeeRepository {
 	
@@ -19,7 +18,6 @@ public class EmployeeRepository {
                     "    Employee.id,Employee.name, Employee.phoneNumber, Employee.gender, Employee.birthDate, Employee.role " +
                     "FROM Employee " +        
                     "WHERE LOWER(Employee.name) LIKE ?";
-             
 
             PreparedStatement stmt = conn.prepareStatement(query);
             String keyword = "%" + charFind.toLowerCase() + "%";
@@ -110,7 +108,7 @@ public class EmployeeRepository {
 					PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 					stmt.setString(1, name);
-					stmt.setDate(2, new java.sql.Date(birthDate.getTime()));
+					stmt.setDate(2, new Date(birthDate.getTime()));
 					stmt.setString(3, address);
 					stmt.setInt(4, gender);
 					stmt.setString(5, phone);
@@ -210,7 +208,39 @@ public class EmployeeRepository {
 	    }
 	    return false;  // Nếu không tìm thấy username, trả về false
 	}
+	//code của Minh
+	public static List<Employee> getEmployees() {
+		try {
+			Connection con= JDBCUtil.getConnection();
+			Statement statement= con.createStatement();
+			ResultSet rs= statement.executeQuery("select * from Employee");
 
+			List<Employee> employees= new ArrayList<Employee>();
+			while (rs.next()) {
+				int id= rs.getInt("id");
+				String name= rs.getString("name");
+				Date birthday= rs.getDate("birthDate");
+				String address= rs.getString("address");
+				int gender= rs.getInt("gender");
+				String phoneNumber= rs.getString("phoneNumber");
+				String idCard= rs.getString("idCard");
+				String username= rs.getString("username");
+				String password= rs.getString("password");
+				double salary= rs.getDouble("salary");
+				int experience= rs.getInt("experienceYears");
+				String role= rs.getString("role");
 
+				employees.add(new Employee(id,name,birthday,address,gender,phoneNumber,idCard,username,password,salary,experience,role));
+			}
+			rs.close();
+			return employees;
+		} catch (IOException e){
+			throw new RuntimeException(e);
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 
+	}
 }

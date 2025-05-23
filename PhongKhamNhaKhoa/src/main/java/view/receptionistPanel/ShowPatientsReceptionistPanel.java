@@ -1,8 +1,6 @@
 package view.receptionistPanel;
 
 import reponsitory.Patientreponsitory;
-import view.listPanelMain.ReceptionistPanel;
-
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -18,10 +16,8 @@ public class ShowPatientsReceptionistPanel extends JPanel {
     private JTable patientActionTable;
     private DefaultTableModel infoTableModel;
     private DefaultTableModel actionTableModel;
-    private ReceptionistPanel receptionistPanel; // Reference to parent panel
 
-    public ShowPatientsReceptionistPanel(ReceptionistPanel receptionistPanel) {
-        this.receptionistPanel = receptionistPanel; // Initialize the parent panel reference
+    public ShowPatientsReceptionistPanel() {
         initComponents();
     }
 
@@ -32,6 +28,7 @@ public class ShowPatientsReceptionistPanel extends JPanel {
         // Top Panel
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(Color.WHITE);
+
         JLabel lblTitle = new JLabel("Danh Sách Bệnh Nhân");
         lblTitle.setFont(new Font("Arial", Font.BOLD, 18));
         lblTitle.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 0));
@@ -90,7 +87,7 @@ public class ShowPatientsReceptionistPanel extends JPanel {
                 label.setForeground(Color.WHITE);
                 label.setFont(new Font("Arial", Font.BOLD, 13));
                 label.setHorizontalAlignment(SwingConstants.CENTER);
-               return label;
+                return label;
             }
         });
 
@@ -134,7 +131,6 @@ public class ShowPatientsReceptionistPanel extends JPanel {
                 label.setForeground(Color.WHITE);
                 label.setFont(new Font("Arial", Font.BOLD, 13));
                 label.setHorizontalAlignment(SwingConstants.CENTER);
-
                 return label;
             }
         });
@@ -152,6 +148,7 @@ public class ShowPatientsReceptionistPanel extends JPanel {
 
         actionHeader.setReorderingAllowed(false);
         actionHeader.setResizingAllowed(false);
+
         JScrollPane actionTableScroll = new JScrollPane(patientActionTable);
         actionTableScroll.setBorder(null);
         actionTableScroll.getViewport().setBackground(Color.WHITE);
