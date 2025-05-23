@@ -1,10 +1,9 @@
 package view.durgStore;
 
-import reponsitory.DrugReponsitory;
-import reponsitory.ServiceReponsitory;
+import dao.DrugDao;
+import dao.ServiceDao;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
@@ -237,8 +236,8 @@ public class DrugBillConfPanel extends JPanel {
         frame.setVisible(true);
     }
     public void loadPrescriptionData(String idPre) {
-        java.util.List<Object[]> drugs = DrugReponsitory.getListDrugFromPre(idPre);
-        java.util.List<Object[]> services = ServiceReponsitory.getListServiceFromPre(idPre);
+        java.util.List<Object[]> drugs = DrugDao.getListDrugFromPre(idPre);
+        java.util.List<Object[]> services = ServiceDao.getListServiceFromPre(idPre);
 
         String[] columns = {"STT", "Tên", "Số lượng", "Đơn giá", "Thành tiền"};
 
@@ -253,16 +252,5 @@ public class DrugBillConfPanel extends JPanel {
             modelService.addRow(row);
         }
         tableService.setModel(modelService);
-        // Renderer căn giữa cho bảng
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-
-        for (int i = 0; i < tableMedicine.getColumnCount(); i++) {
-            tableMedicine.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-        }
-        for (int i = 0; i < tableService.getColumnCount(); i++) {
-            tableService.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-        }
-
     }
 }

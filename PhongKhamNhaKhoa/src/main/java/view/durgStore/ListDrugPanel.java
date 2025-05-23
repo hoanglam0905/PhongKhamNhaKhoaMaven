@@ -1,7 +1,7 @@
 package view.durgStore;
 
-import model.Drug;
-import reponsitory.DrugReponsitory;
+import dao.DrugDao;
+import dao.PatientDAO;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -9,7 +9,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
-import java.text.DecimalFormat;
 import java.util.List;
 
 public class ListDrugPanel extends JPanel {
@@ -75,19 +74,9 @@ public class ListDrugPanel extends JPanel {
 
         String[] columnNames = {"Mã thuốc", "Tên thuốc", "Số lượng còn", "Đơn vị tính", "Đơn giá"};
 
-        List<Drug> list = DrugReponsitory.getListAllDrug();
-        data = new Object[list.size()][5];
-        DecimalFormat formatter = new DecimalFormat("#,###");
+        List<Object[]> list = DrugDao.getListAllDrug();
 
-        for (int i = 0; i < list.size(); i++) {
-            Drug drug = list.get(i);
-            data[i][0] = drug.getId();
-            data[i][1] = drug.getName();
-            data[i][2] = drug.getStockQuantity();
-            data[i][3] = "Vỉ";
-            data[i][4] = formatter.format(drug.getPrice()) + " VND";
-        }
-
+        data = list.toArray(new Object[0][]);
 
         DefaultTableModel model = new DefaultTableModel(data, columnNames) {
             final boolean[] canEdit = new boolean[]{
@@ -237,26 +226,6 @@ public class ListDrugPanel extends JPanel {
     public void setData(Object[][] data) {
         this.data = data;
     }
-    public void reloadTableData() {
-        List<Drug> list = DrugReponsitory.getListAllDrug();
-        DecimalFormat formatter = new DecimalFormat("#,###");
-
-        DefaultTableModel model = (DefaultTableModel) tblDrugs.getModel();
-        model.setRowCount(0); // Xóa hết dữ liệu cũ
-
-        for (Drug drug : list) {
-            model.addRow(new Object[]{
-                    drug.getId(),
-                    drug.getName(),
-                    drug.getStockQuantity(),
-                    "Vỉ",
-                    formatter.format(drug.getPrice()) + " VND"
-            });
-        }
-
-        tblDrugs.repaint();
-    }
-
 }
 
 

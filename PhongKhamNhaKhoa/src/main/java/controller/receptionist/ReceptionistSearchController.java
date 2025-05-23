@@ -1,12 +1,15 @@
 package controller.receptionist;
 
-import reponsitory.Patientreponsitory;
+import dao.PatientDAO;
+import view.dentistPanel.DentistListPatient1Panel;
+import view.receptionistPanel.ReceptionistCalendarPanel;
 import view.receptionistPanel.ShowPatientsReceptionistPanel;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.util.List;
 
 public class ReceptionistSearchController implements DocumentListener {
@@ -33,7 +36,7 @@ public class ReceptionistSearchController implements DocumentListener {
 
     private void search() {
         String keyword = view.getTxtSearch().getText().trim();
-        List<Object[]> results = Patientreponsitory.getPatientsChar(keyword);
+        List<Object[]> results = PatientDAO.getPatientsChar(keyword);
 
         JTable table = view.getPatientInfoTable();
         DefaultTableModel model = (DefaultTableModel) table.getModel();

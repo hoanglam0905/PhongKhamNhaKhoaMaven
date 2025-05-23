@@ -1,6 +1,7 @@
 package controller.dentist;
 
-import reponsitory.Patientreponsitory;
+import dao.DentistDao;
+import dao.PatientDAO;
 import view.dentistPanel.DentistListPatient1Panel;
 
 import javax.swing.*;
@@ -36,7 +37,7 @@ public class DentistPatientSearch1Controller implements DocumentListener {
 
     private void search() {
         String keyword = view.getTfSearch().getText().trim();
-        List<Object[]> results = Patientreponsitory.getPatientsChar(keyword);
+        List<Object[]> results = PatientDAO.getPatientsChar(keyword);
 
         // Load icon xem
         ImageIcon seeIcon = null;
@@ -69,7 +70,7 @@ public class DentistPatientSearch1Controller implements DocumentListener {
     }
     private void searchOfPatient1() {
         String keyword = view.getTfSearch().getText().trim();
-        List<Object[]> results = Patientreponsitory.getPatientsCharofDentist(keyword, view.getId_doctor());
+        List<Object[]> results = PatientDAO.getPatientsCharofDentist(keyword, view.getId_doctor());
 
         // Load icon xem
         ImageIcon seeIcon = null;
@@ -91,7 +92,7 @@ public class DentistPatientSearch1Controller implements DocumentListener {
         }
 
         JTable table = view.getTblPatients();
-        DefaultTableModel model =  (DefaultTableModel) table.getModel();
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
 
         model.setRowCount(0); // Xoá dữ liệu cũ
         for (Object[] row : results) {

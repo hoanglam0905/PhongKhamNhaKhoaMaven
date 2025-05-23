@@ -1,4 +1,4 @@
-package reponsitory;
+package dao;
 
 import Utils.JDBCUtil;
 
@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
 
-public class PrescriptionReponsitory {
+public class PrescriptionDAO {
     public static int getIdPrescriptionNext() {
         try {
             Connection con = JDBCUtil.getConnection();
@@ -91,7 +91,7 @@ public class PrescriptionReponsitory {
     }
 
     public static void main(String[] args) {
-        PrescriptionReponsitory prescriptionDAO = new PrescriptionReponsitory();
+        PrescriptionDAO prescriptionDAO = new PrescriptionDAO();
         System.out.println(Date.valueOf(LocalDate.now()));
     }
 }

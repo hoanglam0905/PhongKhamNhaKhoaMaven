@@ -1,14 +1,17 @@
 package view.durgStore;
 //package view.durgStore;
 
-import reponsitory.Patientreponsitory;
+import dao.PatientDAO;
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.ArrayList;
 
 public class ListBillPanel extends JPanel {
 
@@ -79,7 +82,7 @@ public class ListBillPanel extends JPanel {
 
         // Table data
         String[] columnNames = {"Mã HD", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Tổng tiền", "Trạng thái", "Xem chi tiết"};
-        Patientreponsitory dao = new Patientreponsitory();
+        PatientDAO dao = new PatientDAO();
         List<Object[]> list = dao.getAllBillPatients();
 
         // Icon see
@@ -270,7 +273,7 @@ public class ListBillPanel extends JPanel {
         this.model = model;
     }
     public void reloadTableData() {
-        Patientreponsitory dao = new Patientreponsitory();
+        PatientDAO dao = new PatientDAO();
         List<Object[]> list = dao.getAllBillPatients();
 
         // Icon xem chi tiết
@@ -295,50 +298,8 @@ public class ListBillPanel extends JPanel {
                 "Mã HD", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Tổng tiền", "Trạng thái", "Xem chi tiết"
         });
 
+        // Cập nhật lại renderer (nếu cần)
         tblPatients.setModel(model);
-
-        // Cập nhật lại renderer căn giữa
-        DefaultTableCellRenderer whiteCenterRenderer = new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value,
-                                                           boolean isSelected, boolean hasFocus,
-                                                           int row, int column) {
-                JLabel lbl = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                lbl.setHorizontalAlignment(SwingConstants.CENTER);
-                lbl.setOpaque(true);
-                if (isSelected) {
-                    lbl.setBackground(table.getSelectionBackground());
-                    lbl.setForeground(table.getSelectionForeground());
-                } else {
-                    lbl.setBackground(Color.WHITE);
-                    lbl.setForeground(Color.BLACK);
-                }
-                lbl.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
-                return lbl;
-            }
-        };
-
-        DefaultTableCellRenderer iconRenderer = new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value,
-                                                           boolean isSelected, boolean hasFocus,
-                                                           int row, int column) {
-                JLabel lbl = new JLabel();
-                lbl.setHorizontalAlignment(SwingConstants.CENTER);
-                if (value instanceof Icon) {
-                    lbl.setIcon((Icon) value);
-                }
-                lbl.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
-                return lbl;
-            }
-        };
-
-        for (int i = 0; i < tblPatients.getColumnCount(); i++) {
-            if (i == 7) { // Cột icon
-                tblPatients.getColumnModel().getColumn(i).setCellRenderer(iconRenderer);
-            } else {
-                tblPatients.getColumnModel().getColumn(i).setCellRenderer(whiteCenterRenderer);
-            }
-        }
     }
+
 }

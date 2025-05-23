@@ -1,12 +1,16 @@
 package controller.durgStore;
 
-import reponsitory.DentistReponsitory;
+import dao.BillDao;
+import dao.DentistDao;
 import view.listPanelMain.MainFrame;
 
 import javax.swing.*;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class ListBillTableController extends MouseAdapter {
     private MainFrame view;
@@ -32,19 +36,19 @@ public class ListBillTableController extends MouseAdapter {
             switchDrugBillPanel(
                     table.getValueAt(row, 0).toString(),  // Mã hóa đơn
                     table.getValueAt(row, 1).toString(),  // Tên bệnh nhân
-                    DentistReponsitory.getNameDenFormBill(table.getValueAt(row, 0).toString()),
+                    DentistDao.getNameDenFormBill(table.getValueAt(row, 0).toString()),
                     table.getValueAt(row, 5).toString(),  // Tổng tiền
                     table.getValueAt(row, 6).toString()   // Trạng thái
             );
             switchDrugConfBillPanel(
                     table.getValueAt(row, 0).toString(),  // Mã hóa đơn
                     table.getValueAt(row, 1).toString(),  // Tên bệnh nhân
-                    DentistReponsitory.getNameDenFormBill(table.getValueAt(row, 0).toString()),
+                    DentistDao.getNameDenFormBill(table.getValueAt(row, 0).toString()),
                     table.getValueAt(row, 5).toString(),  // Tổng tiền
                     "Đã thanh toán"   // Trạng thái
             );
-//            int idPre = Integer.parseInt(table.getValueAt(row, 0).toString());
-//            BillDao.updatePaymentStatusToPaid(idPre);
+            int idPre = Integer.parseInt(table.getValueAt(row, 0).toString());
+            BillDao.updatePaymentStatusToPaid(idPre);
 
             DefaultTableModel model = (DefaultTableModel) table.getModel();
             model.setValueAt("Đã thanh toán", row, 6); // Cập nhật cột 6 (trạng thái) tại dòng đang chọn

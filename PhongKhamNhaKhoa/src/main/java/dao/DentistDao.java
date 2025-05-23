@@ -1,11 +1,11 @@
-package reponsitory;
+package dao;
 
 import Utils.JDBCUtil;
 
 import java.io.IOException;
 import java.sql.*;
 
-public class DentistReponsitory {
+public class DentistDao {
     public static int getIdDentistLogin(String acc, String pass) {
         try {
             Connection con = JDBCUtil.getConnection();
@@ -46,6 +46,6 @@ public class DentistReponsitory {
 
     }
     public static void main(String[] args) {
-        System.out.println(DentistReponsitory.getIdDentistLogin("bacsia","password"));
+        System.out.println(DentistDao.getIdDentistLogin("bacsia","password"));
     }
 }

@@ -1,15 +1,15 @@
-package reponsitory;
+package dao;
 
 import Utils.JDBCUtil;
+import model.Drug;
 import model.Service;
 
 import java.io.IOException;
 import java.sql.*;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServiceReponsitory {
+public class ServiceDao {
     public static List<Service> getListService() {
         List<Service> listService=new ArrayList<>();
         try {
@@ -56,12 +56,9 @@ public class ServiceReponsitory {
 
     public static List<Object[]> getListServiceFromPre(String id_pre) {
         List<Object[]> list = new ArrayList<>();
-        DecimalFormat formatter = new DecimalFormat("#,###");
-
         try {
             Connection con = JDBCUtil.getConnection();
-
-            String sql = "SELECT s.name AS TenDichVu, s.price AS DonGia, psd.quantity AS SoLuong " +
+            String sql = "SELECT s.name AS TenDichVu, s.price AS DonGia " +
                     "FROM PrescriptionServiceDetail psd " +
                     "JOIN Service s ON psd.service_id = s.id " +
                     "WHERE psd.prescription_id = ?";
@@ -72,14 +69,11 @@ public class ServiceReponsitory {
             int stt = 1;
             while (rs.next()) {
                 String name = rs.getString("TenDichVu");
-                int quantity = rs.getInt("SoLuong");
+                int quantity = 1;
                 double price = rs.getDouble("DonGia");
-                double total = price * quantity;
+                double total = price;
 
-                String priceFormatted = formatter.format(price) + " VND";
-                String totalFormatted = formatter.format(total) + " VND";
-
-                list.add(new Object[]{stt++, name, quantity, priceFormatted, totalFormatted});
+                list.add(new Object[]{stt++, name, quantity, price, total});
             }
 
             rs.close();
@@ -90,6 +84,4 @@ public class ServiceReponsitory {
         }
         return list;
     }
-
-
 }

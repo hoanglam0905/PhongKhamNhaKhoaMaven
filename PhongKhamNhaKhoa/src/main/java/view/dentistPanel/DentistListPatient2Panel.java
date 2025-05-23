@@ -1,6 +1,6 @@
 package view.dentistPanel;
 
-import reponsitory.Patientreponsitory;
+import dao.PatientDAO;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -71,17 +71,41 @@ public class DentistListPatient2Panel extends JPanel {
 
         add(headerPanel, BorderLayout.PAGE_START);
 
-        String[] columnNames = {"Mã BN", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi"};
-        Patientreponsitory dao = new Patientreponsitory();
+        String[] columnNames = {"Mã BN", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Khám"};
+
+        ImageIcon seeIcon;
+        try {
+            seeIcon = new ImageIcon(getClass().getResource("/img/see.png"));
+            Image scaled = seeIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+            seeIcon = new ImageIcon(scaled);
+        } catch (Exception e) {
+            System.err.println("Không tìm thấy ảnh see.png");
+            seeIcon = null;
+        }
+        PatientDAO dao = new PatientDAO();
         List<Object[]> list = dao.getAllPatients();
+
+        for (Object[] row : list) {
+            if (row.length >= 6) {
+                row[5] = seeIcon;
+            }
+        }
 
         data = list.toArray(new Object[0][]);
 
         DefaultTableModel model = new DefaultTableModel(data, columnNames) {
-            final boolean[] canEdit = new boolean[]{ false, false, false, false, false };
+            final boolean[] canEdit = new boolean[]{
+                    false, false, false, false, false, false
+            };
+
+            @Override
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit[columnIndex];
+            }
 
             @Override
             public Class<?> getColumnClass(int columnIndex) {
+                if (columnIndex == 6) return Icon.class;
                 return String.class;
             }
         };
@@ -152,7 +176,11 @@ public class DentistListPatient2Panel extends JPanel {
         };
 
         for (int i = 0; i < tblPatients.getColumnCount(); i++) {
-            tblPatients.getColumnModel().getColumn(i).setCellRenderer(whiteCenterRenderer);
+            if (i == 5) {
+                tblPatients.getColumnModel().getColumn(i).setCellRenderer(iconRenderer);
+            } else {
+                tblPatients.getColumnModel().getColumn(i).setCellRenderer(whiteCenterRenderer);
+            }
         }
 
         // Kích thước từng cột
@@ -161,6 +189,7 @@ public class DentistListPatient2Panel extends JPanel {
         tblPatients.getColumnModel().getColumn(2).setPreferredWidth(120);  // SĐT
         tblPatients.getColumnModel().getColumn(3).setPreferredWidth(60);   // Giới tính
         tblPatients.getColumnModel().getColumn(4).setPreferredWidth(50);   // Tuổi
+        tblPatients.getColumnModel().getColumn(5).setPreferredWidth(60);   // Khám
     }
 
     public JPanel getHeaderPanel() {
@@ -217,44 +246,6 @@ public class DentistListPatient2Panel extends JPanel {
 
     public void setData(Object[][] data) {
         this.data = data;
-    }
-    public void reloadPatientList() {
-        Patientreponsitory dao = new Patientreponsitory();
-        List<Object[]> list = dao.getAllPatients();
-
-        Object[][] newData = list.toArray(new Object[0][]);
-        DefaultTableModel model = (DefaultTableModel) tblPatients.getModel();
-        model.setDataVector(newData, new Object[]{"Mã BN", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi"});
-        // Căn giữa toàn bộ nội dung bảng
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-
-        for (int i = 0; i < tblPatients.getColumnCount(); i++) {
-            tblPatients.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-        }
-
-        //Căn giữa tiêu đề cột
-        JTableHeader header = tblPatients.getTableHeader();
-        DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) header.getDefaultRenderer();
-        headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-    }
-
-    public static void main(String[] args) {
-        // Thiết lập giao diện Swing chạy trong Event Dispatch Thread
-        SwingUtilities.invokeLater(() -> {
-            // Tạo frame
-            JFrame frame = new JFrame("Danh sách bệnh nhân");
-
-            // Tạo panel
-            DentistListPatient2Panel panel = new DentistListPatient2Panel();
-
-            // Gắn panel vào frame
-            frame.setContentPane(panel);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(800, 600); // Kích thước khung
-            frame.setLocationRelativeTo(null); // Hiển thị giữa màn hình
-            frame.setVisible(true);
-        });
     }
 }
 

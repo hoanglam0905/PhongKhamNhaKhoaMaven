@@ -11,6 +11,7 @@ public class DentistPanel extends Panel {
     private JPanel centerPanel;
     private CardLayout cardLayout;
     private DentistMenuPanel dentistMenuPanel;
+    private ReceptionistMenuPanel receptionistMenuPanel;
     private DentistTaskbar dentistTaskbar;
     // Thêm các Panel khác ở đây, khi cần thì xóa panel cũ rồi add mới vào, vị trí nó nằm ở center
     private DentistIntroducePanel dentistIntroducePanel;
@@ -29,6 +30,7 @@ public class DentistPanel extends Panel {
     private void initComponents() {
         // Khởi tạo các thành phần
         dentistMenuPanel = new DentistMenuPanel();
+        receptionistMenuPanel = new ReceptionistMenuPanel();
         dentistTaskbar = new DentistTaskbar();
 
         dentistListPatient = new DentistListPatient1Panel();
@@ -113,6 +115,14 @@ public class DentistPanel extends Panel {
 
     public void setDentistListPatient2(DentistListPatient2Panel dentistListPatient2) {
         this.dentistListPatient2 = dentistListPatient2;
+    }
+
+    public ReceptionistMenuPanel getReceptionistMenuPanel() {
+        return receptionistMenuPanel;
+    }
+
+    public void setReceptionistMenuPanel(ReceptionistMenuPanel receptionistMenuPanel) {
+        this.receptionistMenuPanel = receptionistMenuPanel;
     }
 
     public ReceptionistCalendarPanel getReceptionistCalendarPanel() {

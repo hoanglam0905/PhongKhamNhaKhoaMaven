@@ -1,15 +1,15 @@
-package reponsitory;
+package dao;
 
 import Utils.JDBCUtil;
 import model.Drug;
+import model.DrugDose;
 
 import java.io.IOException;
 import java.sql.*;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DrugReponsitory {
+public class DrugDao {
     public static List<Drug> getListDrug(){
         List<Drug> listDrug=new ArrayList<>();
         try {
@@ -33,8 +33,8 @@ public class DrugReponsitory {
             throw new RuntimeException(e);
         }
     }
-    public static List<Drug> getListAllDrug() {
-        List<Drug> list = new ArrayList<>();
+    public static List<Object[]> getListAllDrug() {
+        List<Object[]> list = new ArrayList<>();
 
         try (Connection conn = JDBCUtil.getConnection()) {
             String query = "SELECT * FROM Drug";
@@ -42,14 +42,18 @@ public class DrugReponsitory {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                int id = rs.getInt("id");
+                String id = rs.getString("id");
                 String name = rs.getString("name");
-                String description = rs.getString("description");
-                double price = rs.getDouble("price");
+                String price = rs.getString("price");
                 int stock = rs.getInt("stockQuantity");
 
-                Drug drug = new Drug(id, name, description, price, stock);
-                list.add(drug);
+                list.add(new Object[]{
+                        id,
+                        name,
+                        stock,
+                        "Vỉ",
+                        price
+                });
             }
 
         } catch (Exception e) {
@@ -58,12 +62,8 @@ public class DrugReponsitory {
 
         return list;
     }
-
-
     public static List<Object[]> getListDrugFromPre(String id_pre) {
         List<Object[]> list = new ArrayList<>();
-        DecimalFormat formatter = new DecimalFormat("#,###");
-
         try {
             Connection con = JDBCUtil.getConnection();
             String sql = "SELECT d.name AS TenThuoc, pd.quantity AS SoLuong, d.price AS DonGia, (d.price * pd.quantity) AS ThanhTien " +
@@ -81,12 +81,8 @@ public class DrugReponsitory {
                 double price = rs.getDouble("DonGia");
                 double total = rs.getDouble("ThanhTien");
 
-                String priceFormatted = formatter.format(price) + " VND";
-                String totalFormatted = formatter.format(total) + " VND";
-
-                list.add(new Object[]{stt++, name, quantity, priceFormatted, totalFormatted});
+                list.add(new Object[]{stt++, name, quantity, price, total});
             }
-
             rs.close();
             pst.close();
             con.close();
@@ -94,17 +90,6 @@ public class DrugReponsitory {
             e.printStackTrace();
         }
         return list;
-    }
-    public static void updateDrugQuantity(String drugName, int quantitySold) {
-        try (Connection conn = JDBCUtil.getConnection()) {
-            String sql = "UPDATE Drug SET stockQuantity = stockQuantity - ? WHERE name = ?";
-            PreparedStatement pst = conn.prepareStatement(sql);
-            pst.setInt(1, quantitySold);
-            pst.setString(2, drugName);
-            pst.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 }

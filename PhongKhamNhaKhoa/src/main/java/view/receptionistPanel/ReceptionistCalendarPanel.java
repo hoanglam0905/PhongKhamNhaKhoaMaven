@@ -1,6 +1,6 @@
 package view.receptionistPanel;
 
-import reponsitory.Patientreponsitory;
+import dao.PatientDAO;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -29,6 +29,7 @@ public class ReceptionistCalendarPanel extends JPanel {
         //Header Panel
         headerPanel = new JPanel();
         headerPanel.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
+        //Dòng này không quan trọng do nó sẽ được "kéo" dựa trên JFrame
         headerPanel.setPreferredSize(new Dimension(641, 40));
 
         lblTitle = new JLabel("Bệnh nhân đang chờ khám");
@@ -38,9 +39,8 @@ public class ReceptionistCalendarPanel extends JPanel {
         lblSearch = new JLabel("Tìm kiếm");
         lblSearch.setFont(new Font("Arial", Font.PLAIN, 15));
         lblSearch.setForeground(Color.BLACK);
-        tfSearch = new JTextField("");
+        tfSearch = new JTextField();
         tfSearch.setPreferredSize(new Dimension(200, 25));
-        tfSearch.setForeground(Color.GRAY); // Placeholder color
 
         GroupLayout headerLayout = new GroupLayout(headerPanel);
         headerPanel.setLayout(headerLayout);
@@ -68,11 +68,12 @@ public class ReceptionistCalendarPanel extends JPanel {
         headerLayout.setHorizontalGroup(hGroup);
         headerLayout.setVerticalGroup(vGroup);
 
+
         add(headerPanel, BorderLayout.PAGE_START);
 
         String[] columnNames = {"STT", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Trạng thái"};
 
-        Patientreponsitory dao = new Patientreponsitory();
+        PatientDAO dao = new PatientDAO();
         List<Object[]> list = dao.getAllPatients();
 
         data = list.toArray(new Object[0][]);
