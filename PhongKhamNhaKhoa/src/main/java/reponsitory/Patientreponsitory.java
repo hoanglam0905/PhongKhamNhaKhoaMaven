@@ -3,6 +3,7 @@ package reponsitory;
 import Utils.JDBCUtil;
 import model.Patient;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.*;
 import java.text.DecimalFormat;
@@ -30,6 +31,7 @@ public class Patientreponsitory {
                 int genderInt = rs.getInt("gender");
                 String gender = (genderInt == 1) ? "Nam" : "Nữ";
 
+                // Tính tuổi từ birthDate
                 int age = 0;
                 Date birthDate = rs.getDate("birthDate");
                 if (birthDate != null) {
@@ -50,9 +52,11 @@ public class Patientreponsitory {
                         phone,
                         gender,
                         age,
-                        status
+                        status,
+                        null
                 });
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -95,6 +99,8 @@ public class Patientreponsitory {
                     "    pr.id, p.name, p.birthDate, p.phoneNumber, p.gender, pr.paymentStatus\n" +
                     "ORDER BY \n" +
                     "    pr.id ASC;";
+
+
             PreparedStatement stmt = conn.prepareStatement(query);
             ResultSet rs = stmt.executeQuery();
 
@@ -121,10 +127,12 @@ public class Patientreponsitory {
                             genderText,
                             age,
                             totalAmountFormatted + " VND",
-                            paymentStatus
+                            paymentStatus,
+                            null
                     });
                 }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -140,25 +148,35 @@ public class Patientreponsitory {
             PreparedStatement stmt = conn.prepareStatement(query);
             ResultSet rs = stmt.executeQuery();
 
+            int stt = 1;
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
                 Date birthDate = rs.getDate("birthDate");
                 String address = rs.getString("address");
                 int genderInt = rs.getInt("gender");
+                String gender = (genderInt == 1) ? "Nam" : "Nữ";
                 String phone = rs.getString("phoneNumber");
                 String idCard = rs.getString("idCard");
 
-                Patient patient = new Patient(id, name, birthDate, address, genderInt, phone, idCard);
-                list.add(patient);
+                // Tính tuổi từ birthDate
+                int age = 0;
+                if (birthDate != null) {
+                    age = java.time.Period.between(
+                            birthDate.toLocalDate(),
+                            java.time.LocalDate.now()
+                    ).getYears();
+                }
+                Patient a=new Patient(id,name,birthDate,address,genderInt,phone,idCard);
+                list.add(a);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return list;
     }
-
     public static List<Object[]> getPatientsChar(String charFind) {
         List<Object[]> list = new ArrayList<>();
 
@@ -172,6 +190,7 @@ public class Patientreponsitory {
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, charFind + "%");
             stmt.setString(2, charFind + "%");
+
             ResultSet rs = stmt.executeQuery();
 
             int stt = 1;
@@ -181,6 +200,7 @@ public class Patientreponsitory {
                 int genderInt = rs.getInt("gender");
                 String gender = (genderInt == 1) ? "Nam" : "Nữ";
 
+                // Tính tuổi từ birthDate
                 int age = 0;
                 Date birthDate = rs.getDate("birthDate");
                 if (birthDate != null) {
@@ -189,6 +209,7 @@ public class Patientreponsitory {
                             java.time.LocalDate.now()
                     ).getYears();
                 }
+
                 String status = rs.getString("examStatus");
                 if (status == null) {
                     status = "Chưa khám";
@@ -200,9 +221,11 @@ public class Patientreponsitory {
                         phone,
                         gender,
                         age,
-                        status
+                        status,
+                        null
                 });
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -223,6 +246,7 @@ public class Patientreponsitory {
                     "      LOWER(p.name) LIKE ? " +
                     "   OR LOWER(p.phoneNumber) LIKE ?" +
                     ")";
+
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setInt(1, Integer.parseInt(id_doctor));
             String keyword = "%" + charFind.toLowerCase() + "%";
@@ -254,7 +278,8 @@ public class Patientreponsitory {
                         phone,
                         gender,
                         age,
-                        status
+                        status,
+                        null // Cột "Khám"
                 });
             }
 
@@ -281,11 +306,10 @@ public class Patientreponsitory {
             } else {
                 return -1;
             }
-        } catch (Exception e) {
+        } catch (IOException | ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }
     }
-
     public static List<Object[]> getPatientOfDentist(String id_dentist) {
         List<Object[]> list = new ArrayList<>();
         try (Connection conn = JDBCUtil.getConnection()) {
@@ -326,43 +350,179 @@ public class Patientreponsitory {
 
         return list;
     }
-
-    public static void updatePatient(Patient patient, int age) throws SQLException {
-        if (patient == null || age < 0) {
-            throw new IllegalArgumentException("Thông tin bệnh nhân hoặc tuổi không hợp lệ.");
-        }
-
-        try (Connection conn = JDBCUtil.getConnection()) {
-            conn.setAutoCommit(false); // Bắt đầu transaction
-
-            String sql = "UPDATE Patient SET name = ?, birthDate = ?, address = ?, gender = ?, phoneNumber = ? WHERE id = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-
-            stmt.setString(1, patient.getName());
-            java.sql.Date birthDate = java.sql.Date.valueOf(java.time.LocalDate.now().minusYears(age));
-            stmt.setDate(2, birthDate);
-            stmt.setString(3, patient.getAddress());
-            stmt.setInt(4, patient.getGender());
-            stmt.setString(5, patient.getPhoneNumber());
-            stmt.setInt(6, patient.getId());
-
-            int rowsAffected = stmt.executeUpdate();
-            if (rowsAffected == 0) {
-                throw new SQLException("Không tìm thấy bệnh nhân để cập nhật với ID: " + patient.getId());
-            }
-
-            conn.commit(); // Xác nhận transaction
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw e; // Ném lại ngoại lệ để xử lý ở tầng trên
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new SQLException("Lỗi không xác định khi cập nhật bệnh nhân.", e);
-        }
-    }
-
     public static void main(String[] args) {
         Patientreponsitory patientDAO = new Patientreponsitory();
         System.out.println(patientDAO.getIdPatient("0987654321"));
+    }
+    //code của Lam
+    public Patientreponsitory() {
+        // TODO Auto-generated constructor stub
+    }
+
+
+    public List<Patient> findByPhonePrefix(String phonePrefix) throws SQLException, FileNotFoundException, ClassNotFoundException, IOException {
+        List<Patient> patients = new ArrayList<>();
+        String query = "SELECT * FROM Patient WHERE phoneNumber LIKE ?";
+        try (PreparedStatement ps = JDBCUtil.getConnection().prepareStatement(query)) {
+            ps.setString(1, phonePrefix + "%"); // Chỉ tìm những số bắt đầu bằng prefix
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                patients.add(extractPatientFromResultSet(rs));
+            }
+        }
+        return patients;
+    }
+
+
+    // 2. Lấy toàn bộ danh sách bệnh nhân
+    public List<Patient> getAllPatientsL() throws SQLException, FileNotFoundException, ClassNotFoundException, IOException {
+        List<Patient> patients = new ArrayList<>();
+        String query = "SELECT * FROM Patient";
+        try (Statement stmt = JDBCUtil.getConnection().createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                patients.add(extractPatientFromResultSet(rs));
+            }
+        }
+        return patients;
+    }
+
+    // 3. Thêm mới bệnh nhân
+    public boolean addPatient(Patient patient) throws SQLException, FileNotFoundException, ClassNotFoundException, IOException {
+        String query = "INSERT INTO Patient (name, birthDate, address, gender, phoneNumber, idCard) VALUES (?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = JDBCUtil.getConnection().prepareStatement(query)) {
+            ps.setString(1, patient.getName());
+            ps.setDate(2, patient.getBirthDate());
+            ps.setString(3, patient.getAddress());
+            ps.setInt(4, patient.getGender());
+            ps.setString(5, patient.getPhoneNumber());
+            ps.setString(6, patient.getIdCard());
+            return ps.executeUpdate() > 0;
+        }
+    }
+
+    // 4. Cập nhật thông tin bệnh nhân
+    public boolean updatePatient(Patient patient) throws SQLException, FileNotFoundException, ClassNotFoundException, IOException {
+        String query = "UPDATE Patient SET name = ?, birthDate = ?, address = ?, gender = ?, phoneNumber = ?, idCard = ? WHERE id = ?";
+        try (PreparedStatement ps = JDBCUtil.getConnection().prepareStatement(query)) {
+            ps.setString(1, patient.getName());
+            ps.setDate(2, patient.getBirthDate());
+            ps.setString(3, patient.getAddress());
+            ps.setInt(4, patient.getGender());
+            ps.setString(5, patient.getPhoneNumber());
+            ps.setString(6, patient.getIdCard());
+            ps.setInt(7, patient.getId());
+            return ps.executeUpdate() > 0;
+        }
+    }
+
+    // 5. Xoá bệnh nhân theo ID
+    public boolean deletePatient(int id) throws SQLException, FileNotFoundException, ClassNotFoundException, IOException {
+        String query = "DELETE FROM Patient WHERE id = ?";
+        try (PreparedStatement ps = JDBCUtil.getConnection().prepareStatement(query)) {
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        }
+    }
+
+    // Hàm hỗ trợ để convert từ ResultSet sang Patient
+    private Patient extractPatientFromResultSet(ResultSet rs) throws SQLException {
+        int id = rs.getInt("id");
+        String name = rs.getString("name");
+        Date birthDate = rs.getDate("birthDate");
+        String address = rs.getString("address");
+        int gender = rs.getInt("gender");
+        String phoneNumber = rs.getString("phoneNumber");
+        String idCard = rs.getString("idCard");
+
+        return new Patient(id, name, birthDate, address, gender, phoneNumber, idCard);
+    }
+
+    // 6. Lấy bệnh nhân mới nhất
+    public Patient getLatestPatient() throws SQLException, FileNotFoundException, ClassNotFoundException, IOException {
+        String query = "SELECT * FROM Patient ORDER BY id DESC LIMIT 1";  // Sắp xếp theo id giảm dần
+        try (PreparedStatement ps = JDBCUtil.getConnection().prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return extractPatientFromResultSet(rs);
+            }
+        }
+        return null;  // Nếu không có bệnh nhân nào
+    }
+
+    // 3.1. Thêm mới bệnh nhân và trả về ID mới
+    public int addPatientAndReturnId(Patient patient) throws SQLException, FileNotFoundException, ClassNotFoundException, IOException {
+        String query = "INSERT INTO Patient (name, birthDate, address, gender, phoneNumber, idCard) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+
+            ps.setString(1, patient.getName());
+            ps.setDate(2, patient.getBirthDate());
+            ps.setString(3, patient.getAddress());
+            ps.setInt(4, patient.getGender());
+            ps.setString(5, patient.getPhoneNumber());
+            ps.setString(6, patient.getIdCard());
+
+            int affectedRows = ps.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Thêm bệnh nhân thất bại, không có dòng nào bị ảnh hưởng.");
+            }
+
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1); // Trả về id mới được sinh ra
+                } else {
+                    throw new SQLException("Không lấy được ID bệnh nhân mới.");
+                }
+            }
+        }
+    }
+
+    public static Patient getPatientById(int id) {
+        Patient patient = null;
+
+        try (Connection conn = JDBCUtil.getConnection()) {
+            String sql = "SELECT * FROM Patient WHERE id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                patient = new Patient();
+                patient.setId(rs.getInt("id"));
+                patient.setName(rs.getString("name"));
+                patient.setPhone(rs.getString("phoneNumber"));
+                patient.setBirthDate(rs.getDate("birthDate"));
+                patient.setGender(rs.getInt("gender"));
+                patient.setIdCard(rs.getString("idCard"));
+                patient.setAddress(rs.getString("address"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return patient;
+    }
+
+    public static boolean isPhoneExists(String phone) throws SQLException, ClassNotFoundException, FileNotFoundException, IOException {
+        String sql = "SELECT 1 FROM Patient WHERE phoneNumber = ?";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, phone);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
+        }
+    }
+
+    public static boolean isIdCardExists(String idCard) throws SQLException, ClassNotFoundException, FileNotFoundException, IOException {
+        String sql = "SELECT 1 FROM Patient WHERE idCard = ?";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, idCard);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
+        }
     }
 }

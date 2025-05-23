@@ -1,10 +1,10 @@
 package service;
 
 import model.Drug;
-import reponsitory.DrugRepository;
+import reponsitory.DrugReponsitory;
 
 public class DrugService implements IDrugService {
-    private DrugRepository repo = new DrugRepository();
+    private DrugReponsitory repo = new DrugReponsitory();
 
     public Drug getDrugDetail(int id) {
         return repo.getDrugById(id);

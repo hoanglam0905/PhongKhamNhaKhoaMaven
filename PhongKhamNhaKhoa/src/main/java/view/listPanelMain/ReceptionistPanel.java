@@ -30,7 +30,7 @@ public class ReceptionistPanel extends JPanel{
 
         receptionistCalendarPanel = new ReceptionistCalendarPanel();
         addPatientPanel= new AddPatientPanel();
-        showPatientsReceptionistPanel = new ShowPatientsReceptionistPanel(this);
+        showPatientsReceptionistPanel = new ShowPatientsReceptionistPanel();
         followupPanel = new FollowupPanel();
         newAppointmentPanel = new NewAppointmentPanel();
         dentistIntroducePanel = new DentistIntroducePanel();
@@ -62,7 +62,6 @@ public class ReceptionistPanel extends JPanel{
         // sau này cần add thêm ExaminationPanel hoặc CalendarPanel thì add luôn ở đây
 
         add(centerPanel, BorderLayout.CENTER); //Chỉ add centerPanel
-        
     }
 
     public DentistTaskbar getDentistTaskbar() {

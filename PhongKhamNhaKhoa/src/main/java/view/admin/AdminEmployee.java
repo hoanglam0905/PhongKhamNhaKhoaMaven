@@ -1,7 +1,7 @@
 package view.admin;
 
 import model.Employee;
-import reponsitory.EmployeeReponsitory;
+import reponsitory.EmployeeRepository;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -121,7 +121,7 @@ public class AdminEmployee extends JPanel {
     }
     // Hàm cập nhật lại dữ liệu bảng
     public void loadEmployeeData() {
-        List<Employee> employees = EmployeeReponsitory.getEmployees();
+        List<Employee> employees = EmployeeRepository.getEmployees();
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
 

@@ -6,7 +6,7 @@ import controller.receptionist.FollowupController;
 import model.Doctor;
 import model.Patient;
 import reponsitory.DoctorRepository;
-import reponsitory.PatientRepository;
+import reponsitory.Patientreponsitory;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -180,7 +180,7 @@ public class FollowupPanel extends JPanel {
     public void loadPatientInfo(int patientId) {
         this.setPatientId(patientId);
         try {
-            Patient patient = PatientRepository.getPatientById(patientId);
+            Patient patient = Patientreponsitory.getPatientById(patientId);
             if (patient != null) {
                 txtName.setText(patient.getName());
                 txtPhone.setText(patient.getPhoneNumber());

@@ -63,7 +63,6 @@ public class DentistPatientSearchController implements DocumentListener {
         for (Object[] row : results) {
             model.addRow(row);
         }
-
         table.repaint();
     }
 
