@@ -17,7 +17,8 @@ public class ReceptionistCalendarPanel extends JPanel {
     private JTextField tfSearch;
     private JTable tblPatients;
     private JScrollPane scrollPane;
-    Object[][] data;
+    private Object[][] data;
+    private DefaultTableModel tableModel;
 
     public ReceptionistCalendarPanel() {
         initComponents();
@@ -26,10 +27,10 @@ public class ReceptionistCalendarPanel extends JPanel {
     private void initComponents() {
         setLayout(new BorderLayout());
         this.setBackground(Color.WHITE);
-        //Header Panel
+
+        // Header Panel
         headerPanel = new JPanel();
         headerPanel.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
-        //Dòng này không quan trọng do nó sẽ được "kéo" dựa trên JFrame
         headerPanel.setPreferredSize(new Dimension(641, 40));
 
         lblTitle = new JLabel("Bệnh nhân đang chờ khám");
@@ -59,15 +60,14 @@ public class ReceptionistCalendarPanel extends JPanel {
         hGroup.addGap(10);
         hGroup.addComponent(tfSearch, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE);
 
-        //Vertical Group
+        // Vertical Group
         vGroup.addComponent(lblTitle);
         vGroup.addComponent(lblSearch);
         vGroup.addComponent(tfSearch, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE);
 
-        //Set layout
+        // Set layout
         headerLayout.setHorizontalGroup(hGroup);
         headerLayout.setVerticalGroup(vGroup);
-
 
         add(headerPanel, BorderLayout.PAGE_START);
 
@@ -78,8 +78,7 @@ public class ReceptionistCalendarPanel extends JPanel {
 
         data = list.toArray(new Object[0][]);
 
-
-        DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+        tableModel = new DefaultTableModel(data, columnNames) {
             final boolean[] canEdit = new boolean[]{
                     false, false, false, false, false, false
             };
@@ -91,12 +90,11 @@ public class ReceptionistCalendarPanel extends JPanel {
 
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 6) return Icon.class;
                 return String.class;
             }
         };
 
-        tblPatients = new JTable(model);
+        tblPatients = new JTable(tableModel);
         tblPatients.setRowHeight(28);
         tblPatients.setFillsViewportHeight(true);
         tblPatients.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -145,21 +143,6 @@ public class ReceptionistCalendarPanel extends JPanel {
             }
         };
 
-//        DefaultTableCellRenderer iconRenderer = new DefaultTableCellRenderer() {
-//            @Override
-//            public Component getTableCellRendererComponent(JTable table, Object value,
-//                                                           boolean isSelected, boolean hasFocus,
-//                                                           int row, int column) {
-//                JLabel lbl = new JLabel();
-//                lbl.setHorizontalAlignment(SwingConstants.CENTER);
-//                if (value instanceof Icon) {
-//                    lbl.setIcon((Icon) value);
-//                }
-//                lbl.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
-//                return lbl;
-//            }
-//        };
-
         for (int i = 0; i < tblPatients.getColumnCount(); i++) {
             tblPatients.getColumnModel().getColumn(i).setCellRenderer(whiteCenterRenderer);
         }
@@ -171,9 +154,19 @@ public class ReceptionistCalendarPanel extends JPanel {
         tblPatients.getColumnModel().getColumn(3).setPreferredWidth(60);   // Giới tính
         tblPatients.getColumnModel().getColumn(4).setPreferredWidth(50);   // Tuổi
         tblPatients.getColumnModel().getColumn(5).setPreferredWidth(100);  // Trạng thái
-//        tblPatients.getColumnModel().getColumn(6).setPreferredWidth(60);   // Khám
     }
 
+    // Phương thức làm mới bảng
+    public void refreshTable() {
+        PatientDAO dao = new PatientDAO();
+        List<Object[]> list = dao.getAllPatients();
+        data = list.toArray(new Object[0][]);
+        tableModel.setDataVector(data, new String[]{"STT", "Tên bệnh nhân", "Số điện thoại", "Giới tính", "Tuổi", "Trạng thái"});
+        tblPatients.revalidate();
+        tblPatients.repaint();
+    }
+
+    // Getters và Setters
     public JPanel getHeaderPanel() {
         return headerPanel;
     }
@@ -230,4 +223,11 @@ public class ReceptionistCalendarPanel extends JPanel {
         this.data = data;
     }
 
+    public DefaultTableModel getTableModel() {
+        return tableModel;
+    }
+
+    public void setTableModel(DefaultTableModel tableModel) {
+        this.tableModel = tableModel;
+    }
 }
