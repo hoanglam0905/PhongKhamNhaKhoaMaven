@@ -30,7 +30,7 @@ public class ReceptionistPanel extends JPanel{
 
         receptionistCalendarPanel = new ReceptionistCalendarPanel();
         addPatientPanel= new AddPatientPanel();
-        showPatientsReceptionistPanel = new ShowPatientsReceptionistPanel();
+        showPatientsReceptionistPanel = new ShowPatientsReceptionistPanel(this);
         followupPanel = new FollowupPanel();
         newAppointmentPanel = new NewAppointmentPanel();
         dentistIntroducePanel = new DentistIntroducePanel();
