@@ -1,11 +1,9 @@
 package view.dentistPanel;
 
 import Utils.CustomDocumentFilter;
-import dao.DrugDao;
-import dao.ServiceDao;
+import reponsitory.DrugReponsitory;
 import model.Drug;
 import model.DrugDose;
-import model.Service;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -13,24 +11,12 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -91,7 +77,7 @@ public class AddPrescriptionPanel extends JPanel {
         comboMedicinename.setBackground(Color.WHITE);
 
         comboMedicinename.removeAllItems();
-        List<Drug> listDrug = DrugDao.getListDrug();
+        List<Drug> listDrug = DrugReponsitory.getListDrug();
         for (Drug service : listDrug) {
             comboMedicinename.addItem(service.getName());
         }
@@ -197,7 +183,7 @@ public class AddPrescriptionPanel extends JPanel {
         JScrollPane tableScroll = new JScrollPane(serviceTable);
         tableScroll.setPreferredSize(new Dimension(500, 100)); // <= Giới hạn chiều cao
         tableScroll.getViewport().setBackground(Color.WHITE);  // Nền vùng cuộn
-     // Tạo renderer căn giữa
+        // Tạo renderer căn giữa
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 
@@ -255,13 +241,16 @@ public class AddPrescriptionPanel extends JPanel {
                     );
 
                     if (confirm == JOptionPane.YES_OPTION) {
-                        ((DefaultTableModel) serviceTable.getModel()).removeRow(row);
+                        String drugName = tableModel.getValueAt(row, 1).toString();  // lấy tên thuốc ở dòng vừa xóa
 
-                        // Cập nhật lại STT
+                        // Xóa khỏi bảng
+                        ((DefaultTableModel) serviceTable.getModel()).removeRow(row);
+                        listDrugDose.removeIf(drug -> drug.getName().equalsIgnoreCase(drugName));
                         for (int i = 0; i < tableModel.getRowCount(); i++) {
                             tableModel.setValueAt(i + 1, i, 0);
                         }
                     }
+
                 }
             }
         });
@@ -275,34 +264,57 @@ public class AddPrescriptionPanel extends JPanel {
                 return;
             }
 
-            DefaultTableModel model = (DefaultTableModel) serviceTable.getModel();
-            boolean exists = false;
-            for (int i = 0; i < model.getRowCount(); i++) {
-                String existingMedicineName = model.getValueAt(i, 1).toString();
-                if (existingMedicineName.equalsIgnoreCase(medicineName)) {
-                    exists = true;
+            int quantity = Integer.parseInt(quantityStr);
+
+            // Lấy thông tin thuốc từ cơ sở dữ liệu
+            List<Drug> drugList = DrugReponsitory.getListDrug();
+            Drug selectedDrug = null;
+            for (Drug drug : drugList) {
+                if (drug.getName().equalsIgnoreCase(medicineName)) {
+                    selectedDrug = drug;
                     break;
                 }
             }
 
-            if (exists) {
-                JOptionPane.showMessageDialog(this, "Thuốc này đã được thêm vào!");
+            if (selectedDrug == null) {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin thuốc trong cơ sở dữ liệu!");
                 return;
             }
 
-            int stt = model.getRowCount() + 1;
-            model.addRow(new Object[]{stt, medicineName, quantityStr, "x"});
+            if (selectedDrug.getStockQuantity() < quantity) {
+                JOptionPane.showMessageDialog(this, "Thuốc '" + medicineName + "' trong kho chỉ còn " +
+                        selectedDrug.getStockQuantity() + " viên. Không đủ để kê " + quantity + " viên.");
+                return;
+            }
 
-            // ---- Thêm vào listDrug ----
-            int quantity = Integer.parseInt(quantityStr);
+            // Kiểm tra trùng thuốc và cập nhật luôn
+            DefaultTableModel model = (DefaultTableModel) serviceTable.getModel();
+            boolean updated = false;
+            for (int i = 0; i < model.getRowCount(); i++) {
+                String existingMedicineName = model.getValueAt(i, 1).toString();
+                if (existingMedicineName.equalsIgnoreCase(medicineName)) {
+                    model.setValueAt(quantityStr, i, 2); // Ghi đè số lượng
+                    updated = true;
+                    JOptionPane.showMessageDialog(this, "Thuốc đã tồn tại, số lượng đã được cập nhật.");
+                    break;
+                }
+            }
+
+            if (!updated) {
+                int stt = model.getRowCount() + 1;
+                model.addRow(new Object[]{stt, medicineName, quantityStr, "x"});
+            }
+
+            // Cập nhật lại vào listDrugDose
             int morning = txtMorning.getText().isEmpty() ? 0 : Integer.parseInt(txtMorning.getText());
             int noon = txtNoon.getText().isEmpty() ? 0 : Integer.parseInt(txtNoon.getText());
             int afternoon = txtAfternoon.getText().isEmpty() ? 0 : Integer.parseInt(txtAfternoon.getText());
 
-            DrugDose drugDose = new DrugDose(medicineName, morning, noon, afternoon);
-            listDrugDose.add(drugDose);
-
+            // Xóa nếu đã có, thêm bản mới
+            listDrugDose.removeIf(drug -> drug.getName().equalsIgnoreCase(medicineName));
+            listDrugDose.add(new DrugDose(medicineName, morning, noon, afternoon));
         });
+
 
     }
 
@@ -395,9 +407,24 @@ public class AddPrescriptionPanel extends JPanel {
         int noon = txtNoon.getText().isEmpty() ? 0 : Integer.parseInt(txtNoon.getText());
         int afternoon = txtAfternoon.getText().isEmpty() ? 0 : Integer.parseInt(txtAfternoon.getText());
 
+        if (morning > 2) {
+            morning = 0;
+            SwingUtilities.invokeLater(() -> txtMorning.setText("0"));
+        }
+        if (noon > 2) {
+            noon = 0;
+            SwingUtilities.invokeLater(() -> txtNoon.setText("0"));
+        }
+        if (afternoon > 2) {
+            afternoon = 0;
+            SwingUtilities.invokeLater(() -> txtAfternoon.setText("0"));
+        }
+
         int quantity = (morning + noon + afternoon) * 7;
         txtQuantity.setText(String.valueOf(quantity));
     }
+
+
     public void showText(){
         for (DrugDose list:listDrugDose){
             System.out.println(list);

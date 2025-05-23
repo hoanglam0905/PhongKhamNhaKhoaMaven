@@ -31,6 +31,8 @@ public abstract class Person {
         this.idCard = idCard;
     }
 
+    public Person() {}
+    
     public int getId() { return id; }
     public String getName() { return name; }
     public Date getBirthDate() { return birthDate; }

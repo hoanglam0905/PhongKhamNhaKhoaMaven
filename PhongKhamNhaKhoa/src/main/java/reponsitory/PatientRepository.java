@@ -113,5 +113,80 @@ public class PatientRepository {
         return null;  // Nếu không có bệnh nhân nào
     }
 
+ // 3.1. Thêm mới bệnh nhân và trả về ID mới
+    public int addPatientAndReturnId(Patient patient) throws SQLException, FileNotFoundException, ClassNotFoundException, IOException {
+        String query = "INSERT INTO Patient (name, birthDate, address, gender, phoneNumber, idCard) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+
+            ps.setString(1, patient.getName());
+            ps.setDate(2, patient.getBirthDate());
+            ps.setString(3, patient.getAddress());
+            ps.setInt(4, patient.getGender());
+            ps.setString(5, patient.getPhoneNumber());
+            ps.setString(6, patient.getIdCard());
+
+            int affectedRows = ps.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Thêm bệnh nhân thất bại, không có dòng nào bị ảnh hưởng.");
+            }
+
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1); // Trả về id mới được sinh ra
+                } else {
+                    throw new SQLException("Không lấy được ID bệnh nhân mới.");
+                }
+            }
+        }
+    }
     
+    public static Patient getPatientById(int id) {
+        Patient patient = null;
+
+        try (Connection conn = JDBCUtil.getConnection()) {
+            String sql = "SELECT * FROM Patient WHERE id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                patient = new Patient();
+                patient.setId(rs.getInt("id"));
+                patient.setName(rs.getString("name"));
+                patient.setPhone(rs.getString("phoneNumber"));
+                patient.setBirthDate(rs.getDate("birthDate"));
+                patient.setGender(rs.getInt("gender"));
+                patient.setIdCard(rs.getString("idCard"));
+                patient.setAddress(rs.getString("address"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return patient;
+    }
+    
+    public static boolean isPhoneExists(String phone) throws SQLException, ClassNotFoundException, FileNotFoundException, IOException {
+        String sql = "SELECT 1 FROM Patient WHERE phoneNumber = ?";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, phone);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
+        }
+    }
+
+    public static boolean isIdCardExists(String idCard) throws SQLException, ClassNotFoundException, FileNotFoundException, IOException {
+        String sql = "SELECT 1 FROM Patient WHERE idCard = ?";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, idCard);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
+        }
+    }
+
 }

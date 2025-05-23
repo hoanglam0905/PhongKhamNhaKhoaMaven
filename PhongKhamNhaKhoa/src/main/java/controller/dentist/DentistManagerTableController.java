@@ -19,7 +19,7 @@ public class DentistManagerTableController extends MouseAdapter{
         if (e.getClickCount() == 2 && table.getSelectedRow() != -1) {
             int row = table.getSelectedRow();
             String status = table.getValueAt(row, 5).toString(); // Cột 5 là Trạng thái
-
+            view.getMainPanel().getDentistExaminationPanel().setSdtPatient(table.getValueAt(row, 2).toString());
             if ("Đã khám".equalsIgnoreCase(status)) {
                 JOptionPane.showMessageDialog(null, "Bệnh nhân này đã được khám!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 return;
@@ -37,7 +37,6 @@ public class DentistManagerTableController extends MouseAdapter{
                     table.getValueAt(row, 4).toString(),  // Tuổi
                     table.getValueAt(row, 5).toString()   // Trạng thái
             );
-            view.getMainPanel().getDentistExaminationPanel().setSdtPatient(table.getValueAt(row, 2).toString());
         }
     }
 

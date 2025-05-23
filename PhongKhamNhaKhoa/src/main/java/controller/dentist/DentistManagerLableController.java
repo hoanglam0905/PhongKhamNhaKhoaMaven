@@ -3,6 +3,8 @@ package controller.dentist;
 import view.listPanelMain.MainFrame;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -45,7 +47,16 @@ public class DentistManagerLableController implements MouseListener {
                 switchDentistIntroducePanel();
                 break;
             case "Login":
-                switchReceptionistLoginPanel();
+                int confirm = JOptionPane.showConfirmDialog(
+                        null,
+                        "Bạn có muốn đăng xuất không?",
+                        "Xác nhận đăng xuất",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if (confirm == JOptionPane.YES_OPTION) {
+                    switchReceptionistLoginPanel();
+                }
                 break;
         }
     }
@@ -57,10 +68,12 @@ public class DentistManagerLableController implements MouseListener {
     }
 
     public void switchDentistPatient1Panel() {
+        view.getMainPanel().getDentistListPatient().reloadTableData(view.getLoginPanel().getAcc(), view.getLoginPanel().getPass());
         view.getMainPanel().getCardLayout().show(view.getMainPanel().getCenterPanel(), "Patient1");
     }
 
     public void switchDentistPatient2Panel() {
+        view.getMainPanel().getDentistListPatient2().reloadPatientList();
         view.getMainPanel().getCardLayout().show(view.getMainPanel().getCenterPanel(), "Patient2");
     }
     public void switchReceptionistLoginPanel(){
@@ -79,5 +92,35 @@ public class DentistManagerLableController implements MouseListener {
 
     @Override
     public void mouseExited(MouseEvent e) {}
+
+    private JLabel selectedLabel = null;
+
+    public void setLabelEvent(JLabel... labels) {
+        for (JLabel label : labels) {
+            label.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (selectedLabel != null) {
+                        selectedLabel.setBackground(Color.WHITE);
+                        selectedLabel.setOpaque(false);
+                        selectedLabel.setBorder(null);
+                        selectedLabel.repaint();
+                    }
+                    // Kiểm tra nếu là Home
+                    if ("Home".equals(label.getName())) {
+                        selectedLabel = null;
+                    } else {
+                        selectedLabel = label;
+                        selectedLabel.setBackground(Color.LIGHT_GRAY);
+                        selectedLabel.setOpaque(true);
+                        // Thêm viền
+                        selectedLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
+                        selectedLabel.repaint();
+                    }
+                }
+            });
+        }
+    }
+
 }
 

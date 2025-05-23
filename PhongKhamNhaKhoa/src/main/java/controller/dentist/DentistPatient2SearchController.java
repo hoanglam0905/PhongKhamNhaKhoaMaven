@@ -1,7 +1,6 @@
 package controller.dentist;
 
-import dao.PatientDAO;
-import view.dentistPanel.DentistListPatient1Panel;
+import reponsitory.Patientreponsitory;
 import view.dentistPanel.DentistListPatient2Panel;
 
 import javax.swing.*;
@@ -36,7 +35,7 @@ public class DentistPatient2SearchController implements DocumentListener {
 
     private void search() {
         String keyword = view.getTfSearch().getText().trim();
-        List<Object[]> results = PatientDAO.getPatientsChar(keyword);
+        List<Object[]> results = Patientreponsitory.getPatientsChar(keyword);
 
         // Load icon xem
         ImageIcon seeIcon = null;
