@@ -15,17 +15,11 @@ public class Patientreponsitory {
         List<Object[]> list = new ArrayList<>();
 
         try (Connection conn = JDBCUtil.getConnection()) {
-<<<<<<< HEAD:PhongKhamNhaKhoa/src/main/java/reponsitory/Patientreponsitory.java
             String query =
                     "SELECT p.*, e.status AS examStatus " +
                             "FROM Patient p " +
                             "LEFT JOIN Examination e ON p.id = e.patient_id";
 
-=======
-            String query = "SELECT p.id, p.name, p.phoneNumber, p.gender, p.birthDate, e.status " +
-                          "FROM Patient p " +
-                          "LEFT JOIN Examination e ON p.id = e.patient_id";
->>>>>>> minh2:PhongKhamNhaKhoa/src/main/java/dao/PatientDAO.java
             PreparedStatement stmt = conn.prepareStatement(query);
             ResultSet rs = stmt.executeQuery();
 
@@ -45,15 +39,9 @@ public class Patientreponsitory {
                     ).getYears();
                 }
 
-<<<<<<< HEAD:PhongKhamNhaKhoa/src/main/java/reponsitory/Patientreponsitory.java
                 String status = rs.getString("examStatus");
                 if (status == null) {
                     status = "Chưa khám";  // mặc định nếu chưa có cuộc khám nào
-=======
-                String status = rs.getString("status");
-                if (status == null) {
-                    status = "Chưa khám";
->>>>>>> minh2:PhongKhamNhaKhoa/src/main/java/dao/PatientDAO.java
                 }
 
                 list.add(new Object[]{
@@ -62,12 +50,7 @@ public class Patientreponsitory {
                         phone,
                         gender,
                         age,
-<<<<<<< HEAD:PhongKhamNhaKhoa/src/main/java/reponsitory/Patientreponsitory.java
-                        status,
-                        null
-=======
                         status
->>>>>>> minh2:PhongKhamNhaKhoa/src/main/java/dao/PatientDAO.java
                 });
             }
         } catch (Exception e) {
@@ -92,7 +75,6 @@ public class Patientreponsitory {
                     "        ELSE 'Khác'\n" +
                     "    END AS GioiTinh,\n" +
                     "    pr.paymentStatus AS TrangThaiThanhToan,\n" +
-<<<<<<< HEAD:PhongKhamNhaKhoa/src/main/java/reponsitory/Patientreponsitory.java
                     "    (\n" +
                     "        (SELECT COALESCE(SUM(s.price * psd.quantity), 0) \n" +
                     "         FROM PrescriptionServiceDetail psd \n" +
@@ -104,24 +86,15 @@ public class Patientreponsitory {
                     "         JOIN Drug d ON pd.drug_id = d.id \n" +
                     "         WHERE pd.prescription_id = pr.id)\n" +
                     "    ) AS TongTien,\n" +
-=======
-                    "    IFNULL(SUM(d.price * pd.quantity), 0) + IFNULL(SUM(s.price), 0) AS TongTien,\n" +
->>>>>>> minh2:PhongKhamNhaKhoa/src/main/java/dao/PatientDAO.java
                     "    YEAR(p.birthDate) AS NamSinh\n" +
                     "FROM \n" +
                     "    Patient p\n" +
                     "LEFT JOIN \n" +
                     "    Prescription pr ON p.id = pr.patient_id\n" +
                     "GROUP BY \n" +
-<<<<<<< HEAD:PhongKhamNhaKhoa/src/main/java/reponsitory/Patientreponsitory.java
                     "    pr.id, p.name, p.birthDate, p.phoneNumber, p.gender, pr.paymentStatus\n" +
                     "ORDER BY \n" +
                     "    pr.id ASC;";
-
-
-=======
-                    "    p.id, pr.id;";
->>>>>>> minh2:PhongKhamNhaKhoa/src/main/java/dao/PatientDAO.java
             PreparedStatement stmt = conn.prepareStatement(query);
             ResultSet rs = stmt.executeQuery();
 
@@ -148,8 +121,7 @@ public class Patientreponsitory {
                             genderText,
                             age,
                             totalAmountFormatted + " VND",
-                            paymentStatus,
-                            null
+                            paymentStatus
                     });
                 }
             }
@@ -160,26 +132,6 @@ public class Patientreponsitory {
         return list;
     }
 
-<<<<<<< HEAD:PhongKhamNhaKhoa/src/main/java/reponsitory/Patientreponsitory.java
-=======
-    public static void updatePatient(Patient patient, int age) throws SQLException {
-        try (Connection conn = JDBCUtil.getConnection()) {
-            String sql = "UPDATE Patient SET name = ?, birthDate = ?, address = ?, gender = ?, phoneNumber = ? WHERE id = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, patient.getName());
-            stmt.setDate(2, new Date(java.time.LocalDate.now().minusYears(age).toEpochDay() * 1000 * 60 * 60 * 24));
-            stmt.setString(3, patient.getAddress());
-            stmt.setInt(4, patient.getGender());
-            stmt.setString(5, patient.getPhoneNumber());
-            stmt.setInt(6, patient.getId());
-            stmt.executeUpdate();
-        } catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    }
-
->>>>>>> minh2:PhongKhamNhaKhoa/src/main/java/dao/PatientDAO.java
     public static List<Patient> getListPatients() {
         List<Patient> list = new ArrayList<>();
 
@@ -211,7 +163,6 @@ public class Patientreponsitory {
         List<Object[]> list = new ArrayList<>();
 
         try (Connection conn = JDBCUtil.getConnection()) {
-<<<<<<< HEAD:PhongKhamNhaKhoa/src/main/java/reponsitory/Patientreponsitory.java
             String query =
                     "SELECT p.*, e.status AS examStatus " +
                             "FROM Patient p " +
@@ -221,17 +172,6 @@ public class Patientreponsitory {
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, charFind + "%");
             stmt.setString(2, charFind + "%");
-
-=======
-            String query = "SELECT p.id, p.name, p.phoneNumber, p.gender, p.birthDate, e.status " +
-                          "FROM Patient p " +
-                          "LEFT JOIN Examination e ON p.id = e.patient_id " +
-                          "WHERE phoneNumber LIKE ? OR name LIKE ?";
-            PreparedStatement stmt = conn.prepareStatement(query);
-            String keyword = charFind + "%";
-            stmt.setString(1, keyword);
-            stmt.setString(2, keyword);
->>>>>>> minh2:PhongKhamNhaKhoa/src/main/java/dao/PatientDAO.java
             ResultSet rs = stmt.executeQuery();
 
             int stt = 1;
@@ -249,12 +189,7 @@ public class Patientreponsitory {
                             java.time.LocalDate.now()
                     ).getYears();
                 }
-
-<<<<<<< HEAD:PhongKhamNhaKhoa/src/main/java/reponsitory/Patientreponsitory.java
                 String status = rs.getString("examStatus");
-=======
-                String status = rs.getString("status");
->>>>>>> minh2:PhongKhamNhaKhoa/src/main/java/dao/PatientDAO.java
                 if (status == null) {
                     status = "Chưa khám";
                 }
@@ -265,12 +200,7 @@ public class Patientreponsitory {
                         phone,
                         gender,
                         age,
-<<<<<<< HEAD:PhongKhamNhaKhoa/src/main/java/reponsitory/Patientreponsitory.java
-                        status,
-                        null
-=======
                         status
->>>>>>> minh2:PhongKhamNhaKhoa/src/main/java/dao/PatientDAO.java
                 });
             }
         } catch (Exception e) {
@@ -395,6 +325,40 @@ public class Patientreponsitory {
         }
 
         return list;
+    }
+
+    public static void updatePatient(Patient patient, int age) throws SQLException {
+        if (patient == null || age < 0) {
+            throw new IllegalArgumentException("Thông tin bệnh nhân hoặc tuổi không hợp lệ.");
+        }
+
+        try (Connection conn = JDBCUtil.getConnection()) {
+            conn.setAutoCommit(false); // Bắt đầu transaction
+
+            String sql = "UPDATE Patient SET name = ?, birthDate = ?, address = ?, gender = ?, phoneNumber = ? WHERE id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+
+            stmt.setString(1, patient.getName());
+            java.sql.Date birthDate = java.sql.Date.valueOf(java.time.LocalDate.now().minusYears(age));
+            stmt.setDate(2, birthDate);
+            stmt.setString(3, patient.getAddress());
+            stmt.setInt(4, patient.getGender());
+            stmt.setString(5, patient.getPhoneNumber());
+            stmt.setInt(6, patient.getId());
+
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new SQLException("Không tìm thấy bệnh nhân để cập nhật với ID: " + patient.getId());
+            }
+
+            conn.commit(); // Xác nhận transaction
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e; // Ném lại ngoại lệ để xử lý ở tầng trên
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SQLException("Lỗi không xác định khi cập nhật bệnh nhân.", e);
+        }
     }
 
     public static void main(String[] args) {
