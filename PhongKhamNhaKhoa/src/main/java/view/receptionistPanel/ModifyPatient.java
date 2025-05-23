@@ -163,7 +163,7 @@ public class ModifyPatient extends JPanel {
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                     JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật thông tin: " + ex.getMessage());
-                } 
+                }
             }
         });
     }

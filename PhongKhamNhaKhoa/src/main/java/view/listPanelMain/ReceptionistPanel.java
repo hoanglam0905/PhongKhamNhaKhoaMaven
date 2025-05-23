@@ -25,16 +25,15 @@ public class ReceptionistPanel extends JPanel{
 
     private void initComponents() {
         // Khởi tạo các thành phần
-    	receptionistMenuPanel = new ReceptionistMenuPanel();
+        receptionistMenuPanel = new ReceptionistMenuPanel();
         dentistTaskbar = new DentistTaskbar();
 
         receptionistCalendarPanel = new ReceptionistCalendarPanel();
-        addPatientPanel = new AddPatientPanel();
-        showPatientsReceptionistPanel = new ShowPatientsReceptionistPanel(this); // Thay đổi tại đây
+        addPatientPanel= new AddPatientPanel();
+        showPatientsReceptionistPanel = new ShowPatientsReceptionistPanel(this);
         followupPanel = new FollowupPanel();
         newAppointmentPanel = new NewAppointmentPanel();
         dentistIntroducePanel = new DentistIntroducePanel();
-        // ... (phần còn lại giữ nguyên)
 
         // Layout chính
         setLayout(new BorderLayout());

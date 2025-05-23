@@ -4,6 +4,7 @@ import dao.PatientDAO;
 import model.Patient;
 import view.listPanelMain.MainFrame;
 import view.receptionistPanel.ModifyPatient;
+import view.receptionistPanel.ReceptionistCalendarPanel;
 import view.receptionistPanel.ShowPatientsReceptionistPanel;
 
 import javax.swing.*;
@@ -61,12 +62,12 @@ public class ReceptionTableController implements MouseListener {
 
                         // Đặt listener để làm mới bảng sau khi lưu
                         modifyPatientPanel.setOnSaveListener(v -> {
-                            // Làm mới bảng
+                            // Làm mới bảng ShowPatientsReceptionistPanel
                             infoTableModel.setRowCount(0);
                             actionTableModel.setRowCount(0);
                             List<Object[]> updatedList = PatientDAO.getAllPatients();
                             for (Object[] updatedRow : updatedList) {
-                                infoTableModel.addRow(updatedRow);
+                                infoTableModel.addRow(new Object[]{updatedRow[0], updatedRow[1], updatedRow[2], updatedRow[3], updatedRow[4]});
                                 actionTableModel.addRow(new Object[]{"Tái Khám", "Lịch hẹn mới", "✎"});
                             }
                         });
@@ -88,6 +89,7 @@ public class ReceptionTableController implements MouseListener {
     public void mouseReleased(MouseEvent e) {
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
     }
 

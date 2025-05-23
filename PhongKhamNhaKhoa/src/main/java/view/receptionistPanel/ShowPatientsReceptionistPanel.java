@@ -161,7 +161,7 @@ public class ShowPatientsReceptionistPanel extends JPanel {
         PatientDAO dao = new PatientDAO();
         List<Object[]> list = dao.getAllPatients();
         for (Object[] row : list) {
-            infoTableModel.addRow(row);
+            infoTableModel.addRow(new Object[]{row[0], row[1], row[2], row[3], row[4], row[5]});
             actionTableModel.addRow(new Object[]{"Tái Khám", "Lịch hẹn mới", "✎"});
         }
 

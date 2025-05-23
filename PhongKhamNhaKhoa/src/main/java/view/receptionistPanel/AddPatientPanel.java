@@ -41,7 +41,7 @@ public class AddPatientPanel extends JPanel {
         // Số điện thoại
         JLabel lblPhone = new JLabel("Số điện thoại:");
         lblPhone.setFont(new Font("Arial", Font.ITALIC, 18));
-        lblPhone.setBounds(560, 140 , 150, 20);
+        lblPhone.setBounds(560, 140 , 100, 20);
         txtPhone = new JTextField();
         txtPhone.setBounds(550, 170 , 250, 40);
         txtPhone.setBorder(BorderFactory.createLineBorder(Color.BLACK));

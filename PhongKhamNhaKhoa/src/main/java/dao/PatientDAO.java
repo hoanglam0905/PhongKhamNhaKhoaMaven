@@ -3,7 +3,6 @@ package dao;
 import Utils.JDBCUtil;
 import model.Patient;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
@@ -15,7 +14,9 @@ public class PatientDAO {
         List<Object[]> list = new ArrayList<>();
 
         try (Connection conn = JDBCUtil.getConnection()) {
-            String query = "SELECT * FROM Patient";
+            String query = "SELECT p.id, p.name, p.phoneNumber, p.gender, p.birthDate, e.status " +
+                          "FROM Patient p " +
+                          "LEFT JOIN Examination e ON p.id = e.patient_id";
             PreparedStatement stmt = conn.prepareStatement(query);
             ResultSet rs = stmt.executeQuery();
 
@@ -26,7 +27,6 @@ public class PatientDAO {
                 int genderInt = rs.getInt("gender");
                 String gender = (genderInt == 1) ? "Nam" : "Nữ";
 
-                // Tính tuổi từ birthDate
                 int age = 0;
                 Date birthDate = rs.getDate("birthDate");
                 if (birthDate != null) {
@@ -36,23 +36,27 @@ public class PatientDAO {
                     ).getYears();
                 }
 
+                String status = rs.getString("status");
+                if (status == null) {
+                    status = "Chưa khám";
+                }
+
                 list.add(new Object[]{
                         stt++,
                         name,
                         phone,
                         gender,
                         age,
-                        "Chưa khám",
-                        null
+                        status
                 });
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return list;
     }
+
     public static List<Object[]> getAllBillPatients() {
         List<Object[]> list = new ArrayList<>();
 
@@ -68,7 +72,6 @@ public class PatientDAO {
                     "        ELSE 'Khác'\n" +
                     "    END AS GioiTinh,\n" +
                     "    pr.paymentStatus AS TrangThaiThanhToan,\n" +
-                    "    -- Tổng tiền = tổng giá thuốc + tổng giá dịch vụ\n" +
                     "    IFNULL(SUM(d.price * pd.quantity), 0) + IFNULL(SUM(s.price), 0) AS TongTien,\n" +
                     "    YEAR(p.birthDate) AS NamSinh\n" +
                     "FROM \n" +
@@ -84,7 +87,7 @@ public class PatientDAO {
                     "LEFT JOIN \n" +
                     "    Service s ON psd.service_id = s.id\n" +
                     "GROUP BY \n" +
-                    "    p.id, pr.id;\n";
+                    "    p.id, pr.id;";
             PreparedStatement stmt = conn.prepareStatement(query);
             ResultSet rs = stmt.executeQuery();
 
@@ -109,14 +112,14 @@ public class PatientDAO {
                         null
                 });
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return list;
     }
-    public static void updatePatient(Patient patient, int age) throws SQLException, FileNotFoundException, ClassNotFoundException, IOException {
+
+    public static void updatePatient(Patient patient, int age) throws SQLException {
         try (Connection conn = JDBCUtil.getConnection()) {
             String sql = "UPDATE Patient SET name = ?, birthDate = ?, address = ?, gender = ?, phoneNumber = ? WHERE id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -127,7 +130,10 @@ public class PatientDAO {
             stmt.setString(5, patient.getPhoneNumber());
             stmt.setInt(6, patient.getId());
             stmt.executeUpdate();
-        }
+        } catch (ClassNotFoundException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     public static List<Patient> getListPatients() {
@@ -138,46 +144,37 @@ public class PatientDAO {
             PreparedStatement stmt = conn.prepareStatement(query);
             ResultSet rs = stmt.executeQuery();
 
-            int stt = 1;
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
                 Date birthDate = rs.getDate("birthDate");
                 String address = rs.getString("address");
                 int genderInt = rs.getInt("gender");
-                String gender = (genderInt == 1) ? "Nam" : "Nữ";
                 String phone = rs.getString("phoneNumber");
                 String idCard = rs.getString("idCard");
 
-                // Tính tuổi từ birthDate
-                int age = 0;
-                if (birthDate != null) {
-                    age = java.time.Period.between(
-                            birthDate.toLocalDate(),
-                            java.time.LocalDate.now()
-                    ).getYears();
-                }
-                Patient a=new Patient(id,name,birthDate,address,genderInt,phone,idCard);
-                list.add(a);
+                Patient patient = new Patient(id, name, birthDate, address, genderInt, phone, idCard);
+                list.add(patient);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return list;
     }
+
     public static List<Object[]> getPatientsChar(String charFind) {
         List<Object[]> list = new ArrayList<>();
 
         try (Connection conn = JDBCUtil.getConnection()) {
-            String query = "select * from Patient\n" +
-                    "where phoneNumber like '" +
-                    charFind +
-                    "%' or name like '" +
-                    charFind +
-                    "%';";
+            String query = "SELECT p.id, p.name, p.phoneNumber, p.gender, p.birthDate, e.status " +
+                          "FROM Patient p " +
+                          "LEFT JOIN Examination e ON p.id = e.patient_id " +
+                          "WHERE phoneNumber LIKE ? OR name LIKE ?";
             PreparedStatement stmt = conn.prepareStatement(query);
+            String keyword = charFind + "%";
+            stmt.setString(1, keyword);
+            stmt.setString(2, keyword);
             ResultSet rs = stmt.executeQuery();
 
             int stt = 1;
@@ -187,7 +184,6 @@ public class PatientDAO {
                 int genderInt = rs.getInt("gender");
                 String gender = (genderInt == 1) ? "Nam" : "Nữ";
 
-                // Tính tuổi từ birthDate
                 int age = 0;
                 Date birthDate = rs.getDate("birthDate");
                 if (birthDate != null) {
@@ -197,23 +193,27 @@ public class PatientDAO {
                     ).getYears();
                 }
 
+                String status = rs.getString("status");
+                if (status == null) {
+                    status = "Chưa khám";
+                }
+
                 list.add(new Object[]{
                         stt++,
                         name,
                         phone,
                         gender,
                         age,
-                        "Chưa khám",
-                        null
+                        status
                 });
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return list;
     }
+
     public static List<Object[]> getPatientsCharofDentist(String charFind, String id_doctor) {
         List<Object[]> list = new ArrayList<>();
 
@@ -227,7 +227,6 @@ public class PatientDAO {
                     "      LOWER(p.name) LIKE ? " +
                     "   OR LOWER(p.phoneNumber) LIKE ?" +
                     ")";
-
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setInt(1, Integer.parseInt(id_doctor));
             String keyword = "%" + charFind.toLowerCase() + "%";
@@ -259,8 +258,7 @@ public class PatientDAO {
                         phone,
                         gender,
                         age,
-                        status,
-                        null // Cột "Khám"
+                        status
                 });
             }
 
@@ -287,10 +285,11 @@ public class PatientDAO {
             } else {
                 return -1;
             }
-        } catch (IOException | ClassNotFoundException | SQLException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
     public static List<Object[]> getPatientOfDentist(String id_dentist) {
         List<Object[]> list = new ArrayList<>();
         try (Connection conn = JDBCUtil.getConnection()) {
@@ -331,6 +330,7 @@ public class PatientDAO {
 
         return list;
     }
+
     public static void main(String[] args) {
         PatientDAO patientDAO = new PatientDAO();
         System.out.println(patientDAO.getIdPatient("0987654321"));
