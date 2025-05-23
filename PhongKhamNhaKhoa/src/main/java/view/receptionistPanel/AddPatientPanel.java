@@ -1,143 +1,260 @@
 package view.receptionistPanel;
 
+import java.util.Calendar;
+import java.util.List;
+import model.Doctor;
+import reponsitory.DoctorRepository;
 import javax.swing.*;
+
+import com.toedter.calendar.JDateChooser;
+
+import controller.receptionist.AddPatientController;
+
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ActionListener;
 
 public class AddPatientPanel extends JPanel {
 
     private JTextField txtName;
     private JTextField txtPhone;
-    private JTextField txtAge;
-    private JTextField txtGender;
+//    private JTextField txtBirthDate;
+    private JComboBox<String> genderCombo;
+    private JTextField txtIdCard;
     private JTextField txtAdress;
-    private JTextField txtDoctor;
-    private JButton btnAddPatient;
+    private JComboBox<Doctor> doctorCombo;
+    private JDateChooser dateChooser;
+    private JButton btnAdd, btnCancel;
+    private JPanel contentPanel;
+
+    // Kích thước mặc định ban đầu
+    private static final int DEFAULT_WIDTH = 500;
+    private static final int DEFAULT_HEIGHT = 450;
 
     public AddPatientPanel() {
         initComponents();
     }
 
     private void initComponents() {
-        setLayout(null); // Sử dụng layout tự do để căn chỉnh chính xác như hình
         setBackground(Color.WHITE);
+        setLayout(new GridBagLayout()); // Sử dụng GridBagLayout để căn giữa
 
-        // Tiêu đề
+        // Panel chứa nội dung với GroupLayout
+        contentPanel = new JPanel();
+        contentPanel.setBackground(Color.WHITE);
+        GroupLayout layout = new GroupLayout(contentPanel);
+        contentPanel.setLayout(layout);
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
+
         JLabel lblTitle = new JLabel("Thêm Bệnh Nhân");
-        lblTitle.setFont(new Font("Arial", Font.BOLD, 18));
-        lblTitle.setBounds(10, 10, 200, 30);
-        add(lblTitle);
+        lblTitle.setFont(new Font("Arial", Font.BOLD, 18)); // Giảm font từ 20
 
-
-        // Tên bệnh nhân
         JLabel lblName = new JLabel("Họ và tên:");
-        lblName.setFont(new Font("Arial", Font.ITALIC, 18));
-        lblName.setBounds(210, 140, 100, 20);
+        lblName.setFont(new Font("Arial", Font.ITALIC, 14)); // Giảm font từ 16
         txtName = new JTextField();
-        txtName.setBounds(200, 170, 270, 40);
-        txtName.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        add(lblName);
-        add(txtName);
+        txtName.setPreferredSize(new Dimension(180, 35)); // Giảm từ 220, giảm chiều cao
 
-        // Số điện thoại
         JLabel lblPhone = new JLabel("Số điện thoại:");
-        lblPhone.setFont(new Font("Arial", Font.ITALIC, 18));
-        lblPhone.setBounds(560, 140 , 100, 20);
+        lblPhone.setFont(new Font("Arial", Font.ITALIC, 14));
         txtPhone = new JTextField();
-        txtPhone.setBounds(550, 170 , 250, 40);
-        txtPhone.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        add(lblPhone);
-        add(txtPhone);
+        txtPhone.setPreferredSize(new Dimension(180, 35));
 
-        // Tuổi
-        JLabel lblAge = new JLabel("Tuổi:");
-        lblAge.setFont(new Font("Arial", Font.ITALIC, 18));
-        lblAge.setBounds(210, 230, 100, 20);
-        txtAge = new JTextField();
-        txtAge.setBounds(200, 260 , 270, 40);
-        txtAge.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        add(lblAge);
-        add(txtAge);
+        JLabel lblBirthDate = new JLabel("Ngày sinh:");
+        lblBirthDate.setFont(new Font("Arial", Font.ITALIC, 14));
+        dateChooser = new JDateChooser();
+        dateChooser.setDateFormatString("dd-MM-yyyy");
+        Calendar today = Calendar.getInstance();
 
-        // Giới tính
-        JLabel lblGender = new JLabel("Giới tính:");
-        lblGender.setFont(new Font("Arial", Font.ITALIC, 18));
-        lblGender.setBounds(560, 230 , 100, 20);
-        txtGender = new JTextField();
-        txtGender.setBounds(550, 260, 250, 40);
-        txtGender.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        add(lblGender);
-        add(txtGender);
+        // Tính ngày nhỏ nhất: hôm nay - 60 năm
+        Calendar min = (Calendar) today.clone();
+        min.add(Calendar.YEAR, -60);
 
-        // Chẩn đoán
-        JLabel lblAdress = new JLabel("Địa chỉ:");
-        lblAdress.setFont(new Font("Arial", Font.ITALIC, 18));
-        lblAdress.setBounds(210, 320 , 100, 20);
-        txtAdress = new JTextField();
-        txtAdress.setBounds(200, 350, 600, 40);
-        txtAdress.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        add(lblAdress);
-        add(txtAdress);
+        // Tính ngày lớn nhất: hôm nay - 18 năm
+        Calendar max = (Calendar) today.clone();
+        max.add(Calendar.YEAR, -16);
+     // Đặt giới hạn
+        dateChooser.setMinSelectableDate(min.getTime());
+        dateChooser.setMaxSelectableDate(max.getTime());
         
+        
+        JLabel lblGender = new JLabel("Giới tính:");
+        lblGender.setFont(new Font("Arial", Font.ITALIC, 14));
+        genderCombo = new JComboBox<>(new String[]{"Nữ", "Nam"});
+        genderCombo.setPreferredSize(new Dimension(180, 35));
+
+        JLabel lblIdCard = new JLabel("CCCD:");
+        lblIdCard.setFont(new Font("Arial", Font.ITALIC, 14));
+        txtIdCard = new JTextField();
+        txtIdCard.setPreferredSize(new Dimension(0, 35));
+
+        JLabel lblAdress = new JLabel("Địa chỉ:");
+        lblAdress.setFont(new Font("Arial", Font.ITALIC, 14));
+        txtAdress = new JTextField();
+        txtAdress.setPreferredSize(new Dimension(0, 35));
+
         JLabel lblDoctor = new JLabel("Bác sĩ:");
-        lblDoctor.setFont(new Font("Arial", Font.ITALIC, 18));
-        lblDoctor.setBounds(210, 410 , 100, 20);
-        txtDoctor = new JTextField();
-        txtDoctor.setBounds(200, 440, 600, 40);
-        txtDoctor.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        add(lblDoctor);
-        add(txtDoctor);
+        lblDoctor.setFont(new Font("Arial", Font.ITALIC, 14));
+        doctorCombo = new JComboBox<>();
+        doctorCombo.setPreferredSize(new Dimension(0, 35));
 
-        // Nút "Thêm Bệnh Nhân và Lịch Hẹn"
-        btnAddPatient = new JButton("Thêm Bệnh Nhân và Lịch Hẹn");
-        btnAddPatient.setFont(new Font("Arial", Font.BOLD, 16));
-        btnAddPatient.setBackground(new Color(0, 123, 255)); // Màu xanh dương
-        btnAddPatient.setForeground(Color.WHITE);
-        btnAddPatient.setBounds(500, 500, 300, 45);
-        btnAddPatient.setFocusPainted(false);
-        add(btnAddPatient);
+        btnAdd = new JButton("Thêm Bệnh Nhân và Lịch Hẹn");
+        btnAdd.setBackground(new Color(0, 123, 255));
+        btnAdd.setForeground(Color.WHITE);
+        btnAdd.setFocusPainted(false);
+        btnAdd.setPreferredSize(new Dimension(200, 35)); // Giữ nút đủ lớn
 
-        // Xử lý sự kiện nút "Thêm Bệnh Nhân và Lịch Hẹn"
-        btnAddPatient.addActionListener(e -> {
-            String name = txtName.getText().trim();
-            String phone = txtPhone.getText().trim();
-            String age = txtAge.getText().trim();
-            String gender = txtGender.getText().trim();
-            String adress = txtAdress.getText().trim();
-            String doctor = txtDoctor.getText().trim();
+        btnCancel = new JButton("Hủy");
+        btnCancel.setBackground(new Color(0, 123, 255));
+        btnCancel.setForeground(Color.WHITE);
+        btnCancel.setFocusPainted(false);
+        btnCancel.setPreferredSize(new Dimension(80, 35)); // Giữ nút đủ lớn
 
-            if (name.isEmpty() || phone.isEmpty() || age.isEmpty() || gender.isEmpty() || adress.isEmpty() || doctor.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin.");
-                return;
+        // Load danh sách bác sĩ
+        loadDoctors();
+
+        // Thiết lập layout ngang & dọc cho contentPanel
+        layout.setHorizontalGroup(
+            layout.createParallelGroup()
+                .addComponent(lblTitle)
+                .addGroup(layout.createSequentialGroup()
+                    .addGroup(layout.createParallelGroup()
+                        .addComponent(lblName)
+                        .addComponent(txtName, 180, 180, 180) // Đồng bộ với preferredSize
+                        .addComponent(lblBirthDate)
+                        .addComponent(dateChooser, 180, 180, 180))
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addGroup(layout.createParallelGroup()
+                        .addComponent(lblPhone)
+                        .addComponent(txtPhone, 180, 180, 180)
+                        .addComponent(lblGender)
+                        .addComponent(genderCombo, 180, 180, 180)))
+                .addComponent(lblIdCard)
+                .addComponent(txtIdCard, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblAdress)
+                .addComponent(txtAdress, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblDoctor)
+                .addComponent(doctorCombo, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(btnCancel, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(btnAdd, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE))
+        );
+
+        layout.setVerticalGroup(
+            layout.createSequentialGroup()
+                .addComponent(lblTitle)
+                .addGap(8) // Giảm khoảng cách từ 10
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblName)
+                    .addComponent(lblPhone))
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtName, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPhone, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblBirthDate)
+                    .addComponent(lblGender))
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(dateChooser, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(genderCombo, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE))
+                .addComponent(lblIdCard)
+                .addComponent(txtIdCard, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblAdress)
+                .addComponent(txtAdress, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblDoctor)
+                .addComponent(doctorCombo, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+                .addGap(15) // Giảm khoảng cách từ 20
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCancel, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAdd, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE))
+        );
+
+        // Đặt kích thước mặc định cho contentPanel
+        contentPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
+
+        // Thêm contentPanel vào panel chính với GridBagConstraints để căn giữa
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc
+
+.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
+        add(contentPanel, gbc);
+
+        // Lắng nghe sự kiện thay đổi kích thước cửa sổ
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                adjustLayout();
             }
-
-            // Thực hiện thêm bệnh nhân (có thể thêm logic lưu vào cơ sở dữ liệu ở đây)
-            JOptionPane.showMessageDialog(this, "Thêm bệnh nhân thành công!");
-            clearFields();
         });
+
+        ActionListener addPatientController = new AddPatientController(this);
+        btnAdd.addActionListener(addPatientController);
+    }
+
+    private void adjustLayout() {
+        Dimension parentSize = getSize();
+        int contentWidth = Math.min(DEFAULT_WIDTH, parentSize.width - 20); // Giảm padding từ 40
+        int contentHeight = Math.min(DEFAULT_HEIGHT, parentSize.height - 20);
+        contentPanel.setPreferredSize(new Dimension(contentWidth, contentHeight));
+        contentPanel.revalidate();
+        contentPanel.repaint();
     }
 
     private void clearFields() {
         txtName.setText("");
         txtPhone.setText("");
-        txtAge.setText("");
-        txtGender.setText("");
         txtAdress.setText("");
-        txtDoctor.setText("");
+        doctorCombo.setSelectedIndex(-1);
     }
 
-    // Getters và Setters
     public JTextField getTxtName() { return txtName; }
-    public void setTxtName(JTextField txtName) { this.txtName = txtName; }
     public JTextField getTxtPhone() { return txtPhone; }
-    public void setTxtPhone(JTextField txtPhone) { this.txtPhone = txtPhone; }
-    public JTextField getTxtAge() { return txtAge; }
-    public void setTxtAge(JTextField txtAge) { this.txtAge = txtAge; }
-    public JTextField getTxtGender() { return txtGender; }
-    public void setTxtGender(JTextField txtGender) { this.txtGender = txtGender; }
+    public JDateChooser getDateChooser() {
+		return dateChooser;
+	}
+
+	public void setDateChooser(JDateChooser dateChooser) {
+		this.dateChooser = dateChooser;
+	}
+	public JComboBox<String> getGenderCombo() { return genderCombo; }
+    public void setGenderCombo(JComboBox<String> genderCombo) { this.genderCombo = genderCombo; }
+    public JTextField getTxtIdCard() { return txtIdCard; }
     public JTextField getTxtAdress() { return txtAdress; }
-    public void setTxtAdress(JTextField txtAdress) { this.txtAdress = txtAdress; }
-    public JTextField getTxtDoctor() { return txtDoctor; }
-    public void setTxtDoctor(JTextField txtDoctor) { this.txtDoctor = txtDoctor; }
-    public JButton getBtnAddPatient() { return btnAddPatient; }
-    public void setBtnAddPatient(JButton btnAddPatient) { this.btnAddPatient = btnAddPatient; }
+    public JComboBox<Doctor> getDoctorCombo() { return doctorCombo; }
+    public JButton getBtnAddPatient() { return btnAdd; }
+
+    public void addBtnAddListener(ActionListener listener) {
+        btnAdd.addActionListener(listener);
+    }
+
+    public void addBtnCancelListener(ActionListener listener) {
+        btnCancel.addActionListener(listener);
+    }
+
+    public void dispose() {
+        // Placeholder if needed
+    }
+
+    private void loadDoctors() {
+        try {
+            List<Doctor> doctors = DoctorRepository.getAllDoctors();
+            for (Doctor doctor : doctors) {
+                doctorCombo.addItem(doctor);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Không thể tải danh sách bác sĩ.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public Doctor getSelectedDoctor() {
+        return (Doctor) doctorCombo.getSelectedItem();
+    }
+
+    public void setSelectedDoctor(Doctor doctor) {
+        doctorCombo.setSelectedItem(doctor);
+    }
 }
