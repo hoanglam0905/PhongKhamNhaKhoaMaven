@@ -1,10 +1,8 @@
 package view.listPanelMain;
 
 import Utils.PaymentQRComponent;
-import view.dentistPanel.DentistIntroducePanel;
 import view.dentistPanel.DentistTaskbar;
 import view.durgStore.*;
-import view.login.LoginPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +17,6 @@ public class DrugStorePanel extends JPanel {
     private DrugBillPanel billPanel;
     private DrugBillConfPanel billConfPanel;
     private PaymentQRComponent paymentQRComponent;
-    private DentistIntroducePanel dentistIntroducePanel;
 
     public DrugStorePanel() {
         initComponents();
@@ -34,7 +31,6 @@ public class DrugStorePanel extends JPanel {
         listDrugPanel=new ListDrugPanel();
         billPanel=new DrugBillPanel();
         billConfPanel  =new DrugBillConfPanel();
-        dentistIntroducePanel=new DentistIntroducePanel();
         try {
             paymentQRComponent=new PaymentQRComponent(2000, "Thanh toán hóa đơn", () -> {
                 JOptionPane.showMessageDialog(this, "Cảm ơn bạn đã thanh toán!");
@@ -60,13 +56,11 @@ public class DrugStorePanel extends JPanel {
         centerPanel = new JPanel(cardLayout);
         centerPanel.setPreferredSize(new Dimension(700, 300));
 
-        centerPanel.add(dentistIntroducePanel,"IntroducePanel");
         centerPanel.add(listBillPanel,"Bills");
         centerPanel.add(listDrugPanel,"Drugs");
         centerPanel.add(billPanel,"Bill");
         centerPanel.add(billConfPanel,"BillConf");
         centerPanel.add(paymentQRComponent,"QR");
-
         // sau này cần add thêm ExaminationPanel hoặc CalendarPanel thì add luôn ở đây
 
         add(centerPanel, BorderLayout.CENTER); //Chỉ add centerPanel

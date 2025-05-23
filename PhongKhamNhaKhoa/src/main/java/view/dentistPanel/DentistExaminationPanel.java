@@ -59,19 +59,16 @@ public class DentistExaminationPanel extends JPanel {
 
         lblSymptom = new JLabel("Triệu chứng:");
         tfSymptom = new JTextField();
-        tfSymptom.setPreferredSize(new Dimension(100, 30));
         tfSymptom.setOpaque(false);
         tfSymptom.setBackground(Color.WHITE);
 
         lblDiagnosis = new JLabel("Chuẩn đoán:");
         tfDiagnosis = new JTextField();
-        tfDiagnosis.setPreferredSize(new Dimension(100, 30));
         tfDiagnosis.setOpaque(true);
         tfDiagnosis.setBackground(Color.WHITE);
 
         lblTreatment = new JLabel("Phương pháp điều trị:");
         tfTreatment = new JTextField();
-        tfTreatment.setPreferredSize(new Dimension(100, 30));
 
         btnAddService = new JButton("Thêm dịch vụ");
         btnAddService.setBackground(new Color(51, 255, 51));

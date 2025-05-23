@@ -90,7 +90,7 @@ public class PaymentQRComponent extends JPanel {
                 return;
             }
 
-            // Đọc body an toàn trong Java 8
+            // ✅ Đọc body an toàn trong Java 8
             InputStream is = exchange.getRequestBody();
             Scanner scanner = new Scanner(is, "UTF-8").useDelimiter("\\A");
             String body = scanner.hasNext() ? scanner.next() : "";
@@ -100,14 +100,14 @@ public class PaymentQRComponent extends JPanel {
             System.out.println("Nhận webhook:");
             System.out.println(body);
 
-            //Gọi callback trong EDT
+            // ✅ Gọi callback trong EDT
             SwingUtilities.invokeLater(() -> {
                 if (onPaymentSuccess != null) {
                     onPaymentSuccess.run();
                 }
             });
 
-            // Gửi phản hồi JSON
+            // ✅ Gửi phản hồi JSON
             String response = "{\"message\": \"Webhook OK\"}";
             byte[] respBytes = response.getBytes("UTF-8");
 
@@ -119,5 +119,28 @@ public class PaymentQRComponent extends JPanel {
             os.close();
         }
 
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                JFrame frame = new JFrame("QR Thanh toán thử nghiệm");
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+                int amount = 2000;
+                String content = "Thanh toan hoa don #123";
+
+                PaymentQRComponent qrPanel = new PaymentQRComponent(amount, content, () -> {
+                    JOptionPane.showMessageDialog(frame, "Cảm ơn bạn đã thanh toán!");
+                });
+
+                frame.getContentPane().add(qrPanel);
+                frame.pack();
+                frame.setLocationRelativeTo(null);
+                frame.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

@@ -1,7 +1,7 @@
 package view.dentistPanel;
 
 import Utils.CustomDocumentFilter;
-import reponsitory.ServiceReponsitory;
+import dao.ServiceDao;
 import model.Service;
 
 import javax.swing.*;
@@ -65,7 +65,7 @@ public class ServicePanel extends JPanel {
         cboServiceName.setBackground(Color.WHITE);
 
         cboServiceName.removeAllItems();
-        List<Service> serviceListnew = ServiceReponsitory.getListService();
+        List<Service> serviceListnew = ServiceDao.getListService();
         for (Service service : serviceListnew) {
             cboServiceName.addItem(service.getName());
         }
@@ -77,9 +77,7 @@ public class ServicePanel extends JPanel {
         txtQuantity.setBounds(10, 145, 200, 35);
         txtQuantity.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         ((AbstractDocument) txtQuantity.getDocument()).setDocumentFilter(new CustomDocumentFilter("\\d+"));
-        cboServiceName.addActionListener(e -> {
-            txtQuantity.setText("");
-        });
+
         JButton btnConfirm = new JButton("Xác nhận");
         btnConfirm.setBounds(10, 215, 100, 30);
         btnConfirm.setBackground(new Color(0, 123, 255));
@@ -201,71 +199,35 @@ public class ServicePanel extends JPanel {
                 return;
             }
 
-            int quantity;
             try {
-                quantity = Integer.parseInt(quantityStr);
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Số lượng phải là số nguyên.");
-                return;
-            }
+                int quantity = Integer.parseInt(quantityStr);
 
-            // --- Ràng buộc số lượng ---
-            switch (serviceName) {
-                case "Khám răng tổng quát":
-                case "Niềng răng":
-                case "Chữa viêm tủy":
-                    if (quantity != 1) {
-                        JOptionPane.showMessageDialog(this, serviceName + " chỉ được nhập số lượng = 1.");
-                        txtQuantity.setText("1");
-                        return;
+                // --- Kiểm tra dịch vụ đã tồn tại trong table chưa ---
+                DefaultTableModel model = (DefaultTableModel) serviceTable.getModel();
+                boolean exists = false;
+                for (int i = 0; i < model.getRowCount(); i++) {
+                    String existingServiceName = model.getValueAt(i, 1).toString();
+                    if (existingServiceName.equalsIgnoreCase(serviceName)) {
+                        exists = true;
+                        break;
                     }
-                    break;
-                case "Trám răng sâu":
-                    if (quantity < 1 || quantity > 5) {
-                        JOptionPane.showMessageDialog(this, "Trám răng sâu chỉ cho phép số lượng từ 1 đến 5.");
-                        return;
-                    }
-                    break;
-                case "Tẩy trắng răng":
-                    if (quantity != 1) {
-                        JOptionPane.showMessageDialog(this, "Tẩy trắng răng chỉ thực hiện 1 lần mỗi lần hẹn.");
-                        txtQuantity.setText("1");
-                        return;
-                    }
-                    break;
-                case "Nhổ răng":
-                    if (quantity < 1 || quantity > 4) {
-                        JOptionPane.showMessageDialog(this, "Nhổ răng chỉ cho phép số lượng từ 1 đến 4.");
-                        return;
-                    }
-                    break;
-                default:
-                    break;
-            }
-
-            // Kiểm tra nếu đã tồn tại thì ghi đè
-            DefaultTableModel model = (DefaultTableModel) serviceTable.getModel();
-            boolean updated = false;
-            for (int i = 0; i < model.getRowCount(); i++) {
-                String existingService = model.getValueAt(i, 1).toString();
-                if (existingService.equalsIgnoreCase(serviceName)) {
-                    model.setValueAt(quantity, i, 2); // Ghi đè lại số lượng
-                    updated = true;
-                    JOptionPane.showMessageDialog(this, "Dịch vụ đã tồn tại, thông tin số lượng đã được cập nhật.");
-                    break;
                 }
-            }
 
-            // Nếu chưa có thì thêm mới
-            if (!updated) {
+                if (exists) {
+                    JOptionPane.showMessageDialog(this, "Dịch vụ này đã được thêm vào!");
+                    return;
+                }
+
+                // Nếu chưa có, mới thêm
                 int stt = model.getRowCount() + 1;
                 model.addRow(new Object[]{stt, serviceName, quantity, "x"});
+
+                cboServiceName.setSelectedIndex(0);
+                txtQuantity.setText("");
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Số lượng phải là số nguyên.");
             }
-
-            txtQuantity.setText("");
         });
-
-
 
     }
 

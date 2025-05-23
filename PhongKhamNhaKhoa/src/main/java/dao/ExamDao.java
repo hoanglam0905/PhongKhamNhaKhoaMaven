@@ -1,11 +1,11 @@
-package reponsitory;
+package dao;
 
 import Utils.JDBCUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
-public class ExamReponsitory {
+public class ExamDao {
     public static void updateExam(String id_doctor, String id_patient) {
         try (Connection conn = JDBCUtil.getConnection()) {
             String sql = "UPDATE Examination " +
