@@ -1,6 +1,7 @@
 package view.receptionistPanel;
 
 import reponsitory.Patientreponsitory;
+import model.Patient;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -37,7 +38,6 @@ public class ShowPatientsReceptionistPanel extends JPanel {
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         searchPanel.setBackground(Color.WHITE);
 
-        // Adding "Tìm kiếm" label before search field
         JLabel lblSearch = new JLabel("Tìm kiếm: ");
         lblSearch.setFont(new Font("Arial", Font.PLAIN, 14));
         searchPanel.add(lblSearch);
@@ -45,7 +45,7 @@ public class ShowPatientsReceptionistPanel extends JPanel {
         txtSearch = new JTextField("");
         txtSearch.setPreferredSize(new Dimension(200, 30));
         txtSearch.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-        txtSearch.setForeground(Color.GRAY); // Placeholder color
+        txtSearch.setForeground(Color.GRAY);
         searchPanel.add(txtSearch);
 
         topPanel.add(searchPanel, BorderLayout.EAST);
@@ -142,9 +142,9 @@ public class ShowPatientsReceptionistPanel extends JPanel {
         patientActionTable.getColumnModel().getColumn(1).setCellRenderer(new ButtonRenderer("Lịch hẹn mới", new Color(0, 153, 51)));
         patientActionTable.getColumnModel().getColumn(2).setCellRenderer(new ButtonRenderer("Sửa", new Color(0, 153, 51)));
         
-        patientActionTable.getColumnModel().getColumn(0).setPreferredWidth(100); // Cột "Tái Khám"
-        patientActionTable.getColumnModel().getColumn(1).setPreferredWidth(120); // Cột "Lịch hẹn mới"
-        patientActionTable.getColumnModel().getColumn(2).setPreferredWidth(80);  // Cột "Sửa"
+        patientActionTable.getColumnModel().getColumn(0).setPreferredWidth(100);
+        patientActionTable.getColumnModel().getColumn(1).setPreferredWidth(120);
+        patientActionTable.getColumnModel().getColumn(2).setPreferredWidth(80);
 
         actionHeader.setReorderingAllowed(false);
         actionHeader.setResizingAllowed(false);
@@ -153,22 +153,19 @@ public class ShowPatientsReceptionistPanel extends JPanel {
         actionTableScroll.setBorder(null);
         actionTableScroll.getViewport().setBackground(Color.WHITE);
 
-        // Sử dụng JSplitPane với dividerSize = 0 để sát lại
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, infoTableScroll, actionTableScroll);
-        splitPane.setResizeWeight(0.6); // Giữ nguyên tỷ lệ 70% cho bảng thông tin
-        splitPane.setOneTouchExpandable(false); // Tắt nút mở rộng
+        splitPane.setResizeWeight(0.6);
+        splitPane.setOneTouchExpandable(false);
         splitPane.setContinuousLayout(true);
-        splitPane.setDividerSize(0); // Đặt kích thước divider về 0 để sát hai bảng
+        splitPane.setDividerSize(0);
         splitPane.setBorder(null);
 
         tablePanel.add(splitPane, BorderLayout.CENTER);
         add(tablePanel, BorderLayout.CENTER);
 
-        // Load dữ liệu ban đầu
         reloadPatientList();
     }
 
-    // Renderer nút bấm trong bảng
     private class ButtonRenderer extends DefaultTableCellRenderer {
         private final String buttonText;
         private final Color backgroundColor;
@@ -196,7 +193,6 @@ public class ShowPatientsReceptionistPanel extends JPanel {
         }
     }
 
-    // Getter & Setter
     public JTextField getTxtSearch() { return txtSearch; }
     public void setTxtSearch(JTextField txtSearch) { this.txtSearch = txtSearch; }
     public JTable getPatientInfoTable() { return patientInfoTable; }
@@ -207,10 +203,23 @@ public class ShowPatientsReceptionistPanel extends JPanel {
     public void reloadPatientList() {
         infoTableModel.setRowCount(0);
         actionTableModel.setRowCount(0);
-        Patientreponsitory dao = new Patientreponsitory();
-        List<Object[]> list = dao.getAllPatients();
-        for (Object[] row : list) {
-            infoTableModel.addRow(row);
+        List<Patient> patients = Patientreponsitory.getListPatients();
+        for (Patient patient : patients) {
+            int age = 0;
+            if (patient.getBirthDate() != null) {
+                age = java.time.Period.between(
+                        patient.getBirthDate().toLocalDate(),
+                        java.time.LocalDate.now()
+                ).getYears();
+            }
+            String gender = patient.getGender() == 1 ? "Nam" : "Nữ";
+            infoTableModel.addRow(new Object[]{
+                    patient.getId(),
+                    patient.getName(),
+                    patient.getPhoneNumber(),
+                    gender,
+                    age
+            });
             actionTableModel.addRow(new Object[]{"Tái Khám", "Lịch hẹn mới", "Sửa"});
         }
     }

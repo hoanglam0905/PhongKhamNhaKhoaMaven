@@ -402,7 +402,7 @@ public class Patientreponsitory {
     }
 
     // 4. Cập nhật thông tin bệnh nhân
-    public boolean updatePatient(Patient patient) throws SQLException, FileNotFoundException, ClassNotFoundException, IOException {
+    public static boolean updatePatient(Patient patient) throws SQLException, FileNotFoundException, ClassNotFoundException, IOException {
         String query = "UPDATE Patient SET name = ?, birthDate = ?, address = ?, gender = ?, phoneNumber = ?, idCard = ? WHERE id = ?";
         try (PreparedStatement ps = JDBCUtil.getConnection().prepareStatement(query)) {
             ps.setString(1, patient.getName());
