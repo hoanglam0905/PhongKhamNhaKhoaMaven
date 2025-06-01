@@ -2,6 +2,8 @@ package view.receptionistPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
+import reponsitory.DoctorRepository;
 
 public class NewAppointmentPanel extends JPanel {
 
@@ -37,9 +39,9 @@ public class NewAppointmentPanel extends JPanel {
 
         JLabel lblPhone = new JLabel("Số điện thoại:");
         lblPhone.setFont(new Font("Arial", Font.ITALIC, 16));
-        lblPhone.setBounds(370, 50 , 100, 20);
+        lblPhone.setBounds(370, 50, 100, 20);
         txtPhone = new JTextField();
-        txtPhone.setBounds(370, 80 , 230, 30);
+        txtPhone.setBounds(370, 80, 230, 30);
         txtPhone.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         add(lblPhone);
         add(txtPhone);
@@ -47,15 +49,15 @@ public class NewAppointmentPanel extends JPanel {
         JLabel lblAge = new JLabel("Tuổi:");
         lblAge.setFont(new Font("Arial", Font.ITALIC, 16));
         lblAge.setBounds(50, 130, 100, 20);
-        txtAge = new JTextField();
-        txtAge.setBounds(50, 160 , 250, 30);
+        txtAge =	new JTextField();
+        txtAge.setBounds(50, 160, 250, 30);
         txtAge.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         add(lblAge);
         add(txtAge);
 
         JLabel lblGender = new JLabel("Giới tính:");
         lblGender.setFont(new Font("Arial", Font.ITALIC, 16));
-        lblGender.setBounds(370, 130 , 100, 20);
+        lblGender.setBounds(370, 130, 100, 20);
         txtGender = new JTextField();
         txtGender.setBounds(370, 160, 230, 30);
         txtGender.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -64,7 +66,7 @@ public class NewAppointmentPanel extends JPanel {
 
         JLabel lblAdress = new JLabel("Địa chỉ:");
         lblAdress.setFont(new Font("Arial", Font.ITALIC, 16));
-        lblAdress.setBounds(50, 210 , 100, 20);
+        lblAdress.setBounds(50, 210, 100, 20);
         txtAdress = new JTextField();
         txtAdress.setBounds(50, 240, 550, 30);
         txtAdress.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -73,11 +75,21 @@ public class NewAppointmentPanel extends JPanel {
 
         JLabel lblDoctor = new JLabel("Bác sĩ:");
         lblDoctor.setFont(new Font("Arial", Font.ITALIC, 16));
-        lblDoctor.setBounds(50, 290 , 100, 20);
+        lblDoctor.setBounds(50, 290, 100, 20);
 
-        cmbDoctor = new JComboBox<>(new String[]{
-                "-- Chọn bác sĩ --", "Bs. Nguyễn Văn A", "Bs. Trần Thị B", "Bs. Lê Văn C"
-        });
+        // Lấy danh sách tên bác sĩ từ DoctorRepository
+        DoctorRepository doctorRepository = new DoctorRepository();
+        List<String> doctorNames;
+        try {
+            doctorNames = doctorRepository.getDoctorNames();
+            doctorNames.add(0, "-- Chọn bác sĩ --"); // Thêm tùy chọn mặc định
+        } catch (Exception e) {
+            e.printStackTrace();
+            doctorNames = List.of("-- Chọn bác sĩ --"); // Danh sách mặc định nếu có lỗi
+            JOptionPane.showMessageDialog(this, "Lỗi khi tải danh sách bác sĩ: " + e.getMessage());
+        }
+
+        cmbDoctor = new JComboBox<>(doctorNames.toArray(new String[0]));
         cmbDoctor.setBounds(50, 320, 550, 30);
         cmbDoctor.setBackground(Color.WHITE);
         cmbDoctor.setFont(new Font("Arial", Font.PLAIN, 14));
