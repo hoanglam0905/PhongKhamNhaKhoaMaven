@@ -1,7 +1,9 @@
 package view.admin;
 
 import javax.swing.*;
+import javax.swing.text.AbstractDocument;
 
+import Utils.CustomDocumentFilter;
 import model.Drug;
 import service.DrugService;
 
@@ -49,7 +51,9 @@ public class AdminDrugEdit extends JPanel {
         formPanel.add(new JLabel("Giá"));
         formPanel.add(new JLabel("Số lượng còn"));
         tfPrice = new JTextField();
+        ((AbstractDocument) tfPrice.getDocument()).setDocumentFilter(new CustomDocumentFilter("\\d*"));
         tfStock = new JTextField();
+        ((AbstractDocument) tfStock.getDocument()).setDocumentFilter(new CustomDocumentFilter("\\d*"));
         formPanel.add(tfPrice);
         formPanel.add(tfStock);
 
@@ -137,7 +141,7 @@ public class AdminDrugEdit extends JPanel {
 	        lblId.setText("Mã số: " + drug.getId());
 	        tfName.setText(drug.getName());
 	        tfDescription.setText(drug.getDescription());
-	        tfPrice.setText(String.valueOf(drug.getPrice()));
+	        tfPrice.setText(String.valueOf((int) drug.getPrice()));
 	        tfStock.setText(String.valueOf(drug.getStockQuantity()));
 	    } else {
 	        JOptionPane.showMessageDialog(this, "Không tìm thấy thuốc có ID = " + id, "Lỗi", JOptionPane.ERROR_MESSAGE);

@@ -5,6 +5,7 @@ import javax.swing.*;
 import reponsitory.EmployeeRepository;
 
 import java.awt.*;
+import java.math.BigDecimal;
 
 public class AdminEmployeeInfo extends JPanel {
 	private int employeeId;
@@ -45,6 +46,17 @@ public class AdminEmployeeInfo extends JPanel {
         tfAddress = new JTextField(); tfCCCD = new JTextField();
         tfSalary = new JTextField(); tfRole = new JTextField();
         tfUsername = new JTextField(); tfPassword = new JTextField();
+
+        tfName.setEditable(false);
+        tfPhone.setEditable(false);
+        tfBirth.setEditable(false);
+        tfGender.setEditable(false);
+        tfAddress.setEditable(false);
+        tfCCCD.setEditable(false);
+        tfSalary.setEditable(false);
+        tfRole.setEditable(false);
+        tfUsername.setEditable(false);
+        tfPassword.setEditable(false);
 
         formPanel.add(new JLabel("Họ và tên"));
         formPanel.add(new JLabel("Số điện thoại"));
@@ -215,7 +227,15 @@ public class AdminEmployeeInfo extends JPanel {
             tfGender.setText((String) emp[4]);
             tfAddress.setText((String) emp[5]);
             tfCCCD.setText((String) emp[6]);
-            tfSalary.setText(String.valueOf(emp[7]));
+            Object salaryObj = emp[7];
+            String salaryStr;
+            if (salaryObj instanceof Number) {
+                BigDecimal bd = new BigDecimal(((Number) salaryObj).doubleValue());
+                salaryStr = bd.toPlainString();
+            } else {
+                salaryStr = String.valueOf(salaryObj);
+            }
+            tfSalary.setText(salaryStr);
             tfRole.setText((String) emp[8]);
             tfUsername.setText((String) emp[9]);
             tfPassword.setText((String) emp[10]);

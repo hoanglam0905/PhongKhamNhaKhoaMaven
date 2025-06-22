@@ -32,6 +32,7 @@ public class MainFrame extends JFrame {
     }
 
     private void initComponents() {
+        setTitle("Phòng khám nha khoa LMK");
         // Khởi tạo layout và panel
         loginPanel = new LoginPanel();
         mainPanel = new DentistPanel();
@@ -199,7 +200,7 @@ public class MainFrame extends JFrame {
         this.adminPanel.getAdminServiceInfo().getBtnDelete().addActionListener(sbtc);
         this.adminPanel.getAdminServiceInfo().getBtnEdit().addActionListener(sbtc);
         this.adminPanel.getAdminServiceEdit().getBtnConf().addActionListener(sbtc);
-        this.adminPanel.getAdminServiceAdd().getBtnAdd().addActionListener(ebtc);
+        this.adminPanel.getAdminServiceAdd().getBtnAdd().addActionListener(sbtc);
 
         DrugButtonController dbcl=new DrugButtonController(this);
         this.adminPanel.getAdminDrug().getBtnAdd().addActionListener(dbcl);
