@@ -1,7 +1,9 @@
 package view.admin;
 
 import javax.swing.*;
+import javax.swing.text.AbstractDocument;
 
+import Utils.CustomDocumentFilter;
 import com.toedter.calendar.JDateChooser;
 
 import java.awt.*;
@@ -44,6 +46,7 @@ public class AdminEmployeeAdd extends JPanel {
 
 		tfName = new JTextField();
 		tfPhone = new JTextField();
+		((AbstractDocument) tfPhone.getDocument()).setDocumentFilter(new CustomDocumentFilter("\\d*"));
 		dateChooser = new JDateChooser();
 		dateChooser.setDateFormatString("dd-MM-yyyy");
 		Calendar today = Calendar.getInstance();
@@ -63,11 +66,14 @@ public class AdminEmployeeAdd extends JPanel {
 		cbGender = new JComboBox<>(new String[] { "Nam", "Nữ" });
 		tfAddress = new JTextField();
 		tfCCCD = new JTextField();
+		((AbstractDocument) tfCCCD.getDocument()).setDocumentFilter(new CustomDocumentFilter("\\d*"));
 		tfSalary = new JTextField();
+		((AbstractDocument) tfSalary.getDocument()).setDocumentFilter(new CustomDocumentFilter("\\d*"));
 		cbRole = new JComboBox<>(new String[] { "Lễ tân", "Bác sĩ", "Nhân viên quầy thuốc", "Admin" });
 		tfUsername = new JTextField();
 		tfPassword = new JTextField();
 		tfYear = new JTextField();
+		((AbstractDocument) tfYear.getDocument()).setDocumentFilter(new CustomDocumentFilter("\\d*"));
 
 		btnAdd = new JButton("Thêm nhân viên");
 		btnAdd.setBackground(new Color(51, 255, 51));

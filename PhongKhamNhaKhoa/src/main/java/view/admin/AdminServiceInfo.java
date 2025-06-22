@@ -1,5 +1,10 @@
 package view.admin;
 
+import model.Drug;
+import model.Service;
+import reponsitory.ServiceReponsitory;
+import service.DrugService;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -8,6 +13,7 @@ public class AdminServiceInfo extends JPanel {
     private JTextField tfName, tfPrice;
     private JLabel lblId;
     private JButton btnDelete, btnEdit;
+    public int serviceId;
 
     public AdminServiceInfo() {
         setLayout(new BorderLayout());
@@ -38,8 +44,10 @@ public class AdminServiceInfo extends JPanel {
         formPanel.add(new JLabel("Tên dịch vụ"));
         formPanel.add(new JLabel("Giá"));
         tfName = new JTextField();
+        tfName.setEditable(false);
         formPanel.add(tfName);
         tfPrice = new JTextField();
+        tfPrice.setEditable(false);
         formPanel.add(tfPrice);
 
         JPanel wrapperCenter = new JPanel(); // dùng wrapper để dễ đặt layout chính
@@ -115,5 +123,17 @@ public class AdminServiceInfo extends JPanel {
         frame.setLocationRelativeTo(null);
         frame.setContentPane(new AdminServiceInfo());
         frame.setVisible(true);
+    }
+    public void loadData(int id) {
+        this.serviceId = id;
+        Service service = ServiceReponsitory.getServiceById(id);
+
+        if (service != null) {
+            lblId.setText("Mã số: " + service.getId());
+            tfName.setText(service.getName());
+            tfPrice.setText(String.valueOf((int) service.getPrice()));
+        } else {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy dịch vụ có ID = " + id, "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

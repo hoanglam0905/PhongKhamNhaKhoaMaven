@@ -13,6 +13,8 @@ public class Service {
     public Service(String name) {
         this.name = name;
     }
+    public Service() {
+    }
 
     public int getId() {
         return id;

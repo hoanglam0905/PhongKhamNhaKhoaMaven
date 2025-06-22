@@ -1,6 +1,9 @@
 package view.admin;
 
+import Utils.CustomDocumentFilter;
+
 import javax.swing.*;
+import javax.swing.text.AbstractDocument;
 import java.awt.*;
 
 public class AdminServiceAdd extends JPanel {
@@ -41,6 +44,7 @@ public class AdminServiceAdd extends JPanel {
         formPanel.add(tfName);
         tfPrice = new JTextField();
         formPanel.add(tfPrice);
+        ((AbstractDocument) tfPrice.getDocument()).setDocumentFilter(new CustomDocumentFilter("\\d*"));
 
         JPanel wrapperCenter = new JPanel(); // dùng wrapper để dễ đặt layout chính
         wrapperCenter.setLayout(new FlowLayout(FlowLayout.CENTER));

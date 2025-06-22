@@ -196,4 +196,25 @@ public class DrugReponsitory {
             return false;
         }
     }
+    public static void deleteDrug(String id){
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        try {
+            con = JDBCUtil.getConnection();
+            String sql = "DELETE FROM Drug WHERE id = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, id);
+            pstmt.executeUpdate();
+            System.out.println("Đã xóa drug có id: " + id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

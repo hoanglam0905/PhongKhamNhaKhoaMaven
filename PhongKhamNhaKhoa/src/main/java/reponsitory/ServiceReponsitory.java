@@ -90,4 +90,78 @@ public class ServiceReponsitory {
         }
         return list;
     }
+    public static Service getServiceById(int id) {
+        Service service = new Service();
+        try {
+            Connection con = JDBCUtil.getConnection();
+
+            String sql = "select * from Service where id = ?";
+
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, id);
+
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                int service_id = rs.getInt(1);
+                String name = rs.getString(2);
+                double price = rs.getDouble(3);
+                service.setId(service_id);
+                service.setName(name);
+                service.setPrice(price);
+            }
+
+            pst.close();
+            con.close();
+        } catch (IOException | ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return service;
+    }
+    public static void deleteService(String id){
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        try {
+            con = JDBCUtil.getConnection();
+            String sql = "DELETE FROM Service WHERE id = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, id);
+            pstmt.executeUpdate();
+            System.out.println("Đã xóa service có id: " + id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public static void updateService(int id, String name, int price) {
+        String sql = "UPDATE Service SET name = ?, price = ? WHERE id = ?";
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, name);
+            stmt.setDouble(2, price);
+            stmt.setInt(3, id);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static void insertService(String name, double price) {
+        String sql = "INSERT INTO Service (name, price) VALUES (?, ?)";
+        try (Connection con = JDBCUtil.getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, name);
+            stmt.setDouble(2, price);
+
+            stmt.executeUpdate();
+        } catch (IOException | ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

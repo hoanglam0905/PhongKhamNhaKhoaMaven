@@ -47,7 +47,8 @@ public class ServiceTableController implements MouseListener {
 
     }
     public void switchEmpInfro(String id){
-        //set lại text thông tin của nhân viên
+        view.getAdminPanel().getAdminServiceInfo().serviceId=Integer.parseInt(id);
+        view.getAdminPanel().getAdminServiceInfo().loadData(Integer.parseInt(id));
         view.getAdminPanel().getCardLayout().show(view.getAdminPanel().getCenterPanel(),"adminServiceInfo");
     }
 }
