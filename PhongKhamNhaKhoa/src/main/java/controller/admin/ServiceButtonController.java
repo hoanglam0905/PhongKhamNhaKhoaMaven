@@ -45,7 +45,6 @@ public class ServiceButtonController implements ActionListener {
             ServiceReponsitory.updateService(Integer.parseInt(sl[sl.length-1]),view.getAdminPanel().getAdminServiceEdit().getTfName().getText(),Integer.parseInt(view.getAdminPanel().getAdminServiceEdit().getTfPrice().getText()));
             switchService();
         }else if(action.equals("Thêm dịch vụ")){
-            System.out.println("kaka");
             if (view.getAdminPanel().getAdminServiceAdd().getTfName().getText().trim().isEmpty() || view.getAdminPanel().getAdminServiceAdd().getTfPrice().getText().trim().isEmpty()) {
                 JOptionPane.showMessageDialog(view, "Vui lòng nhập đầy đủ tên, giá và số lượng!", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
                 return;
