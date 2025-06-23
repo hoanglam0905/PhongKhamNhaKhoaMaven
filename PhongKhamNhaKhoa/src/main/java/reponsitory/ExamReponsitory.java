@@ -28,5 +28,24 @@ public class ExamReponsitory {
             e.printStackTrace();
         }
     }
+    public static boolean insertExamination(int id, int doctorId, int patientId, String status) {
+        String sql = "INSERT INTO Examination (id, doctor_id, patient_id, status) VALUES (?, ?, ?, ?)";
 
+        try (Connection conn = JDBCUtil.getConnection();
+             PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            pst.setInt(1, id); // id là ID của Appointment (do khóa ngoại)
+            pst.setInt(2, doctorId);
+            pst.setInt(3, patientId);
+            pst.setString(4, status); // "Chưa khám" hoặc "Đã khám"
+
+            int rowsInserted = pst.executeUpdate();
+            return rowsInserted > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
 }
