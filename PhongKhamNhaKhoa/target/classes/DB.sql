@@ -26,6 +26,14 @@ CREATE TABLE Doctor (
     FOREIGN KEY (id) REFERENCES Employee(id) ON DELETE CASCADE
 );
 
+CREATE TABLE Guardian (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) ,
+    phoneNumber VARCHAR(15)  UNIQUE,
+    idCard VARCHAR(12) UNIQUE,
+    relationship VARCHAR(100) 
+);
+
 -- BỆNH NHÂN
 CREATE TABLE Patient (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -34,7 +42,9 @@ CREATE TABLE Patient (
     address VARCHAR(255),
     gender INT,
     phoneNumber VARCHAR(15) UNIQUE,
-    idCard VARCHAR(12) UNIQUE
+    idCard VARCHAR(12) UNIQUE,
+    guardian_id INT DEFAULT NULL,
+    FOREIGN KEY (guardian_id) REFERENCES Guardian(id) ON DELETE SET NULL
 );
 
 -- THUỐC
@@ -102,13 +112,23 @@ CREATE TABLE Examination (
     FOREIGN KEY (patient_id) REFERENCES Patient(id) ON DELETE CASCADE
 );
 
+CREATE TABLE Appointment (
+	doctor_id INT,
+    patient_id INT,
+    status enum ('Chưa đến', 'Đang khám', 'Hủy') DEFAULT 'Chưa đến',
+    FOREIGN KEY (doctor_id) REFERENCES Doctor(id),
+    FOREIGN KEY (patient_id) REFERENCES Patient(id),
+    service nvarchar(255),
+    ngay DATE,
+    gio TIME,
+    duKien INT -- Tính bằng phút
+);
+
 -- DỮ LIỆU MẪU CHO NHÂN VIÊN
 INSERT INTO Employee (name, birthDate, address, gender, phoneNumber, idCard, username, password, salary, experienceYears, role) VALUES
 ('Nguyễn Hữu Tín', '1980-05-12', 'Hà Nội', 1, '0912345678', '123456789012', 'bacsia', 'password', 30000000, 15, 'Bác sĩ'),
 ('Trần Thị Trâm', '1985-08-25', 'Hồ Chí Minh', 0, '0912345679', '123456789013', 'bacsib', 'password', 32000000, 12, 'Bác sĩ'),
 ('Lê Văn Nam', '1975-12-05', 'Đà Nẵng', 1, '0912345680', '123456789014', 'bacsic', 'password', 31000000, 20, 'Bác sĩ'),
-('Phạm Hồng Kim', '1990-07-15', 'Hải Phòng', 1, '0912345681', '123456789015', 'bacsid', 'password', 29000000, 10, 'Bác sĩ'),
-('Hoàng Minh', '1982-04-10', 'Cần Thơ', 1, '0912345682', '123456789016', 'bacsie', 'password', 33000000, 18, 'Bác sĩ'),
 ('Nguyễn Thị Hà', '1995-09-20', 'Huế', 0, '0912345683', '123456789017', 'letan1', 'password', 12000000, 5, 'Lễ tân'),
 ('Đặng Thùy Y', '1998-03-11', 'Nha Trang', 0, '0912345684', '123456789018', 'letan2', 'password', 12500000, 3, 'Lễ tân'),
 ('Đỗ Hồng Dư', '1990-11-30', 'Vũng Tàu', 1, '0912345685', '123456789019', 'nvqt1', 'password', 15000000, 8, 'Nhân viên quầy thuốc'),
@@ -119,9 +139,7 @@ INSERT INTO Employee (name, birthDate, address, gender, phoneNumber, idCard, use
 INSERT INTO Doctor (id, specialty) VALUES
 (1, 'Răng hàm mặt'),
 (2, 'Chỉnh nha'),
-(3, 'Nha chu'),
-(4, 'Nội nha'),
-(5, 'Phẫu thuật miệng');
+(3, 'Nha chu');
 
 -- DỮ LIỆU BỆNH NHÂN
 INSERT INTO Patient (name, birthDate, address, gender, phoneNumber, idCard) VALUES
@@ -172,5 +190,35 @@ INSERT INTO PrescriptionServiceDetail (prescription_id, service_id, quantity) VA
 -- DỮ LIỆU EXAMINATION (CÓ TRẠNG THÁI 'ĐÃ KHÁM')
 INSERT INTO Examination (doctor_id, patient_id, status) VALUES
 (1, 4, 'Chưa khám');
+
+
+INSERT INTO Appointment (doctor_id, patient_id, service, ngay, gio, duKien, status) VALUES
+-- Bác sĩ 1
+(2, 1, 'null', CURDATE(), '08:00:00', 30, 'Chưa đến'),
+(1, 2, 'null', CURDATE(), '09:00:00', 45, 'Chưa đến'),
+(1, 3, 'null', CURDATE(), '10:15:00', 60, 'Chưa đến'),
+
+-- Bác sĩ 2
+(2, 2, 'null', CURDATE(), '08:30:00', 30, 'Chưa đến'),
+(2, 3, 'null', CURDATE(), '09:15:00', 45, 'Chưa đến'),
+(2, 4, 'null', CURDATE(), '10:30:00', 60, 'Hủy'),
+
+-- Bác sĩ 3
+(3, 2, 'null', CURDATE(), '08:30:00', 30, 'Chưa đến'),
+(3, 3, 'null', CURDATE(), '09:15:00', 45, 'Chưa đến'),
+(3, 4, 'null', CURDATE(), '10:30:00', 60, 'Hủy');
+
+
+
+INSERT INTO Appointment (doctor_id, patient_id, service, ngay, gio, duKien, status) VALUES
+-- Bác sĩ 1
+(1, 1, 'null', CURDATE(), '14:00:00', 28, 'Chưa đến'),
+
+-- Bác sĩ 2
+(2, 2, 'null', CURDATE(), '15:30:00', 30, 'Chưa đến'),
+(2, 2, 'null', CURDATE(), '14:00:00', 30, 'Chưa đến'),
+
+-- Bác sĩ 3
+(3, 2, 'null', CURDATE(), '14:30:00', 30, 'Chưa đến');
 
 

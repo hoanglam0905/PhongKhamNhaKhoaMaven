@@ -12,6 +12,11 @@ public class DentistTaskbar extends JPanel {
         initComponents();
     }
 
+    public DentistTaskbar(String employeeName, String profilePicturePath) {
+        initComponents();
+        updateDoctorInfo(employeeName, profilePicturePath);
+    }
+
     private void initComponents() {
         // Màu nền thanh taskbar
         setBackground(new Color(51, 255, 255));
@@ -26,7 +31,7 @@ public class DentistTaskbar extends JPanel {
         lblLanguage.setFont(new Font("Arial", Font.BOLD, 14));
         lblLanguage.setForeground(Color.WHITE);
 
-        // Thêm icon cho cả 2 label
+        // Thêm icon mặc định cho lblDoctorName và lblLanguage
         setLabelIcon(lblDoctorName, "/img/doctor.png", 20, 20);
         setLabelIcon(lblLanguage, "/img/lang.png", 20, 20);
 
@@ -37,13 +42,12 @@ public class DentistTaskbar extends JPanel {
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 
-        //Horizontal Group
+        // Horizontal Group
         GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
-
         hGroup.addGap(0, 0, Short.MAX_VALUE); // đẩy sang phải
         hGroup.addComponent(lblLanguage, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE);
         hGroup.addGap(20);
-        hGroup.addComponent(lblDoctorName, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE);
+        hGroup.addComponent(lblDoctorName, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE); // Tăng kích thước để chứa tên dài
         hGroup.addGap(20);
 
         layout.setHorizontalGroup(
@@ -54,12 +58,10 @@ public class DentistTaskbar extends JPanel {
         // Vertical Group
         GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
         vGroup.addGap(15);
-
         GroupLayout.ParallelGroup row = layout.createParallelGroup(GroupLayout.Alignment.BASELINE);
         row.addComponent(lblDoctorName);
         row.addComponent(lblLanguage);
         vGroup.addGroup(row);
-
         vGroup.addGap(19);
 
         layout.setVerticalGroup(
@@ -71,11 +73,32 @@ public class DentistTaskbar extends JPanel {
     private void setLabelIcon(JLabel label, String iconPath, int width, int height) {
         try {
             ImageIcon icon = new ImageIcon(getClass().getResource(iconPath));
+            if (icon.getImage() == null) {
+                throw new Exception("Icon not found: " + iconPath);
+            }
             Image scaled = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
             label.setIcon(new ImageIcon(scaled));
             label.setIconTextGap(10);
         } catch (Exception e) {
-            System.err.println("Không load được icon: " + iconPath);
+            System.err.println("Không load được icon: " + iconPath + ". Using default icon.");
+            // Sử dụng icon mặc định nếu không load được
+            try {
+                ImageIcon defaultIcon = new ImageIcon(getClass().getResource("/img/doctor.png"));
+                Image scaled = defaultIcon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+                label.setIcon(new ImageIcon(scaled));
+                label.setIconTextGap(10);
+            } catch (Exception defaultEx) {
+                System.err.println("Không load được icon mặc định: /img/doctor.png");
+            }
+        }
+    }
+
+    public void updateDoctorInfo(String employeeName, String profilePicturePath) {
+        lblDoctorName.setText(employeeName != null ? employeeName : "Tên BS");
+        if (profilePicturePath != null && !profilePicturePath.isEmpty()) {
+            setLabelIcon(lblDoctorName, profilePicturePath, 20, 20);
+        } else {
+            setLabelIcon(lblDoctorName, "/img/doctor.png", 20, 20); // Mặc định nếu không có ảnh
         }
     }
 
@@ -94,5 +117,4 @@ public class DentistTaskbar extends JPanel {
     public void setLblLanguage(JLabel lblLanguage) {
         this.lblLanguage = lblLanguage;
     }
-
 }

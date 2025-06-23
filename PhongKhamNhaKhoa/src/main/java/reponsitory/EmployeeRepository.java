@@ -80,12 +80,13 @@ public class EmployeeRepository {
 	            String password = rs.getString("password");
 	            int genderInt = rs.getInt("gender");
 	            String gender = genderInt == 1 ? "Nam" : "Nữ";
+	            String profilePicture = rs.getString("profilePicture");
 
 	            employeeData = new Object[]{
 	                    id, name, phone,
 	                    birthDate != null ? birthDate.toString() : "",
 	                    gender, address, idCard,
-	                    salary, role, username, password
+	                    salary, role, username, password, profilePicture
 	            };
 	        }
 
@@ -101,9 +102,9 @@ public class EmployeeRepository {
 	public static boolean updateEmployeeById(int id, String name, Date birthDate, String address,
             int gender, String phone, String idCard,
             String username, String password,
-            double salary, String role) {
+            double salary, String role, String profilePicture) {
 			String sql = "UPDATE Employee SET name=?, birthDate=?, address=?, gender=?, phoneNumber=?, " +
-					"idCard=?, username=?, password=?, salary=?, role=? WHERE id=?";
+					"idCard=?, username=?, password=?, salary=?, role=?, profilePicture=? WHERE id=?";
 			try (Connection conn = JDBCUtil.getConnection();
 					PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -117,13 +118,14 @@ public class EmployeeRepository {
 					stmt.setString(8, password);
 					stmt.setDouble(9, salary);
 					stmt.setString(10, role);
-					stmt.setInt(11, id);
+					stmt.setString(11, profilePicture);
+					stmt.setInt(12, id);
 
 					int rows = stmt.executeUpdate();
 					return rows > 0;
 		} catch (Exception e) {
-		e.printStackTrace();
-		return false;
+			e.printStackTrace();
+			return false;
 		}
 	}
 
@@ -160,35 +162,34 @@ public class EmployeeRepository {
 	    try (Connection conn = JDBCUtil.getConnection();
 	         PreparedStatement stmt = conn.prepareStatement(query)) {
 	        
-	        stmt.setString(1, phone);  // Gán số điện thoại vào câu truy vấn
+	        stmt.setString(1, phone);
 	        ResultSet rs = stmt.executeQuery();
 	        
 	        if (rs.next()) {
-	            return rs.getInt(1) > 0;  // Nếu số điện thoại tồn tại trong cơ sở dữ liệu, trả về true
+	            return rs.getInt(1) > 0;
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
-	    return false;  // Nếu không tìm thấy số điện thoại, trả về false
+	    return false;
 	}
 
-	
 	public static boolean isCCCDExists(String idCard) {
 	    String query = "SELECT COUNT(*) FROM Employee WHERE idCard = ?";
 	    
 	    try (Connection conn = JDBCUtil.getConnection();
 	         PreparedStatement stmt = conn.prepareStatement(query)) {
 	        
-	        stmt.setString(1, idCard);  // Gán CCCD vào câu truy vấn
+	        stmt.setString(1, idCard);
 	        ResultSet rs = stmt.executeQuery();
 	        
 	        if (rs.next()) {
-	            return rs.getInt(1) > 0;  // Nếu CCCD tồn tại trong cơ sở dữ liệu, trả về true
+	            return rs.getInt(1) > 0;
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
-	    return false;  // Nếu không tìm thấy CCCD, trả về false
+	    return false;
 	}
 
 	public static boolean isUsernameExists(String username) {
@@ -197,50 +198,81 @@ public class EmployeeRepository {
 	    try (Connection conn = JDBCUtil.getConnection();
 	         PreparedStatement stmt = conn.prepareStatement(query)) {
 
-	        stmt.setString(1, username);  // Gán username vào câu truy vấn
+	        stmt.setString(1, username);
 	        ResultSet rs = stmt.executeQuery();
 
 	        if (rs.next()) {
-	            return rs.getInt(1) > 0;  // Nếu số lượng bản ghi > 0, tức là username đã tồn tại
+	            return rs.getInt(1) > 0;
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
-	    return false;  // Nếu không tìm thấy username, trả về false
+	    return false;
 	}
-	//code của Minh
+
 	public static List<Employee> getEmployees() {
 		try {
-			Connection con= JDBCUtil.getConnection();
-			Statement statement= con.createStatement();
-			ResultSet rs= statement.executeQuery("select * from Employee");
+			Connection con = JDBCUtil.getConnection();
+			Statement statement = con.createStatement();
+			ResultSet rs = statement.executeQuery("select * from Employee");
 
-			List<Employee> employees= new ArrayList<Employee>();
+			List<Employee> employees = new ArrayList<Employee>();
 			while (rs.next()) {
-				int id= rs.getInt("id");
-				String name= rs.getString("name");
-				Date birthday= rs.getDate("birthDate");
-				String address= rs.getString("address");
-				int gender= rs.getInt("gender");
-				String phoneNumber= rs.getString("phoneNumber");
-				String idCard= rs.getString("idCard");
-				String username= rs.getString("username");
-				String password= rs.getString("password");
-				double salary= rs.getDouble("salary");
-				int experience= rs.getInt("experienceYears");
-				String role= rs.getString("role");
+				int id = rs.getInt("id");
+				String name = rs.getString("name");
+				Date birthday = rs.getDate("birthDate");
+				String address = rs.getString("address");
+				int gender = rs.getInt("gender");
+				String phoneNumber = rs.getString("phoneNumber");
+				String idCard = rs.getString("idCard");
+				String username = rs.getString("username");
+				String password = rs.getString("password");
+				double salary = rs.getDouble("salary");
+				int experience = rs.getInt("experienceYears");
+				String role = rs.getString("role");
 
-				employees.add(new Employee(id,name,birthday,address,gender,phoneNumber,idCard,username,password,salary,experience,role));
+				employees.add(new Employee(id, name, birthday, address, gender, phoneNumber, idCard, username, password, salary, experience, role));
 			}
 			rs.close();
 			return employees;
-		} catch (IOException e){
-			throw new RuntimeException(e);
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
-		} catch (SQLException e) {
+		} catch (IOException | ClassNotFoundException | SQLException e) {
 			throw new RuntimeException(e);
 		}
+	}
 
+	public static class EmployeeInfo {
+		public int id;
+		public String username;
+		public String password;
+		public String profilePicture;
+
+		public EmployeeInfo(int id, String username, String password, String profilePicture) {
+			this.id = id;
+			this.username = username;
+			this.password = password;
+			this.profilePicture = profilePicture;
+		}
+	}
+
+	public static EmployeeInfo getEmployeeInfo(String username, String password) {
+		try (Connection con = JDBCUtil.getConnection()) {
+			String sql = "SELECT id, username, password, profilePicture FROM Employee WHERE username = ? AND password = ?";
+			PreparedStatement pst = con.prepareStatement(sql);
+			pst.setString(1, username);
+			pst.setString(2, password);
+
+			ResultSet rs = pst.executeQuery();
+			if (rs.next()) {
+				return new EmployeeInfo(
+					rs.getInt("id"),
+					rs.getString("username"),
+					rs.getString("password"),
+					rs.getString("profilePicture")
+				);
+			}
+			return null;
+		} catch (IOException | ClassNotFoundException | SQLException e) {
+			throw new RuntimeException("Error retrieving employee info: " + e.getMessage());
+		}
 	}
 }
