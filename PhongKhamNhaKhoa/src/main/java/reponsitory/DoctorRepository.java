@@ -111,5 +111,19 @@ public class DoctorRepository {
             return ps.executeUpdate() > 0;
         }
     }
+	public static int getDoctorIdByName(String name) {
+		String sql = "SELECT id FROM Employee WHERE name = ?";
+	    try (Connection conn = JDBCUtil.getConnection();
+	         PreparedStatement stmt = conn.prepareStatement(sql)) {
+	        stmt.setString(1, name);
+	        ResultSet rs = stmt.executeQuery();
+	        if (rs.next()) {
+	            return rs.getInt("id");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return -1;
+	}
     
 }
