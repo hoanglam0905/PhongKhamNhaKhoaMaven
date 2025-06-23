@@ -43,14 +43,18 @@ public class AdminDrugInfo extends JPanel {
         formPanel.add(new JLabel("Tên thuốc"));
         formPanel.add(new JLabel("Mô tả"));
         tfName = new JTextField();
+        tfName.setEditable(false);
         tfDescription = new JTextField();
+        tfDescription.setEditable(false);
         formPanel.add(tfName);
         formPanel.add(tfDescription);
 
         formPanel.add(new JLabel("Giá"));
         formPanel.add(new JLabel("Số lượng còn"));
         tfPrice = new JTextField();
+        tfPrice.setEditable(false);
         tfStock = new JTextField();
+        tfStock.setEditable(false);
         formPanel.add(tfPrice);
         formPanel.add(tfStock);
 
@@ -154,7 +158,7 @@ public class AdminDrugInfo extends JPanel {
 	        lblId.setText("Mã số: " + drug.getId());
 	        tfName.setText(drug.getName());
 	        tfDescription.setText(drug.getDescription());
-	        tfPrice.setText(String.valueOf(drug.getPrice()));
+	        tfPrice.setText(String.valueOf((int) drug.getPrice()));
 	        tfStock.setText(String.valueOf(drug.getStockQuantity()));
 	    } else {
 	        JOptionPane.showMessageDialog(this, "Không tìm thấy thuốc có ID = " + id, "Lỗi", JOptionPane.ERROR_MESSAGE);

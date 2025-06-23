@@ -1,5 +1,7 @@
 package controller.admin;
 
+import reponsitory.DrugReponsitory;
+import reponsitory.EmployeeRepository;
 import view.admin.AdminDrugAdd;
 import view.admin.AdminDrugEdit;
 import view.admin.AdminEmployeeEdit;
@@ -33,11 +35,24 @@ public class DrugButtonController implements ActionListener {
 				e1.printStackTrace();
 			}
         } else if (action.equals("Xóa")) {
+            int result = JOptionPane.showConfirmDialog(
+                    null,
+                    "Bạn có chắc chắn muốn xóa thuốc này không?",
+                    "Xác nhận xóa",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+            );
 
+            if (result == JOptionPane.YES_OPTION) {
+                DrugReponsitory.deleteDrug(view.getAdminPanel().getAdminDrugInfo().getDrugId()+"");
+                JOptionPane.showMessageDialog(null, "Đã xóa thành công!");
+                switchDrug();
+            }
         } else if(action.equals("Thêm")){
             switchAdd();
         } else if (action.equals("Xác nhận")){
         	updateValue();
+            switchDrug();
         } else if(action.equals("Thêm thuốc")){
         	insertDrug();
         }
@@ -102,10 +117,13 @@ public class DrugButtonController implements ActionListener {
 
 	public void switchEdit() throws ParseException{
     	view.getAdminPanel().getAdminDrugEdit().loadData(view.getAdminPanel().getAdminDrugInfo().getDrugId());
-    	
         view.getAdminPanel().getCardLayout().show(view.getAdminPanel().getCenterPanel(),"adminDrugEdit");
     }
     public void switchAdd(){
         view.getAdminPanel().getCardLayout().show(view.getAdminPanel().getCenterPanel(),"adminDrugAdd");
+    }
+    public void switchDrug() {
+        view.getAdminPanel().getAdminDrug().loadDrugData();
+        view.getAdminPanel().getCardLayout().show(view.getAdminPanel().getCenterPanel(), "adminDrug");
     }
 }

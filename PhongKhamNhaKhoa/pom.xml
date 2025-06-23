@@ -63,6 +63,36 @@
 	      <artifactId>jfreechart</artifactId>
 	      <version>1.5.4</version>
   		</dependency>
+  		<dependency>
+          <groupId>com.konghq</groupId>
+          <artifactId>unirest-java</artifactId>
+          <version>3.13.10</version>
+      </dependency>
+
+      <!-- JSON xử lý (nếu cần dùng JSONObject) -->
+      <dependency>
+          <groupId>org.json</groupId>
+          <artifactId>json</artifactId>
+          <version>20231013</version>
+      </dependency>
+      <dependency>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+          <version>2.15.3</version> <!-- hoặc bản mới nhất -->
+      </dependency>
+      <!-- ZXing Core -->
+      <dependency>
+          <groupId>com.google.zxing</groupId>
+          <artifactId>core</artifactId>
+          <version>3.4.1</version>
+      </dependency>
+
+      <!-- ZXing JavaSE (để render ảnh QR) -->
+      <dependency>
+          <groupId>com.google.zxing</groupId>
+          <artifactId>javase</artifactId>
+          <version>3.4.1</version>
+      </dependency>
   </dependencies>
 
   <build>
@@ -72,6 +102,14 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.0.0-M5</version>
       </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+                <source>9</source>
+                <target>9</target>
+            </configuration>
+        </plugin>
     </plugins>
   </build>
 </project>

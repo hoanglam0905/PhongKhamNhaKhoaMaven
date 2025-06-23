@@ -1,6 +1,9 @@
 package view.admin;
 
+import Utils.CustomDocumentFilter;
+
 import javax.swing.*;
+import javax.swing.text.AbstractDocument;
 import java.awt.*;
 
 public class AdminDrugAdd extends JPanel {
@@ -40,7 +43,9 @@ public class AdminDrugAdd extends JPanel {
         formPanel.add(new JLabel("Giá"));
         formPanel.add(new JLabel("Số lượng còn"));
         tfPrice = new JTextField();
+        ((AbstractDocument) tfPrice.getDocument()).setDocumentFilter(new CustomDocumentFilter("\\d*"));
         tfStock = new JTextField();
+        ((AbstractDocument) tfStock.getDocument()).setDocumentFilter(new CustomDocumentFilter("\\d*"));
         formPanel.add(tfPrice);
         formPanel.add(tfStock);
 

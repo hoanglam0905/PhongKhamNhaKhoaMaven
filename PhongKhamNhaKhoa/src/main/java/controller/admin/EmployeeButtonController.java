@@ -1,5 +1,6 @@
 package controller.admin;
 
+import reponsitory.EmployeeRepository;
 import view.admin.AdminEmployeeAdd;
 import view.admin.AdminEmployeeEdit;
 import view.listPanelMain.MainFrame;
@@ -24,22 +25,36 @@ public class EmployeeButtonController implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String action = e.getActionCommand();
-        System.out.println("Đã click: " + action);
-        try {
-            if (action.equals("Chỉnh sửa")) {
-                switchEdit();
-            } else if (action.equals("Xóa")) {
-                // TODO: Implement delete logic
-            } else if (action.equals("Thêm")) {
-                switchAdd();
-            } else if (action.equals("Xác nhận")) {
-                updateValue();
-            } else if (action.equals("Thêm nhân viên")) {
-                insertEmployee();
+        System.out.println("Đã click: "+action);
+        if (action.equals("Chỉnh sửa")) {
+            try {
+				switchEdit();
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        } else if (action.equals("Xóa")) {
+            String[] parts = view.getAdminPanel().getAdminEmployeeInfo().getLblId().getText().split(" ");
+            int id = Integer.parseInt(parts[parts.length - 1]);
+            int result = JOptionPane.showConfirmDialog(
+                    null,
+                    "Bạn có chắc chắn muốn xóa nhân viên này không?",
+                    "Xác nhận xóa",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (result == JOptionPane.YES_OPTION) {
+                EmployeeRepository.deleteEmployee(id+"");
+                JOptionPane.showMessageDialog(null, "Đã xóa nhân viên thành công!");
+                switchEmployee();
             }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(view, "Lỗi: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-            ex.printStackTrace();
+        } else if(action.equals("Thêm")){
+            switchAdd();
+        } else if (action.equals("Xác nhận")){
+        	updateValue();
+        }else if(action.equals("Thêm nhân viên")){
+        	insertEmployee();
         }
     }
 
@@ -152,6 +167,26 @@ public class EmployeeButtonController implements ActionListener {
             ex.printStackTrace();
         }
     }
+        int check=EmployeeRepository.checkTonTai(id,phone,cccd,address);
+        if(check==1){
+            JOptionPane.showMessageDialog(view, "Số điện thoại đã tồn tại trên hệ thống");
+        } else if(check==2){
+            JOptionPane.showMessageDialog(view, "Số căn cước đã tồn tại trên hệ thống");
+        }else if(check==2){
+            JOptionPane.showMessageDialog(view, "Tài khoản đã tồn tại trên hệ thống");
+        } else if (check==0){
+            EmployeeRepository.updateEmployee(id+"",name,phone,birthDate.toString(),gender,address,cccd,salary,role,username,password);
+        }
+        
+        // Gọi Service cập nhật
+//        boolean success = EmployeeService.updateEmployee(id, name, birthDate, address, gender, phone, cccd, username, password, salary, role);
+//        if (success) {
+//            JOptionPane.showMessageDialog(view, "Cập nhật thành công!");
+//        } else {
+//            JOptionPane.showMessageDialog(view, "Cập nhật thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+//        }
+		
+	}
 
     public void switchEdit() throws ParseException {
         try {
@@ -165,5 +200,10 @@ public class EmployeeButtonController implements ActionListener {
 
     public void switchAdd() {
         view.getAdminPanel().getCardLayout().show(view.getAdminPanel().getCenterPanel(), "adminEmployeeAdd");
+    }
+
+    public void switchEmployee() {
+        view.getAdminPanel().getAdminEmployee().loadEmployeeData();
+        view.getAdminPanel().getCardLayout().show(view.getAdminPanel().getCenterPanel(), "adminEmployee");
     }
 }

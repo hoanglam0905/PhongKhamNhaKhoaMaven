@@ -275,4 +275,136 @@ public class EmployeeRepository {
 			throw new RuntimeException("Error retrieving employee info: " + e.getMessage());
 		}
 	}
+
+	public static void deleteEmployee(String id) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		try {
+			con = JDBCUtil.getConnection();
+			String sql = "DELETE FROM Employee WHERE id = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, id); // nếu id là chuỗi có chữ (vd: "NV001", "NV số: 001")
+			pstmt.executeUpdate();
+			System.out.println("Đã xóa nhân viên có id: " + id);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			try {
+				if (pstmt != null) pstmt.close();
+				if (con != null) con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static void updateEmployee(String id, String name, String phone, String date, int gt, String address, String CCCD, double heSoLuong, String chucvu, String acc, String pass) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		try {
+			con = JDBCUtil.getConnection();
+
+			String sql = "UPDATE Employee SET name = ?, phoneNumber = ?, birthDate = ?, gender = ?, address = ?, idCard = ?, salary = ?, role = ?, username = ?, password = ? WHERE id = ?";
+			pstmt = con.prepareStatement(sql);
+
+			pstmt.setString(1, name);
+			pstmt.setString(2, phone);
+			pstmt.setDate(3, Date.valueOf(date)); // date format: "yyyy-MM-dd"
+			pstmt.setInt(4, gt); // 1: Nam, 0: Nữ
+			pstmt.setString(5, address);
+			pstmt.setString(6, CCCD);
+			pstmt.setDouble(7, heSoLuong);
+			pstmt.setString(8, chucvu);
+			pstmt.setString(9, acc);
+			pstmt.setString(10, pass);
+			pstmt.setInt(11, Integer.parseInt(id));
+
+			int rowsUpdated = pstmt.executeUpdate();
+			if (rowsUpdated > 0) {
+				System.out.println("Cập nhật nhân viên thành công.");
+			} else {
+				System.out.println("Không tìm thấy nhân viên để cập nhật.");
+			}
+
+		} catch (IOException | ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstmt != null) pstmt.close();
+				if (con != null) con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+
+	public static void main(String[] args) {
+//		EmployeeRepository.deleteEmployee(1+"");
+		String id = "2";
+		String name = "Nguyễn Văn A";
+		String phone = "0912349999";
+		String date = "1985-08-15";
+		int gender = 1;
+		String address = "123 Đường ABC, Hà Nội";
+		String CCCD = "123456789999";
+		double salary = 2.6;
+		String role = "Bác sĩ";
+		String username = "nguyenvana";
+		String password = "newpassword";
+
+		// Gọi hàm cập nhật
+		EmployeeRepository.updateEmployee(id, name, phone, date, gender, address, CCCD, salary, role, username, password);
+	}
+	public static int checkTonTai(int idOld, String phone, String CCCD, String acc) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			con = JDBCUtil.getConnection();
+			// 1. Kiểm tra phoneNumber
+			String sqlPhone = "SELECT id FROM Employee WHERE phoneNumber = ?";
+			pstmt = con.prepareStatement(sqlPhone);
+			pstmt.setString(1, phone);
+			rs = pstmt.executeQuery();
+			if (rs.next() && rs.getInt("id") != idOld) {
+				return 1;
+			}
+			rs.close();
+			pstmt.close();
+			// 2. Kiểm tra idCard
+			String sqlCCCD = "SELECT id FROM Employee WHERE idCard = ?";
+			pstmt = con.prepareStatement(sqlCCCD);
+			pstmt.setString(1, CCCD);
+			rs = pstmt.executeQuery();
+			if (rs.next() && rs.getInt("id") != idOld) {
+				return 1;
+			}
+			rs.close();
+			pstmt.close();
+			// 3. Kiểm tra username
+			String sqlAcc = "SELECT id FROM Employee WHERE username = ?";
+			pstmt = con.prepareStatement(sqlAcc);
+			pstmt.setString(1, acc);
+			rs = pstmt.executeQuery();
+			if (rs.next() && rs.getInt("id") != idOld) {
+				return 1;
+			}
+			return 0;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return -1; // lỗi hệ thống
+		} finally {
+			try {
+				if (rs != null) rs.close();
+				if (pstmt != null) pstmt.close();
+				if (con != null) con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 }

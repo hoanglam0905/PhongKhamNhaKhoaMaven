@@ -1,12 +1,15 @@
 package view.admin;
 
 import javax.swing.*;
+import javax.swing.text.AbstractDocument;
 
+import Utils.CustomDocumentFilter;
 import com.toedter.calendar.JDateChooser;
 
 import reponsitory.EmployeeRepository;
 
 import java.awt.*;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -49,6 +52,7 @@ public class AdminEmployeeEdit extends JPanel {
 
         tfName = new JTextField();
         tfPhone = new JTextField();
+        ((AbstractDocument) tfPhone.getDocument()).setDocumentFilter(new CustomDocumentFilter("\\d*"));
         dateChooser = new JDateChooser();
         dateChooser.setDateFormatString("dd-MM-yyyy");
         Calendar today = Calendar.getInstance();
@@ -68,7 +72,9 @@ public class AdminEmployeeEdit extends JPanel {
         cbGender = new JComboBox<>(new String[]{"Nam", "Nữ"});
         tfAddress = new JTextField();
         tfCCCD = new JTextField();
+        ((AbstractDocument) tfCCCD.getDocument()).setDocumentFilter(new CustomDocumentFilter("\\d*"));
         tfSalary = new JTextField();
+        ((AbstractDocument) tfSalary.getDocument()).setDocumentFilter(new CustomDocumentFilter("\\d*"));
         cbRole = new JComboBox<>(new String[]{"Lễ tân", "Bác sĩ", "Nhân viên quầy thuốc", "Quản lí"});
         tfUsername = new JTextField();
         tfPassword = new JTextField();
@@ -224,7 +230,15 @@ public class AdminEmployeeEdit extends JPanel {
             cbGender.setSelectedItem(emp[4]);
             tfAddress.setText((String) emp[5]);
             tfCCCD.setText((String) emp[6]);
-            tfSalary.setText(String.valueOf(emp[7]));
+            Object salaryObj = emp[7];
+            String salaryStr;
+            if (salaryObj instanceof Number) {
+                BigDecimal bd = new BigDecimal(((Number) salaryObj).doubleValue());
+                salaryStr = bd.toPlainString();
+            } else {
+                salaryStr = String.valueOf(salaryObj);
+            }
+            tfSalary.setText(salaryStr);
             cbRole.setSelectedItem(emp[8]);
             tfUsername.setText((String) emp[9]);
             tfPassword.setText((String) emp[10]);

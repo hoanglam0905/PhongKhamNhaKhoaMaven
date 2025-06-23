@@ -1,6 +1,11 @@
 package view.admin;
 
+import Utils.CustomDocumentFilter;
+import model.Service;
+import reponsitory.ServiceReponsitory;
+
 import javax.swing.*;
+import javax.swing.text.AbstractDocument;
 import java.awt.*;
 
 public class AdminServiceEdit extends JPanel {
@@ -8,7 +13,7 @@ public class AdminServiceEdit extends JPanel {
     private JTextField tfName, tfPrice;
     private JLabel lblId;
     private JButton btnConf;
-
+    public int serviceId;
     public AdminServiceEdit() {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
@@ -41,6 +46,7 @@ public class AdminServiceEdit extends JPanel {
         formPanel.add(tfName);
         tfPrice = new JTextField();
         formPanel.add(tfPrice);
+        ((AbstractDocument) tfPrice.getDocument()).setDocumentFilter(new CustomDocumentFilter("\\d*"));
 
         JPanel wrapperCenter = new JPanel(); // dùng wrapper để dễ đặt layout chính
         wrapperCenter.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -100,5 +106,17 @@ public class AdminServiceEdit extends JPanel {
         frame.setLocationRelativeTo(null);
         frame.setContentPane(new AdminServiceEdit());
         frame.setVisible(true);
+    }
+    public void loadData(int id) {
+        this.serviceId = id;
+        Service service = ServiceReponsitory.getServiceById(id);
+
+        if (service != null) {
+            lblId.setText("Mã số: " + service.getId());
+            tfName.setText(service.getName());
+            tfPrice.setText(String.valueOf((int) service.getPrice()));
+        } else {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy dịch vụ có ID = " + id, "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

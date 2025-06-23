@@ -2,6 +2,7 @@ package controller.admin;
 
 import reponsitory.EmployeeRepository;
 import view.admin.EditEmployeeInfoDialog;
+import view.admin.AdminStatistical;
 import view.listPanelMain.MainFrame;
 
 import javax.swing.*;
@@ -121,6 +122,11 @@ public class LableController implements MouseListener {
     }
 
     public void switchTK() {
+        view.getAdminPanel().getCenterPanel().add(
+                new AdminStatistical(),
+                "adminStatistical"
+        );
+//        view.getAdminPanel().showStatistical();
         view.getAdminPanel().getCardLayout().show(view.getAdminPanel().getCenterPanel(), "adminStatistical");
     }
 

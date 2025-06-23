@@ -1,10 +1,9 @@
 package view.listPanelMain;
 
-import Utils.PaymentQRComponent;
+import Utils.ZaloPayQRPanel;
 import view.dentistPanel.DentistIntroducePanel;
 import view.dentistPanel.DentistTaskbar;
 import view.durgStore.*;
-import view.login.LoginPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,8 +17,8 @@ public class DrugStorePanel extends JPanel {
     private ListBillPanel listBillPanel;
     private DrugBillPanel billPanel;
     private DrugBillConfPanel billConfPanel;
-    private PaymentQRComponent paymentQRComponent;
     private DentistIntroducePanel dentistIntroducePanel;
+    private ZaloPayQRPanel zaloPayQRPanel;
 
     public DrugStorePanel() {
         initComponents();
@@ -35,14 +34,7 @@ public class DrugStorePanel extends JPanel {
         billPanel=new DrugBillPanel();
         billConfPanel  =new DrugBillConfPanel();
         dentistIntroducePanel=new DentistIntroducePanel();
-        try {
-            paymentQRComponent=new PaymentQRComponent(2000, "Thanh toán hóa đơn", () -> {
-                JOptionPane.showMessageDialog(this, "Cảm ơn bạn đã thanh toán!");
-
-            });
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        zaloPayQRPanel=new ZaloPayQRPanel(2000,"Thanh toán hóa đơn #1");
         // Layout chính
         setLayout(new BorderLayout());
 
@@ -65,7 +57,7 @@ public class DrugStorePanel extends JPanel {
         centerPanel.add(listDrugPanel,"Drugs");
         centerPanel.add(billPanel,"Bill");
         centerPanel.add(billConfPanel,"BillConf");
-        centerPanel.add(paymentQRComponent,"QR");
+        centerPanel.add(zaloPayQRPanel,"QR");
 
         // sau này cần add thêm ExaminationPanel hoặc CalendarPanel thì add luôn ở đây
 
@@ -136,11 +128,19 @@ public class DrugStorePanel extends JPanel {
         this.billPanel = billPanel;
     }
 
-    public PaymentQRComponent getPaymentQRComponent() {
-        return paymentQRComponent;
+    public ZaloPayQRPanel getZaloPayQRPanel() {
+        return zaloPayQRPanel;
     }
 
-    public void setPaymentQRComponent(PaymentQRComponent paymentQRComponent) {
-        this.paymentQRComponent = paymentQRComponent;
+    public void setZaloPayQRPanel(ZaloPayQRPanel zaloPayQRPanel) {
+        this.zaloPayQRPanel = zaloPayQRPanel;
+    }
+
+    public DentistIntroducePanel getDentistIntroducePanel() {
+        return dentistIntroducePanel;
+    }
+
+    public void setDentistIntroducePanel(DentistIntroducePanel dentistIntroducePanel) {
+        this.dentistIntroducePanel = dentistIntroducePanel;
     }
 }
