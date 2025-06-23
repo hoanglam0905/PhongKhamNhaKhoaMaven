@@ -11,6 +11,7 @@ import controller.receptionist.ReceptionTableController;
 import controller.receptionist.ReceptionistLableController;
 import controller.receptionist.ReceptionistSearch2Controller;
 import controller.receptionist.ReceptionistSearchController;
+import reponsitory.EmployeeRepository;
 import view.login.LoginPanel;
 
 import javax.swing.*;
@@ -37,7 +38,7 @@ public class MainFrame extends JFrame {
         loginPanel = new LoginPanel();
         mainPanel = new DentistPanel();
         receptionistPanel = new ReceptionistPanel();
-        drugStorePanel =new DrugStorePanel();
+        drugStorePanel = new DrugStorePanel();
         adminPanel = new AdminPanel();
 
         cardLayout = new CardLayout();
@@ -47,8 +48,9 @@ public class MainFrame extends JFrame {
         containerPanel.add(loginPanel, "LoginPanel");
         containerPanel.add(mainPanel, "DentistPanel");
         containerPanel.add(receptionistPanel, "ReceptionistPanel");
-        containerPanel.add(drugStorePanel,"drugstore");
+        containerPanel.add(drugStorePanel, "drugstore");
         containerPanel.add(adminPanel, "AdminPanel");
+
         // Set layout chính cho MainFrame
         setLayout(new BorderLayout());
         add(containerPanel, BorderLayout.CENTER);
@@ -56,7 +58,7 @@ public class MainFrame extends JFrame {
         // Ban đầu show login
         cardLayout.show(containerPanel, "LoginPanel");
 
-        // Nếu muốn chuyển panel theo role lúc đăng nhập xong kiểm tra
+        // Thêm sự kiện
         addListeners();
 
         pack();
@@ -64,8 +66,32 @@ public class MainFrame extends JFrame {
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
-    //Thêm sự kiện
+
     public void addListeners() {
+        // Cập nhật tên và ảnh đại diện sau khi đăng nhập
+        ActionListener loginListener = new LoginButtonController(this) {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                super.actionPerformed(e);
+                // Sau khi đăng nhập thành công, cập nhật DentistTaskbar
+                String acc = loginPanel.getAcc();
+                String pass = loginPanel.getPass();
+                EmployeeRepository.EmployeeInfo info = EmployeeRepository.getEmployeeInfo(acc, pass);
+                if (info != null) {
+                    Object[] employeeData = EmployeeRepository.findById(info.id);
+                    String employeeName = (String) employeeData[1]; // Tên nhân viên
+                    String profilePicture = (String) employeeData[11]; // Ảnh đại diện
+                    // Cập nhật cho tất cả các panel sử dụng DentistTaskbar
+                    mainPanel.getDentistTaskbar().updateDoctorInfo(employeeName, profilePicture);
+                    receptionistPanel.getDentistTaskbar().updateDoctorInfo(employeeName, profilePicture);
+                    drugStorePanel.getDentistTaskbar().updateDoctorInfo(employeeName, profilePicture);
+                    adminPanel.getDentistTaskbar().updateDoctorInfo(employeeName, profilePicture);
+                }
+            }
+        };
+        loginPanel.getLoginButton().addActionListener(loginListener);
+
+        // Cấu hình tên cho các label
         this.mainPanel.getDentistTaskbar().getLblDoctorName().setName("Login");
         this.mainPanel.getDentistMenuPanel().getLblHome().setName("Home");
         this.mainPanel.getDentistMenuPanel().getLblSchedule().setName("Schedule");
@@ -73,7 +99,7 @@ public class MainFrame extends JFrame {
         this.mainPanel.getDentistMenuPanel().getLblFeature1().setName("Feature 1");
         this.mainPanel.getDentistMenuPanel().getLblFeature2().setName("Feature 2");
 
-        //add xử lí cho menu
+        // Thêm xử lý cho menu của Dentist
         DentistManagerLableController ml = new DentistManagerLableController(this);
         this.mainPanel.getDentistTaskbar().getLblDoctorName().addMouseListener(ml);
         this.mainPanel.getDentistMenuPanel().getLblHome().addMouseListener(ml);
@@ -81,17 +107,17 @@ public class MainFrame extends JFrame {
         this.mainPanel.getDentistMenuPanel().getLblPatients().addMouseListener(ml);
         this.mainPanel.getDentistMenuPanel().getLblFeature1().addMouseListener(ml);
         this.mainPanel.getDentistMenuPanel().getLblFeature2().addMouseListener(ml);
-        ml.setLabelEvent(this.mainPanel.getDentistMenuPanel().getLblHome(),
+        ml.setLabelEvent(
+                this.mainPanel.getDentistMenuPanel().getLblHome(),
                 this.mainPanel.getDentistMenuPanel().getLblSchedule(),
                 this.mainPanel.getDentistMenuPanel().getLblPatients(),
                 this.mainPanel.getDentistMenuPanel().getLblFeature1(),
-                this.mainPanel.getDentistMenuPanel().getLblFeature2());
+                this.mainPanel.getDentistMenuPanel().getLblFeature2()
+        );
 
-        //add xử lí khi ấn vào bệnh nhân có trong lịch
-        DentistManagerTableController ma=new DentistManagerTableController(this);
+        // Thêm các xử lý khác (giữ nguyên từ code gốc)
+        DentistManagerTableController ma = new DentistManagerTableController(this);
         this.mainPanel.getDentistListPatient().getTblPatients().addMouseListener(ma);
-//        this.mainPanel.getDentistListPatient2().getTblPatients().addMouseListener(ma);
-        //add xử lí khi tìm kiếm
         this.mainPanel.getDentistListPatient().getTfSearch().getDocument().addDocumentListener(
                 new DentistPatientSearch1Controller(this.mainPanel.getDentistListPatient())
         );
@@ -104,64 +130,67 @@ public class MainFrame extends JFrame {
         this.receptionistPanel.getReceptionistCalendarPanel().getTfSearch().getDocument().addDocumentListener(
                 new ReceptionistSearch2Controller(this.receptionistPanel.getReceptionistCalendarPanel())
         );
-        //set name cho các label menu của lễ tân
+
+        // Cấu hình cho Receptionist
         this.receptionistPanel.getDentistTaskbar().getLblDoctorName().setName("Login");
-        this.receptionistPanel.getReceptionistMenuPanel().getLblHome().setName("Home");//intro
-        this.receptionistPanel.getReceptionistMenuPanel().getLblSchedule().setName("Schedule");// xem lịch khám
-        this.receptionistPanel.getReceptionistMenuPanel().getLblPatients().setName("Patients");//xem bệnh nhân
-        this.receptionistPanel.getReceptionistMenuPanel().getLblFeature1().setName("addPatient");//thêm bệnh nhân
-        //add xử lí khi ấn menu trong giao diện lễ tân
-        ReceptionistLableController mlr=new ReceptionistLableController(this);
+        this.receptionistPanel.getReceptionistMenuPanel().getLblHome().setName("Home");
+        this.receptionistPanel.getReceptionistMenuPanel().getLblSchedule().setName("Schedule");
+        this.receptionistPanel.getReceptionistMenuPanel().getLblPatients().setName("Patients");
+        this.receptionistPanel.getReceptionistMenuPanel().getLblFeature1().setName("addPatient");
+
+        ReceptionistLableController mlr = new ReceptionistLableController(this);
         this.receptionistPanel.getDentistTaskbar().getLblDoctorName().addMouseListener(mlr);
         this.receptionistPanel.getReceptionistMenuPanel().getLblHome().addMouseListener(mlr);
         this.receptionistPanel.getReceptionistMenuPanel().getLblSchedule().addMouseListener(mlr);
         this.receptionistPanel.getReceptionistMenuPanel().getLblPatients().addMouseListener(mlr);
         this.receptionistPanel.getReceptionistMenuPanel().getLblFeature1().addMouseListener(mlr);
-        mlr.setLabelEvent(this.receptionistPanel.getReceptionistMenuPanel().getLblHome(),
+        mlr.setLabelEvent(
+                this.receptionistPanel.getReceptionistMenuPanel().getLblHome(),
                 this.receptionistPanel.getReceptionistMenuPanel().getLblSchedule(),
                 this.receptionistPanel.getReceptionistMenuPanel().getLblPatients(),
-                this.receptionistPanel.getReceptionistMenuPanel().getLblFeature1());
+                this.receptionistPanel.getReceptionistMenuPanel().getLblFeature1()
+        );
 
-        //add xử lí khi button dentist bị ấn
-        ActionListener ald=new DentistManagerButtonController(this);
+        // Thêm xử lý cho các nút của Dentist
+        ActionListener ald = new DentistManagerButtonController(this);
         this.mainPanel.getDentistExaminationPanel().getBtnAddService().addActionListener(ald);
         this.mainPanel.getDentistExaminationPanel().getBtnCancel().addActionListener(ald);
         this.mainPanel.getServicePanel().getBtnAddDrugs().addActionListener(ald);
-        //chưa thấy nút hủy cua dich vu
         this.mainPanel.getAddPrescriptionPanel().getBtnAddDrugs().addActionListener(ald);
         this.mainPanel.getAddPrescriptionPanel().getBtnConfirm().addActionListener(ald);
-        //
-        ActionListener all=new LoginButtonController(this);
-        this.loginPanel.getLoginButton().addActionListener(all);
 
-        ActionListener allb=new ListBillRadioButtonController(this);
+        // Thêm xử lý cho DrugStore
+        ActionListener allb = new ListBillRadioButtonController(this);
         this.drugStorePanel.getListBillPanel().getRbHT().addActionListener(allb);
         this.drugStorePanel.getListBillPanel().getRbChuaHT().addActionListener(allb);
-        //thêm sự kiện khi click vào sửa, thêm lịch khám và tái khám
-        MouseListener mlrep=new ReceptionTableController(this);
+
+        MouseListener mlrep = new ReceptionTableController(this);
         this.receptionistPanel.getShowPatientsReceptionistPanel().getPatientActionTable().addMouseListener(mlrep);
-        //thêm sự kiện khi thanh toán
-        ListBillTableController lbtc=new ListBillTableController(this);
+
+        ListBillTableController lbtc = new ListBillTableController(this);
         this.drugStorePanel.getListBillPanel().getTblPatients().addMouseListener(lbtc);
-        //set name cho label của nvqt
+
         this.drugStorePanel.getDrugStoreMenuPanel().getLblHome().setName("Home");
         this.drugStorePanel.getDentistTaskbar().getLblDoctorName().setName("Login");
         this.drugStorePanel.getDrugStoreMenuPanel().getLblBill().setName("Bills");
         this.drugStorePanel.getDrugStoreMenuPanel().getLblListDrug().setName("ListMedicine");
 
-        DrugMenuController dmct=new DrugMenuController(this);
+        DrugMenuController dmct = new DrugMenuController(this);
         this.drugStorePanel.getDrugStoreMenuPanel().getLblHome().addMouseListener(dmct);
         this.drugStorePanel.getDrugStoreMenuPanel().getLblBill().addMouseListener(dmct);
         this.drugStorePanel.getDrugStoreMenuPanel().getLblListDrug().addMouseListener(dmct);
         this.drugStorePanel.getDentistTaskbar().getLblDoctorName().addMouseListener(dmct);
-        dmct.setLabelEvent(this.drugStorePanel.getDrugStoreMenuPanel().getLblHome(),
+        dmct.setLabelEvent(
+                this.drugStorePanel.getDrugStoreMenuPanel().getLblHome(),
                 this.drugStorePanel.getDrugStoreMenuPanel().getLblBill(),
-                this.drugStorePanel.getDrugStoreMenuPanel().getLblListDrug());
+                this.drugStorePanel.getDrugStoreMenuPanel().getLblListDrug()
+        );
 
-        ButtonPaymentController bp=new ButtonPaymentController(this);
+        ButtonPaymentController bp = new ButtonPaymentController(this);
         this.drugStorePanel.getBillPanel().getButtonCash().addActionListener(bp);
         this.drugStorePanel.getBillPanel().getButtonQRCode().addActionListener(bp);
 
+        // Cấu hình cho Admin
         this.adminPanel.getAdminMenuPanel().getLblHome().setName("Home");
         this.adminPanel.getAdminMenuPanel().getLblEmp().setName("ListEmployee");
         this.adminPanel.getAdminMenuPanel().getLblDrugs().setName("ListDrug");
@@ -169,8 +198,8 @@ public class MainFrame extends JFrame {
         this.adminPanel.getAdminMenuPanel().getLblStatistic().setName("TK");
         this.adminPanel.getAdminMenuPanel().getLblPatient().setName("ListPatient");
         this.adminPanel.getDentistTaskbar().getLblDoctorName().setName("Login");
-        //them controller cho admin
-        LableController lb=new LableController(this);
+
+        LableController lb = new LableController(this);
         this.adminPanel.getAdminMenuPanel().getLblHome().addMouseListener(lb);
         this.adminPanel.getAdminMenuPanel().getLblEmp().addMouseListener(lb);
         this.adminPanel.getAdminMenuPanel().getLblPatient().addMouseListener(lb);
@@ -178,14 +207,16 @@ public class MainFrame extends JFrame {
         this.adminPanel.getAdminMenuPanel().getLblStatistic().addMouseListener(lb);
         this.adminPanel.getDentistTaskbar().getLblDoctorName().addMouseListener(lb);
         this.adminPanel.getAdminMenuPanel().getLblDrugs().addMouseListener(lb);
-        lb.setLabelEvent(this.adminPanel.getAdminMenuPanel().getLblHome(),
+        lb.setLabelEvent(
+                this.adminPanel.getAdminMenuPanel().getLblHome(),
                 this.adminPanel.getAdminMenuPanel().getLblEmp(),
                 this.adminPanel.getAdminMenuPanel().getLblPatient(),
                 this.adminPanel.getAdminMenuPanel().getLblService(),
                 this.adminPanel.getAdminMenuPanel().getLblStatistic(),
-                this.adminPanel.getAdminMenuPanel().getLblDrugs());
+                this.adminPanel.getAdminMenuPanel().getLblDrugs()
+        );
 
-        EmployeeButtonController ebtc=new EmployeeButtonController(this);
+        EmployeeButtonController ebtc = new EmployeeButtonController(this);
         this.adminPanel.getAdminEmployee().getBtnAdd().addActionListener(ebtc);
         this.adminPanel.getAdminEmployee().getTfSearch().getDocument().addDocumentListener(
                 new EmployeeSearchController(this.adminPanel.getAdminEmployee())
@@ -195,28 +226,29 @@ public class MainFrame extends JFrame {
         this.adminPanel.getAdminEmployeeEdit().getBtnConf().addActionListener(ebtc);
         this.adminPanel.getAdminEmployeeAdd().getBtnAdd().addActionListener(ebtc);
 
-        ServiceButtonController sbtc=new ServiceButtonController(this);
+        ServiceButtonController sbtc = new ServiceButtonController(this);
         this.adminPanel.getAdminService().getBtnAdd().addActionListener(sbtc);
         this.adminPanel.getAdminServiceInfo().getBtnDelete().addActionListener(sbtc);
         this.adminPanel.getAdminServiceInfo().getBtnEdit().addActionListener(sbtc);
         this.adminPanel.getAdminServiceEdit().getBtnConf().addActionListener(sbtc);
         this.adminPanel.getAdminServiceAdd().getBtnAdd().addActionListener(sbtc);
 
-        DrugButtonController dbcl=new DrugButtonController(this);
+        DrugButtonController dbcl = new DrugButtonController(this);
         this.adminPanel.getAdminDrug().getBtnAdd().addActionListener(dbcl);
         this.adminPanel.getAdminDrugInfo().getBtnDelete().addActionListener(dbcl);
         this.adminPanel.getAdminDrugEdit().getBtnConf().addActionListener(dbcl);
         this.adminPanel.getAdminDrugInfo().getBtnEdit().addActionListener(dbcl);
         this.adminPanel.getAdminDrugAdd().getBtnAdd().addActionListener(dbcl);
-        // controller table
-        EmployeeTableController etct=new EmployeeTableController(this);
+
+        EmployeeTableController etct = new EmployeeTableController(this);
         this.adminPanel.getAdminEmployee().getTable().addMouseListener(etct);
-        ServiceTableController stct=new ServiceTableController(this);
+        ServiceTableController stct = new ServiceTableController(this);
         this.adminPanel.getAdminService().getTable().addMouseListener(stct);
-        DrugTableController dtcl=new DrugTableController(this);
+        DrugTableController dtcl = new DrugTableController(this);
         this.adminPanel.getAdminDrug().getTable().addMouseListener(dtcl);
     }
 
+    // Getters và setters (giữ nguyên từ code gốc)
     public DentistPanel getMainPanel() {
         return mainPanel;
     }

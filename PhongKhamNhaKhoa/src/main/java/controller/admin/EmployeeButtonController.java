@@ -7,10 +7,12 @@ import view.listPanelMain.MainFrame;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Date;
 import java.text.ParseException;
 
 import javax.swing.JOptionPane;
 
+import reponsitory.EmployeeRepository;
 import service.EmployeeService;
 
 public class EmployeeButtonController implements ActionListener {
@@ -55,7 +57,7 @@ public class EmployeeButtonController implements ActionListener {
         	insertEmployee();
         }
     }
-    
+
     private void insertEmployee() {
         AdminEmployeeAdd addPanel = view.getAdminPanel().getAdminEmployeeAdd();
 
@@ -68,6 +70,7 @@ public class EmployeeButtonController implements ActionListener {
         String salaryText = addPanel.getTfSalary().getText().trim();
         String yearText = addPanel.getTfYear().getText().trim();
         java.util.Date birthUtilDate = addPanel.getDateChooser().getDate();
+
         if (birthUtilDate == null) {
             JOptionPane.showMessageDialog(view, "Vui lòng chọn ngày sinh hợp lệ.");
             return;
@@ -107,6 +110,8 @@ public class EmployeeButtonController implements ActionListener {
             boolean success = EmployeeService.insertEmployee(name, birthDate, address, gender, phone, cccd, username, password, salary, year, role);
             if (success) {
                 JOptionPane.showMessageDialog(view, "Thêm nhân viên thành công!");
+                view.getAdminPanel().getAdminEmployee().loadEmployeeData(); // Refresh table
+                view.getAdminPanel().getCardLayout().show(view.getAdminPanel().getCenterPanel(), "adminEmployee");
             } else {
                 JOptionPane.showMessageDialog(view, "Thêm thất bại! Kiểm tra lại thông tin.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
@@ -115,23 +120,53 @@ public class EmployeeButtonController implements ActionListener {
         }
     }
 
-
-	public void updateValue() {
-    	AdminEmployeeEdit editPanel = view.getAdminPanel().getAdminEmployeeEdit();
+    public void updateValue() {
+        AdminEmployeeEdit editPanel = view.getAdminPanel().getAdminEmployeeEdit();
         int id = Integer.parseInt(editPanel.getLblId().getText().replace("Mã số: ", ""));
 
         String name = editPanel.getTfName().getText().trim();
         String phone = editPanel.getTfPhone().getText().trim();
         java.util.Date birthUtilDate = editPanel.getDateChooser().getDate();
+        if (birthUtilDate == null) {
+            JOptionPane.showMessageDialog(view, "Vui lòng chọn ngày sinh hợp lệ.");
+            return;
+        }
         java.sql.Date birthDate = new java.sql.Date(birthUtilDate.getTime());
         int gender = editPanel.getCbGender().getSelectedItem().equals("Nam") ? 1 : 0;
         String address = editPanel.getTfAddress().getText().trim();
         String cccd = editPanel.getTfCCCD().getText().trim();
-        double salary = Double.parseDouble(editPanel.getTfSalary().getText().trim());
+        double salary;
+        try {
+            salary = Double.parseDouble(editPanel.getTfSalary().getText().trim());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(view, "Hệ số lương phải là số thực.", "Lỗi định dạng", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         String role = (String) editPanel.getCbRole().getSelectedItem();
         String username = editPanel.getTfUsername().getText().trim();
         String password = editPanel.getTfPassword().getText().trim();
 
+        // Lấy ảnh hiện tại từ database
+        Object[] currentEmployee = EmployeeRepository.findById(id);
+        String profilePicture = (currentEmployee != null && currentEmployee[11] != null) ? (String) currentEmployee[11] : "";
+
+        // Gọi Service cập nhật
+        try {
+            boolean success = EmployeeService.updateEmployee(id, name, birthDate, address, gender, phone, cccd, username, password, salary, role, profilePicture);
+            if (success) {
+                JOptionPane.showMessageDialog(view, "Cập nhật thành công!");
+                view.getAdminPanel().getAdminEmployee().loadEmployeeData(); // Refresh table
+                view.getAdminPanel().getCardLayout().show(view.getAdminPanel().getCenterPanel(), "adminEmployee");
+            } else {
+                JOptionPane.showMessageDialog(view, "Cập nhật thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(view, ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(view, "Lỗi bất ngờ: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
+    }
         int check=EmployeeRepository.checkTonTai(id,phone,cccd,address);
         if(check==1){
             JOptionPane.showMessageDialog(view, "Số điện thoại đã tồn tại trên hệ thống");
@@ -153,15 +188,20 @@ public class EmployeeButtonController implements ActionListener {
 		
 	}
 
-	public void switchEdit() throws ParseException{
-    	view.getAdminPanel().getAdminEmployeeInfo().getEmployeeId();
-    	view.getAdminPanel().getAdminEmployeeEdit().loadData(view.getAdminPanel().getAdminEmployeeInfo().getEmployeeId());
-        view.getAdminPanel().getCardLayout().show(view.getAdminPanel().getCenterPanel(),"adminEmployeeEdit");
+    public void switchEdit() throws ParseException {
+        try {
+            int employeeId = view.getAdminPanel().getAdminEmployeeInfo().getEmployeeId();
+            view.getAdminPanel().getAdminEmployeeEdit().loadData(employeeId);
+            view.getAdminPanel().getCardLayout().show(view.getAdminPanel().getCenterPanel(), "adminEmployeeEdit");
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(view, "Mã nhân viên không hợp lệ.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
-    public void switchAdd(){
-    	
-        view.getAdminPanel().getCardLayout().show(view.getAdminPanel().getCenterPanel(),"adminEmployeeAdd");
+
+    public void switchAdd() {
+        view.getAdminPanel().getCardLayout().show(view.getAdminPanel().getCenterPanel(), "adminEmployeeAdd");
     }
+
     public void switchEmployee() {
         view.getAdminPanel().getAdminEmployee().loadEmployeeData();
         view.getAdminPanel().getCardLayout().show(view.getAdminPanel().getCenterPanel(), "adminEmployee");

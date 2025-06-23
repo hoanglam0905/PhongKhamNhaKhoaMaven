@@ -1,5 +1,7 @@
 package controller.durgStore;
 
+import reponsitory.EmployeeRepository;
+import view.admin.EditEmployeeInfoDialog;
 import view.listPanelMain.MainFrame;
 
 import javax.swing.*;
@@ -12,12 +14,13 @@ public class DrugMenuController implements MouseListener {
     private MainFrame view;
 
     public DrugMenuController(MainFrame mainFrame) {
-        this.view=mainFrame;
+        this.view = mainFrame;
     }
 
     public void setMainFrame(MainFrame view) {
         this.view = view;
     }
+
     @Override
     public void mouseClicked(MouseEvent e) {
         JLabel clickedLabel = (JLabel) e.getComponent();
@@ -27,7 +30,7 @@ public class DrugMenuController implements MouseListener {
         System.out.println("Đã click: " + name);
 
         switch (name) {
-            case"Home":
+            case "Home":
                 switchIntroPanel();
                 break;
             case "Bills":
@@ -37,18 +40,57 @@ public class DrugMenuController implements MouseListener {
                 switchListMedicinePanel();
                 break;
             case "Login":
-                int confirm = JOptionPane.showConfirmDialog(
-                        null,
-                        "Bạn có muốn đăng xuất không?",
-                        "Xác nhận đăng xuất",
-                        JOptionPane.YES_NO_OPTION
-                );
-
-                if (confirm == JOptionPane.YES_OPTION) {
-                    switchDrugLoginPanel();
-                }
+                showOptionsDialog();
                 break;
         }
+    }
+
+    private void showOptionsDialog() {
+        JDialog optionsDialog = new JDialog((Frame) null, "Tùy chọn", true);
+        optionsDialog.setLayout(new FlowLayout());
+        optionsDialog.setSize(300, 150);
+        optionsDialog.setLocationRelativeTo(null);
+
+        JButton logoutButton = new JButton("Đăng xuất");
+        JButton editInfoButton = new JButton("Sửa thông tin");
+        JButton timekeepingButton = new JButton("Chấm công");
+
+        logoutButton.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(
+                    null,
+                    "Bạn có muốn đăng xuất không?",
+                    "Xác nhận đăng xuất",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                switchDrugLoginPanel();
+                optionsDialog.dispose();
+            }
+        });
+
+        editInfoButton.addActionListener(e -> {
+            String acc = view.getLoginPanel().getAcc();
+            String pass = view.getLoginPanel().getPass();
+            EmployeeRepository.EmployeeInfo info = EmployeeRepository.getEmployeeInfo(acc, pass);
+            if (info != null) {
+                new EditEmployeeInfoDialog(view, info.id, info.username, info.password, info.profilePicture).setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(optionsDialog, "Không thể lấy thông tin nhân viên!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+            optionsDialog.dispose();
+        });
+
+        timekeepingButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(null, "Chức năng chấm công đang được phát triển!");
+            optionsDialog.dispose();
+        });
+
+        optionsDialog.add(logoutButton);
+        optionsDialog.add(editInfoButton);
+        optionsDialog.add(timekeepingButton);
+
+        optionsDialog.setVisible(true);
     }
 
     private void switchBillsPanel() {
@@ -60,33 +102,28 @@ public class DrugMenuController implements MouseListener {
         view.getDrugStorePanel().getListDrugPanel().reloadTableData();
         view.getDrugStorePanel().getCardLayout().show(view.getDrugStorePanel().getCenterPanel(), "Drugs");
     }
+
     private void switchIntroPanel() {
         view.getDrugStorePanel().getCardLayout().show(view.getDrugStorePanel().getCenterPanel(), "IntroducePanel");
     }
 
-    @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
-    }
     public void switchDrugLoginPanel(){
         view.getLoginPanel().resetUser();
         view.getCardLayout().show(view.getContainerPanel(), "LoginPanel");
     }
+
+    @Override
+    public void mousePressed(MouseEvent e) {}
+
+    @Override
+    public void mouseReleased(MouseEvent e) {}
+
+    @Override
+    public void mouseEntered(MouseEvent e) {}
+
+    @Override
+    public void mouseExited(MouseEvent e) {}
+
     private JLabel selectedLabel = null;
 
     public void setLabelEvent(JLabel... labels) {
@@ -100,14 +137,12 @@ public class DrugMenuController implements MouseListener {
                         selectedLabel.setBorder(null);
                         selectedLabel.repaint();
                     }
-                    // Kiểm tra nếu là Home
                     if ("Home".equals(label.getName())) {
                         selectedLabel = null;
                     } else {
                         selectedLabel = label;
                         selectedLabel.setBackground(Color.LIGHT_GRAY);
                         selectedLabel.setOpaque(true);
-                        // Thêm viền
                         selectedLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
                         selectedLabel.repaint();
                     }

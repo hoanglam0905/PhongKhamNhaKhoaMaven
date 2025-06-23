@@ -1,5 +1,7 @@
 package controller.dentist;
 
+import reponsitory.EmployeeRepository;
+import view.admin.EditEmployeeInfoDialog;
 import view.listPanelMain.MainFrame;
 
 import javax.swing.*;
@@ -24,14 +26,9 @@ public class DentistManagerLableController implements MouseListener {
 
         switch (name) {
             case "Schedule":
-                // Lấy acc/pass từ LoginPanel
                 String acc = view.getLoginPanel().getAcc();
                 String pass = view.getLoginPanel().getPass();
-
-                // Load lại bảng bệnh nhân cho đúng bác sĩ
                 view.getMainPanel().getDentistListPatient().reloadTableData(acc, pass);
-
-                // Chuyển panel
                 view.getMainPanel().getCardLayout().show(view.getMainPanel().getCenterPanel(), "Patient1");
                 break;
             case "Patients":
@@ -47,21 +44,58 @@ public class DentistManagerLableController implements MouseListener {
                 switchDentistIntroducePanel();
                 break;
             case "Login":
-                int confirm = JOptionPane.showConfirmDialog(
-                        null,
-                        "Bạn có muốn đăng xuất không?",
-                        "Xác nhận đăng xuất",
-                        JOptionPane.YES_NO_OPTION
-                );
-
-                if (confirm == JOptionPane.YES_OPTION) {
-                    switchReceptionistLoginPanel();
-                }
+                showOptionsDialog();
                 break;
         }
     }
 
-    // Sửa các hàm chuyển panel
+    private void showOptionsDialog() {
+        JDialog optionsDialog = new JDialog((Frame) null, "Tùy chọn", true);
+        optionsDialog.setLayout(new FlowLayout());
+        optionsDialog.setSize(300, 150);
+        optionsDialog.setLocationRelativeTo(null);
+
+        JButton logoutButton = new JButton("Đăng xuất");
+        JButton editInfoButton = new JButton("Sửa thông tin");
+        JButton timekeepingButton = new JButton("Chấm công");
+
+        logoutButton.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(
+                    null,
+                    "Bạn có muốn đăng xuất không?",
+                    "Xác nhận đăng xuất",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                switchReceptionistLoginPanel();
+                optionsDialog.dispose();
+            }
+        });
+
+        editInfoButton.addActionListener(e -> {
+            String acc = view.getLoginPanel().getAcc();
+            String pass = view.getLoginPanel().getPass();
+            EmployeeRepository.EmployeeInfo info = EmployeeRepository.getEmployeeInfo(acc, pass);
+            if (info != null) {
+                new EditEmployeeInfoDialog(view, info.id, info.username, info.password, info.profilePicture).setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(optionsDialog, "Không thể lấy thông tin nhân viên!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+            optionsDialog.dispose();
+        });
+
+        timekeepingButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(null, "Chức năng chấm công đang được phát triển!");
+            optionsDialog.dispose();
+        });
+
+        optionsDialog.add(logoutButton);
+        optionsDialog.add(editInfoButton);
+        optionsDialog.add(timekeepingButton);
+
+        optionsDialog.setVisible(true);
+    }
 
     public void switchDentistIntroducePanel() {
         view.getMainPanel().getCardLayout().show(view.getMainPanel().getCenterPanel(), "Introduce");
@@ -76,6 +110,7 @@ public class DentistManagerLableController implements MouseListener {
         view.getMainPanel().getDentistListPatient2().reloadPatientList();
         view.getMainPanel().getCardLayout().show(view.getMainPanel().getCenterPanel(), "Patient2");
     }
+
     public void switchReceptionistLoginPanel(){
         view.getLoginPanel().resetUser();
         view.getCardLayout().show(view.getContainerPanel(), "LoginPanel");
@@ -106,14 +141,12 @@ public class DentistManagerLableController implements MouseListener {
                         selectedLabel.setBorder(null);
                         selectedLabel.repaint();
                     }
-                    // Kiểm tra nếu là Home
                     if ("Home".equals(label.getName())) {
                         selectedLabel = null;
                     } else {
                         selectedLabel = label;
                         selectedLabel.setBackground(Color.LIGHT_GRAY);
                         selectedLabel.setOpaque(true);
-                        // Thêm viền
                         selectedLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
                         selectedLabel.repaint();
                     }
@@ -121,6 +154,4 @@ public class DentistManagerLableController implements MouseListener {
             });
         }
     }
-
 }
-
