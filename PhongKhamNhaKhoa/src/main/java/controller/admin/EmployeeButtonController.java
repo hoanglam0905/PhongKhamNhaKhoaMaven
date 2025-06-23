@@ -166,7 +166,6 @@ public class EmployeeButtonController implements ActionListener {
             JOptionPane.showMessageDialog(view, "Lỗi bất ngờ: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace();
         }
-    }
         int check=EmployeeRepository.checkTonTai(id,phone,cccd,address);
         if(check==1){
             JOptionPane.showMessageDialog(view, "Số điện thoại đã tồn tại trên hệ thống");
